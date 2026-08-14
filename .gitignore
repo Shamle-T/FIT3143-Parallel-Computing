@@ -4,6 +4,9 @@
 .vscode/
 .idea/
 
+# Local copies of unit teaching materials
+/context/
+
 # C build products
 *.exe
 *.o

@@ -1,12 +1,12 @@
 /*
- * FIT3143 Lab 1 - Task 1: Serial prime search
+ * FIT3143 Lab 1 - Task 3: OpenMP prime search
  *
- * Finds every prime strictly below n using optimised trial division.
+ * Finds every prime strictly below n using dynamically scheduled OpenMP work.
  * Add both team members' names, student IDs, and Monash email addresses.
  *
- * Build: gcc -std=c11 -O3 -Wall -Wextra -pedantic task1.c -o task1
- * Run:   ./task1
- *        ./task1 --benchmark 10000000
+ * Build: gcc -std=c11 -O3 -Wall -Wextra -pedantic task3.c -o task3 -fopenmp
+ * Run:   ./task3
+ *        ./task3 --benchmark 10000000 4
  */
 
 #if !defined(_WIN32)
@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <omp.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,8 +28,10 @@
 #endif
 
 #define INPUT_BUFFER_SIZE 128
+#define MAX_THREAD_COUNT 1024
 #define TERMINAL_OUTPUT_LIMIT 100
-#define OUTPUT_FILE_BASENAME "task1_primes.txt"
+#define OPENMP_CHUNK_SIZE 256
+#define OUTPUT_FILE_BASENAME "task3_primes.txt"
 #define OUTPUT_PATH_SIZE 4096
 
 typedef struct {
@@ -38,15 +41,18 @@ typedef struct {
 } PrimeResult;
 
 static int get_options(int argc, char *argv[], size_t *limit,
-                       int *benchmark_mode);
+                       size_t *thread_count, int *benchmark_mode);
 static int read_size_value(const char *prompt, const char *name,
                            size_t minimum, size_t maximum, size_t *value);
 static int parse_size_value(const char *text, const char *name,
                             size_t minimum, size_t maximum, size_t *value);
 static int allocate_result(size_t limit, PrimeResult *result);
 static void search_serial(size_t limit, PrimeResult *result);
+static void search_openmp(size_t limit, size_t thread_count,
+                          PrimeResult *result);
 static int is_prime_number(size_t value);
 static int monotonic_seconds(double *seconds);
+static int results_equal(const PrimeResult *left, const PrimeResult *right);
 static int print_primes(size_t limit, const PrimeResult *result);
 static int build_output_path(const char *program_path, char *output_path,
                              size_t output_path_size);
@@ -57,75 +63,121 @@ static size_t odd_value(size_t index);
 
 int main(int argc, char *argv[])
 {
-    PrimeResult result = {NULL, 0, 0};
+    PrimeResult serial_result = {NULL, 0, 0};
+    PrimeResult parallel_result = {NULL, 0, 0};
     char output_path[OUTPUT_PATH_SIZE];
     size_t limit;
-    double start_time;
-    double end_time;
+    size_t thread_count;
+    double serial_start;
+    double serial_end;
+    double parallel_start;
+    double parallel_end;
+    double serial_seconds;
+    double parallel_seconds;
+    double speedup;
     int benchmark_mode;
     int output_ok = 1;
 
-    if (!get_options(argc, argv, &limit, &benchmark_mode)) {
+    if (!get_options(argc, argv, &limit, &thread_count, &benchmark_mode)) {
         return EXIT_FAILURE;
     }
-    if (!allocate_result(limit, &result)) {
+    if (!allocate_result(limit, &serial_result) ||
+        !allocate_result(limit, &parallel_result)) {
         fprintf(stderr,
                 "Error: unable to allocate the prime flags below %zu.\n",
                 limit);
+        free(parallel_result.is_prime);
+        free(serial_result.is_prime);
         return EXIT_FAILURE;
     }
 
-    if (!monotonic_seconds(&start_time)) {
+    omp_set_dynamic(0);
+
+    if (!monotonic_seconds(&serial_start)) {
         fputs("Error: unable to read the monotonic clock.\n", stderr);
-        free(result.is_prime);
-        return EXIT_FAILURE;
+        output_ok = 0;
+        goto cleanup;
     }
-    search_serial(limit, &result);
-    if (!monotonic_seconds(&end_time)) {
+    search_serial(limit, &serial_result);
+    if (!monotonic_seconds(&serial_end)) {
         fputs("Error: unable to read the monotonic clock.\n", stderr);
-        free(result.is_prime);
-        return EXIT_FAILURE;
+        output_ok = 0;
+        goto cleanup;
     }
 
-    printf("Implementation: serial\n");
+    if (!monotonic_seconds(&parallel_start)) {
+        fputs("Error: unable to read the monotonic clock.\n", stderr);
+        output_ok = 0;
+        goto cleanup;
+    }
+    search_openmp(limit, thread_count, &parallel_result);
+    if (!monotonic_seconds(&parallel_end)) {
+        fputs("Error: unable to read the monotonic clock.\n", stderr);
+        output_ok = 0;
+        goto cleanup;
+    }
+
+    if (!results_equal(&serial_result, &parallel_result)) {
+        fputs("Error: serial and OpenMP results do not match.\n", stderr);
+        output_ok = 0;
+        goto cleanup;
+    }
+
+    serial_seconds = serial_end - serial_start;
+    parallel_seconds = parallel_end - parallel_start;
+    speedup = (parallel_seconds > 0.0)
+                  ? serial_seconds / parallel_seconds
+                  : 0.0;
+
+    printf("Implementation: openmp\n");
     printf("Input limit: %zu\n", limit);
-    printf("Prime count: %zu\n", result.prime_count);
-    printf("Computation time: %.9f seconds\n", end_time - start_time);
+    printf("Thread count: %zu\n", thread_count);
+    printf("Prime count: %zu\n", parallel_result.prime_count);
+    printf("Serial computation time: %.9f seconds\n", serial_seconds);
+    printf("OpenMP computation time: %.9f seconds\n", parallel_seconds);
+    printf("Speedup: %.6f\n", speedup);
+    printf("Efficiency: %.6f\n", speedup / (double)thread_count);
 
     if (!benchmark_mode) {
         if (limit < TERMINAL_OUTPUT_LIMIT) {
-            output_ok = print_primes(limit, &result);
+            output_ok = print_primes(limit, &parallel_result);
         } else if (!build_output_path(argv[0], output_path,
                                       sizeof(output_path))) {
             fputs("Error: unable to construct the prime output path.\n",
                   stderr);
             output_ok = 0;
         } else {
-            output_ok = save_primes(output_path, limit, &result);
+            output_ok = save_primes(output_path, limit, &parallel_result);
             if (output_ok) {
                 printf("Primes written to %s\n", output_path);
             }
         }
     }
 
-    free(result.is_prime);
+cleanup:
+    free(parallel_result.is_prime);
+    free(serial_result.is_prime);
     return output_ok ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 static int get_options(int argc, char *argv[], size_t *limit,
-                       int *benchmark_mode)
+                       size_t *thread_count, int *benchmark_mode)
 {
     if (argc == 1) {
         *benchmark_mode = 0;
         return read_size_value("Enter upper limit n: ", "n", 0, SIZE_MAX,
-                               limit);
+                               limit) &&
+               read_size_value("Enter number of threads: ", "thread count",
+                               1, MAX_THREAD_COUNT, thread_count);
     }
-    if (argc == 3 && strcmp(argv[1], "--benchmark") == 0) {
+    if (argc == 4 && strcmp(argv[1], "--benchmark") == 0) {
         *benchmark_mode = 1;
-        return parse_size_value(argv[2], "n", 0, SIZE_MAX, limit);
+        return parse_size_value(argv[2], "n", 0, SIZE_MAX, limit) &&
+               parse_size_value(argv[3], "thread count", 1,
+                                MAX_THREAD_COUNT, thread_count);
     }
 
-    fprintf(stderr, "Usage: %s [--benchmark n]\n", argv[0]);
+    fprintf(stderr, "Usage: %s [--benchmark n threads]\n", argv[0]);
     return 0;
 }
 
@@ -212,6 +264,31 @@ static void search_serial(size_t limit, PrimeResult *result)
     result->prime_count = prime_count;
 }
 
+/*
+ * Dynamic chunks balance irregular early exits in primality tests. Each loop
+ * iteration owns one flag; the reduction combines counts without a critical
+ * section, and num_threads makes thread-count experiments reproducible.
+ */
+static void search_openmp(size_t limit, size_t thread_count,
+                          PrimeResult *result)
+{
+    unsigned char *is_prime = result->is_prime;
+    size_t odd_count = result->odd_count;
+    size_t prime_count = (limit > 2) ? 1 : 0;
+    size_t index;
+
+#pragma omp parallel for default(none) shared(is_prime, odd_count)              \
+    num_threads(thread_count) schedule(dynamic, OPENMP_CHUNK_SIZE)              \
+    reduction(+ : prime_count)
+    for (index = 0; index < odd_count; ++index) {
+        unsigned char prime = (unsigned char)is_prime_number(odd_value(index));
+
+        is_prime[index] = prime;
+        prime_count += prime;
+    }
+    result->prime_count = prime_count;
+}
+
 /* Every prime greater than 3 is of the form 6k-1 or 6k+1. */
 static int is_prime_number(size_t value)
 {
@@ -226,7 +303,6 @@ static int is_prime_number(size_t value)
     if (value % 3 == 0) {
         return value == 3;
     }
-
     for (divisor = 5; divisor <= value / divisor; divisor += 6) {
         if (value % divisor == 0 || value % (divisor + 2) == 0) {
             return 0;
@@ -259,6 +335,17 @@ static int monotonic_seconds(double *seconds)
     return 1;
 }
 
+static int results_equal(const PrimeResult *left, const PrimeResult *right)
+{
+    if (left->odd_count != right->odd_count ||
+        left->prime_count != right->prime_count) {
+        return 0;
+    }
+    return left->odd_count == 0 ||
+           memcmp(left->is_prime, right->is_prime,
+                  left->odd_count * sizeof(*left->is_prime)) == 0;
+}
+
 static int print_primes(size_t limit, const PrimeResult *result)
 {
     size_t index;
@@ -278,7 +365,6 @@ static int print_primes(size_t limit, const PrimeResult *result)
     return putchar('\n') != EOF;
 }
 
-/* Keep generated output beside the source under the documented build. */
 static int build_output_path(const char *program_path, char *output_path,
                              size_t output_path_size)
 {
