@@ -1,17 +1,13 @@
 /*
  * FIT3143 Lab 1 - Task 1: Serial prime search
  *
- * Finds every prime strictly below n using optimised trial division.
+ * Finds every prime strictly below n using an odd-only Sieve of Eratosthenes.
  * Add both team members' names, student IDs, and Monash email addresses.
  *
  * Build: gcc -std=c11 -O3 -Wall -Wextra -pedantic task1.c -o task1
  * Run:   ./task1
  *        ./task1 --benchmark 10000000
  */
-
-#if !defined(_WIN32)
-#define _POSIX_C_SOURCE 200809L
-#endif
 
 #include <ctype.h>
 #include <errno.h>
@@ -22,14 +18,9 @@
 #include <string.h>
 #include <time.h>
 
-#if defined(_WIN32)
-#include <windows.h>
-#endif
-
 #define INPUT_BUFFER_SIZE 128
 #define TERMINAL_OUTPUT_LIMIT 100
 #define OUTPUT_FILE_BASENAME "task1_primes.txt"
-#define OUTPUT_PATH_SIZE 4096
 
 typedef struct {
     unsigned char *is_prime;
@@ -44,21 +35,22 @@ static int read_size_value(const char *prompt, const char *name,
 static int parse_size_value(const char *text, const char *name,
                             size_t minimum, size_t maximum, size_t *value);
 static int allocate_result(size_t limit, PrimeResult *result);
-static void search_serial(size_t limit, PrimeResult *result);
-static int is_prime_number(size_t value);
+static int search_serial(size_t limit, PrimeResult *result);
+static void search_base_sieve(size_t limit, PrimeResult *result);
+static void mark_sieve_range(size_t limit, const PrimeResult *base_primes,
+                             unsigned char *is_prime, size_t begin,
+                             size_t end);
+static size_t sieve_base_limit(size_t limit);
 static int monotonic_seconds(double *seconds);
 static int print_primes(size_t limit, const PrimeResult *result);
-static int build_output_path(const char *program_path, char *output_path,
-                             size_t output_path_size);
 static int save_primes(const char *output_path, size_t limit,
                        const PrimeResult *result);
-static const char *last_path_separator(const char *path);
+static size_t odd_index(size_t value);
 static size_t odd_value(size_t index);
 
 int main(int argc, char *argv[])
 {
     PrimeResult result = {NULL, 0, 0};
-    char output_path[OUTPUT_PATH_SIZE];
     size_t limit;
     double start_time;
     double end_time;
@@ -80,7 +72,10 @@ int main(int argc, char *argv[])
         free(result.is_prime);
         return EXIT_FAILURE;
     }
-    search_serial(limit, &result);
+    if (!search_serial(limit, &result)) {
+        free(result.is_prime);
+        return EXIT_FAILURE;
+    }
     if (!monotonic_seconds(&end_time)) {
         fputs("Error: unable to read the monotonic clock.\n", stderr);
         free(result.is_prime);
@@ -95,15 +90,10 @@ int main(int argc, char *argv[])
     if (!benchmark_mode) {
         if (limit < TERMINAL_OUTPUT_LIMIT) {
             output_ok = print_primes(limit, &result);
-        } else if (!build_output_path(argv[0], output_path,
-                                      sizeof(output_path))) {
-            fputs("Error: unable to construct the prime output path.\n",
-                  stderr);
-            output_ok = 0;
         } else {
-            output_ok = save_primes(output_path, limit, &result);
+            output_ok = save_primes(OUTPUT_FILE_BASENAME, limit, &result);
             if (output_ok) {
-                printf("Primes written to %s\n", output_path);
+                printf("Primes written to %s\n", OUTPUT_FILE_BASENAME);
             }
         }
     }
@@ -198,64 +188,126 @@ static int allocate_result(size_t limit, PrimeResult *result)
     return result->is_prime != NULL;
 }
 
-static void search_serial(size_t limit, PrimeResult *result)
+static int search_serial(size_t limit, PrimeResult *result)
+{
+    PrimeResult base_result = {NULL, 0, 0};
+    size_t base_limit = sieve_base_limit(limit);
+    size_t index;
+    size_t prime_count = (limit > 2) ? 1 : 0;
+
+    if (!allocate_result(base_limit, &base_result)) {
+        fputs("Error: unable to allocate base prime flags.\n", stderr);
+        return 0;
+    }
+    search_base_sieve(base_limit, &base_result);
+
+    if (result->odd_count > 0) {
+        memset(result->is_prime, 1, result->odd_count);
+    }
+    mark_sieve_range(limit, &base_result, result->is_prime, 0,
+                     result->odd_count);
+    for (index = 0; index < result->odd_count; ++index) {
+        prime_count += result->is_prime[index];
+    }
+
+    result->prime_count = prime_count;
+    free(base_result.is_prime);
+    return 1;
+}
+
+static void search_base_sieve(size_t limit, PrimeResult *result)
 {
     size_t index;
     size_t prime_count = (limit > 2) ? 1 : 0;
 
+    if (result->odd_count > 0) {
+        memset(result->is_prime, 1, result->odd_count);
+    }
     for (index = 0; index < result->odd_count; ++index) {
-        unsigned char prime = (unsigned char)is_prime_number(odd_value(index));
+        size_t prime;
+        size_t composite;
 
-        result->is_prime[index] = prime;
-        prime_count += prime;
+        if (!result->is_prime[index]) {
+            continue;
+        }
+        ++prime_count;
+
+        prime = odd_value(index);
+        if (prime > (limit - 1) / prime) {
+            continue;
+        }
+        for (composite = prime * prime; composite < limit;
+             composite += 2 * prime) {
+            result->is_prime[odd_index(composite)] = 0;
+        }
     }
     result->prime_count = prime_count;
 }
 
-/* Every prime greater than 3 is of the form 6k-1 or 6k+1. */
-static int is_prime_number(size_t value)
+static void mark_sieve_range(size_t limit, const PrimeResult *base_primes,
+                             unsigned char *is_prime, size_t begin,
+                             size_t end)
 {
-    size_t divisor;
+    size_t base_index;
+    size_t segment_start;
 
-    if (value < 2) {
-        return 0;
+    if (begin >= end) {
+        return;
     }
-    if (value % 2 == 0) {
-        return value == 2;
-    }
-    if (value % 3 == 0) {
-        return value == 3;
-    }
+    segment_start = odd_value(begin);
 
-    for (divisor = 5; divisor <= value / divisor; divisor += 6) {
-        if (value % divisor == 0 || value % (divisor + 2) == 0) {
-            return 0;
+    for (base_index = 0; base_index < base_primes->odd_count; ++base_index) {
+        size_t prime;
+        size_t start_value;
+        size_t remainder;
+        size_t index;
+
+        if (!base_primes->is_prime[base_index]) {
+            continue;
+        }
+        prime = odd_value(base_index);
+        if (prime > (limit - 1) / prime) {
+            break;
+        }
+
+        start_value = prime * prime;
+        if (start_value < segment_start) {
+            remainder = segment_start % prime;
+            start_value = (remainder == 0)
+                              ? segment_start
+                              : segment_start + prime - remainder;
+            if (start_value % 2 == 0) {
+                start_value += prime;
+            }
+        }
+
+        for (index = odd_index(start_value); index < end; index += prime) {
+            is_prime[index] = 0;
         }
     }
-    return 1;
 }
 
-/* Wall time is used consistently so parallel CPU time is not accumulated. */
+static size_t sieve_base_limit(size_t limit)
+{
+    size_t factor = 1;
+
+    if (limit == 0) {
+        return 0;
+    }
+    while (factor <= (limit - 1) / factor) {
+        ++factor;
+    }
+    return factor;
+}
+
 static int monotonic_seconds(double *seconds)
 {
-#if defined(_WIN32)
-    LARGE_INTEGER frequency;
-    LARGE_INTEGER counter;
+    clock_t timestamp = clock();
 
-    if (!QueryPerformanceFrequency(&frequency) ||
-        !QueryPerformanceCounter(&counter)) {
+    if (timestamp == (clock_t)-1) {
         return 0;
     }
-    *seconds = (double)counter.QuadPart / (double)frequency.QuadPart;
-#else
-    struct timespec timestamp;
-
-    if (clock_gettime(CLOCK_MONOTONIC, &timestamp) != 0) {
-        return 0;
-    }
-    *seconds = (double)timestamp.tv_sec +
-               (double)timestamp.tv_nsec / 1000000000.0;
-#endif
+    *seconds = (double)timestamp / CLOCKS_PER_SEC;
     return 1;
 }
 
@@ -276,33 +328,6 @@ static int print_primes(size_t limit, const PrimeResult *result)
         }
     }
     return putchar('\n') != EOF;
-}
-
-/* Keep generated output beside the source under the documented build. */
-static int build_output_path(const char *program_path, char *output_path,
-                             size_t output_path_size)
-{
-    const char *reference_path = __FILE__;
-    const char *separator = last_path_separator(reference_path);
-    size_t directory_length;
-    size_t file_name_length = strlen(OUTPUT_FILE_BASENAME);
-
-    if (separator == NULL) {
-        reference_path = program_path;
-        separator = last_path_separator(reference_path);
-    }
-    directory_length = (separator == NULL)
-                           ? 0
-                           : (size_t)(separator - reference_path) + 1;
-    if (directory_length + file_name_length + 1 > output_path_size) {
-        return 0;
-    }
-    if (directory_length > 0) {
-        memcpy(output_path, reference_path, directory_length);
-    }
-    memcpy(output_path + directory_length, OUTPUT_FILE_BASENAME,
-           file_name_length + 1);
-    return 1;
 }
 
 static int save_primes(const char *output_path, size_t limit,
@@ -334,18 +359,9 @@ static int save_primes(const char *output_path, size_t limit,
     return write_ok;
 }
 
-static const char *last_path_separator(const char *path)
+static size_t odd_index(size_t value)
 {
-    const char *forward_slash = strrchr(path, '/');
-    const char *backslash = strrchr(path, '\\');
-
-    if (forward_slash == NULL) {
-        return backslash;
-    }
-    if (backslash == NULL) {
-        return forward_slash;
-    }
-    return (forward_slash > backslash) ? forward_slash : backslash;
+    return (value - 3) / 2;
 }
 
 static size_t odd_value(size_t index)
