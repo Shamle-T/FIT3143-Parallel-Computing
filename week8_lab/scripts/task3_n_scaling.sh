@@ -2,14 +2,17 @@
 
 set -e
 
-PROCESSES=4
+PROCESSES="${PROCESSES:-4}"
+N_START="${N_START:-20000000}"
+N_END="${N_END:-78000000}"
+N_STEP="${N_STEP:-2000000}"
 RESULT_FILE="results/task3_n_scaling.csv"
 
 mkdir -p results
 
 echo "n,processes,serial_compute,serial_total,mpi_compute,communication,postprocess,mpi_total,rp,rs,comm_fraction,empirical_speedup,theoretical_speedup" > "$RESULT_FILE"
 
-for n in $(seq 20000000 2000000 78000000)
+for n in $(seq "$N_START" "$N_STEP" "$N_END")
 do
     echo "======================================"
     echo "Task 3: n=$n, MPI processes=$PROCESSES"
@@ -53,10 +56,12 @@ do
         -v communication="$communication" \
         -v mpi_total="$mpi_total" \
         'BEGIN {
-            reference = serial_total + communication
-            rp = serial_compute / reference
-            comm_fraction = communication / reference
-            rs = 1.0 - rp - comm_fraction
+            # Keep the theoretical and empirical speedups on the
+            # same serial-total baseline. Communication is an added
+            # distributed-memory overhead, not part of the serial baseline.
+            rp = serial_compute / serial_total
+            comm_fraction = communication / serial_total
+            rs = 1.0 - rp
             empirical = serial_total / mpi_total
             theoretical = 1.0 / (rs + (rp / p) + comm_fraction)
 

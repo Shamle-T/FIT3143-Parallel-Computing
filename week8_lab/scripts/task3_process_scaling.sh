@@ -2,7 +2,8 @@
 
 set -e
 
-N=60000000
+N="${N:-60000000}"
+PROCESS_COUNTS="${PROCESS_COUNTS:-1 2 4 8 16}"
 RESULT_FILE="results/task3_process_scaling.csv"
 
 mkdir -p results
@@ -24,7 +25,7 @@ fi
 echo "Serial computation: $serial_compute s"
 echo "Serial overall:     $serial_total s"
 
-for p in 1 2 4 8 16
+for p in $PROCESS_COUNTS
 do
     echo "======================================"
     echo "Task 3: n=$N, MPI processes=$p"
@@ -58,10 +59,12 @@ do
         -v communication="$communication" \
         -v mpi_total="$mpi_total" \
         'BEGIN {
-            reference = serial_total + communication
-            rp = serial_compute / reference
-            comm_fraction = communication / reference
-            rs = 1.0 - rp - comm_fraction
+            # Keep the theoretical and empirical speedups on the
+            # same serial-total baseline. Communication is an added
+            # distributed-memory overhead, not part of the serial baseline.
+            rp = serial_compute / serial_total
+            comm_fraction = communication / serial_total
+            rs = 1.0 - rp
             empirical = serial_total / mpi_total
             theoretical = 1.0 / (rs + (rp / p) + comm_fraction)
 
