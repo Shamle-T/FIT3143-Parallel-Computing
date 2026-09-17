@@ -6,6 +6,12 @@
 
 # Local copies of unit teaching materials
 /context/
+/week8_lab/context/
+/lab_2/context/
+
+# Large local lab input datasets
+/lab_1/context/VA.txt
+/lab_1/context/VB.txt
 
 # C build products
 *.exe
