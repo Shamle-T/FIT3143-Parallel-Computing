@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600.0" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="bold">Task 3: OpenMP Speedup as n Increases</text>
+<text x="600" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="16">One run per configuration; fixed worker count: 20</text>
+<line x1="130" y1="630.00" x2="1140" y2="630.00" stroke="#d9d9d9" stroke-width="1"/>
+<text x="118" y="635.00" text-anchor="end" font-family="Arial, sans-serif" font-size="15">0.00</text>
+<line x1="130" y1="524.00" x2="1140" y2="524.00" stroke="#d9d9d9" stroke-width="1"/>
+<text x="118" y="529.00" text-anchor="end" font-family="Arial, sans-serif" font-size="15">1.98</text>
+<line x1="130" y1="418.00" x2="1140" y2="418.00" stroke="#d9d9d9" stroke-width="1"/>
+<text x="118" y="423.00" text-anchor="end" font-family="Arial, sans-serif" font-size="15">3.95</text>
+<line x1="130" y1="312.00" x2="1140" y2="312.00" stroke="#d9d9d9" stroke-width="1"/>
+<text x="118" y="317.00" text-anchor="end" font-family="Arial, sans-serif" font-size="15">5.93</text>
+<line x1="130" y1="206.00" x2="1140" y2="206.00" stroke="#d9d9d9" stroke-width="1"/>
+<text x="118" y="211.00" text-anchor="end" font-family="Arial, sans-serif" font-size="15">7.90</text>
+<line x1="130" y1="100.00" x2="1140" y2="100.00" stroke="#d9d9d9" stroke-width="1"/>
+<text x="118" y="105.00" text-anchor="end" font-family="Arial, sans-serif" font-size="15">9.88</text>
+<line x1="130.00" y1="100" x2="130.00" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="130.00" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">1</text>
+<line x1="164.83" y1="100" x2="164.83" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="164.83" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">2</text>
+<line x1="199.66" y1="100" x2="199.66" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="199.66" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">3</text>
+<line x1="234.48" y1="100" x2="234.48" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="234.48" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">4</text>
+<line x1="269.31" y1="100" x2="269.31" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="269.31" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">5</text>
+<line x1="304.14" y1="100" x2="304.14" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="304.14" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">6</text>
+<line x1="338.97" y1="100" x2="338.97" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="338.97" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">7</text>
+<line x1="373.79" y1="100" x2="373.79" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="373.79" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">8</text>
+<line x1="408.62" y1="100" x2="408.62" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="408.62" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">9</text>
+<line x1="443.45" y1="100" x2="443.45" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="443.45" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">10</text>
+<line x1="478.28" y1="100" x2="478.28" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="478.28" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">11</text>
+<line x1="513.10" y1="100" x2="513.10" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="513.10" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">12</text>
+<line x1="547.93" y1="100" x2="547.93" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="547.93" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">13</text>
+<line x1="582.76" y1="100" x2="582.76" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="582.76" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">14</text>
+<line x1="617.59" y1="100" x2="617.59" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="617.59" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">15</text>
+<line x1="652.41" y1="100" x2="652.41" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="652.41" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">16</text>
+<line x1="687.24" y1="100" x2="687.24" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="687.24" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">17</text>
+<line x1="722.07" y1="100" x2="722.07" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="722.07" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">18</text>
+<line x1="756.90" y1="100" x2="756.90" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="756.90" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">19</text>
+<line x1="791.72" y1="100" x2="791.72" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="791.72" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">20</text>
+<line x1="826.55" y1="100" x2="826.55" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="826.55" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">21</text>
+<line x1="861.38" y1="100" x2="861.38" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="861.38" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">22</text>
+<line x1="896.21" y1="100" x2="896.21" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="896.21" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">23</text>
+<line x1="931.03" y1="100" x2="931.03" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="931.03" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">24</text>
+<line x1="965.86" y1="100" x2="965.86" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="965.86" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">25</text>
+<line x1="1000.69" y1="100" x2="1000.69" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="1000.69" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">26</text>
+<line x1="1035.52" y1="100" x2="1035.52" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="1035.52" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">27</text>
+<line x1="1070.34" y1="100" x2="1070.34" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="1070.34" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">28</text>
+<line x1="1105.17" y1="100" x2="1105.17" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="1105.17" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">29</text>
+<line x1="1140.00" y1="100" x2="1140.00" y2="630" stroke="#eeeeee" stroke-width="1"/>
+<text x="1140.00" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="14">30</text>
+<line x1="130" y1="630" x2="1140" y2="630" stroke="black" stroke-width="2"/>
+<line x1="130" y1="100" x2="130" y2="630" stroke="black" stroke-width="2"/>
+<text x="600.0" y="718" text-anchor="middle" font-family="Arial, sans-serif" font-size="18">Input limit n (millions)</text>
+<text x="32" y="380.0" text-anchor="middle" transform="rotate(-90 32 380.0)" font-family="Arial, sans-serif" font-size="18">Speedup (serial time / OpenMP time)</text>
+<polyline points="130.00,337.21 164.83,195.35 199.66,172.93 234.48,181.73 269.31,213.55 304.14,148.18 338.97,226.49 373.79,193.59 408.62,210.69 443.45,203.23 478.28,208.43 513.10,183.95 547.93,184.34 582.76,180.72 617.59,196.65 652.41,179.99 687.24,192.81 722.07,263.27 756.90,289.80 791.72,296.27 826.55,215.94 861.38,217.69 896.21,251.42 931.03,266.98 965.86,248.77 1000.69,275.47 1035.52,205.53 1070.34,230.54 1105.17,238.06 1140.00,234.09" fill="none" stroke="#2e8b57" stroke-width="3"/>
+<circle cx="130.00" cy="337.21" r="4" fill="#2e8b57"/>
+<circle cx="164.83" cy="195.35" r="4" fill="#2e8b57"/>
+<circle cx="199.66" cy="172.93" r="4" fill="#2e8b57"/>
+<circle cx="234.48" cy="181.73" r="4" fill="#2e8b57"/>
+<circle cx="269.31" cy="213.55" r="4" fill="#2e8b57"/>
+<circle cx="304.14" cy="148.18" r="4" fill="#2e8b57"/>
+<circle cx="338.97" cy="226.49" r="4" fill="#2e8b57"/>
+<circle cx="373.79" cy="193.59" r="4" fill="#2e8b57"/>
+<circle cx="408.62" cy="210.69" r="4" fill="#2e8b57"/>
+<circle cx="443.45" cy="203.23" r="4" fill="#2e8b57"/>
+<circle cx="478.28" cy="208.43" r="4" fill="#2e8b57"/>
+<circle cx="513.10" cy="183.95" r="4" fill="#2e8b57"/>
+<circle cx="547.93" cy="184.34" r="4" fill="#2e8b57"/>
+<circle cx="582.76" cy="180.72" r="4" fill="#2e8b57"/>
+<circle cx="617.59" cy="196.65" r="4" fill="#2e8b57"/>
+<circle cx="652.41" cy="179.99" r="4" fill="#2e8b57"/>
+<circle cx="687.24" cy="192.81" r="4" fill="#2e8b57"/>
+<circle cx="722.07" cy="263.27" r="4" fill="#2e8b57"/>
+<circle cx="756.90" cy="289.80" r="4" fill="#2e8b57"/>
+<circle cx="791.72" cy="296.27" r="4" fill="#2e8b57"/>
+<circle cx="826.55" cy="215.94" r="4" fill="#2e8b57"/>
+<circle cx="861.38" cy="217.69" r="4" fill="#2e8b57"/>
+<circle cx="896.21" cy="251.42" r="4" fill="#2e8b57"/>
+<circle cx="931.03" cy="266.98" r="4" fill="#2e8b57"/>
+<circle cx="965.86" cy="248.77" r="4" fill="#2e8b57"/>
+<circle cx="1000.69" cy="275.47" r="4" fill="#2e8b57"/>
+<circle cx="1035.52" cy="205.53" r="4" fill="#2e8b57"/>
+<circle cx="1070.34" cy="230.54" r="4" fill="#2e8b57"/>
+<circle cx="1105.17" cy="238.06" r="4" fill="#2e8b57"/>
+<circle cx="1140.00" cy="234.09" r="4" fill="#2e8b57"/>
+<line x1="150" y1="125" x2="178" y2="125" stroke="#2e8b57" stroke-width="3"/>
+<text x="188" y="130" font-family="Arial, sans-serif" font-size="16">OpenMP speedup</text>
+</svg>
