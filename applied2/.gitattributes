@@ -1,0 +1,4 @@
+# Preserve binary assessment artifacts across platforms and Git checkouts.
+*.pdf binary
+*.pptx binary
+*.png binary

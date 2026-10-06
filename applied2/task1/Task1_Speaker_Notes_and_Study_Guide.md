@@ -1,40 +1,40 @@
 # Task 1: Image rotation with CUDA
 
-Prepared 6 October 2026. Use main slides 1-6 for a four-minute Task 1 presentation.
+Prepared 6 October 2026. Use main slides 1-6 for a three-minute Task 1 presentation.
 
-## Slide 1: Image rotation with CUDA (35 seconds)
+## Slide 1: Image rotation with CUDA (30 seconds)
 
-The host is the CPU. It loads and decodes the image, allocates memory and launches the CUDA kernel. The device is the GPU, which runs the rotation across many pixels. In this conventional discrete-GPU system, the input pixels move from system RAM to GPU memory over PCIe. After rotation, the result returns to RAM for saving or display. CUDA exposes these operations through memory-allocation and copy APIs. The CPU controls the work, while the GPU performs the parallel pixel calculations.
+I'll explain how we'd rotate a large image using CUDA. The CPU, or host, loads and decodes the image, allocates buffers and launches the work. The GPU, or device, calculates the output pixels. In this design, system RAM and GPU memory are separate. We copy the pixels across PCIe using a host-to-device cudaMemcpy, then copy the result back. Those transfers take time, even when the rotation kernel is fast.
 
 Sources: [1], [2], [3].
 
-## Slide 2: One thread computes one output pixel (40 seconds)
+## Slide 2: One thread computes one output pixel (35 seconds)
 
-Brightness adjustment is data parallel because each pixel receives the same independent operation: add a value and clamp the result to the valid range. Rotation also allows independent output pixels, but each thread must find a different source location. My proposed design uses inverse mapping: start at an output pixel, apply the inverse rotation about the image centre, and sample the input. I use nearest-neighbour sampling for simplicity, keep the original image dimensions, and fill uncovered pixels with black. Separate input and output buffers avoid overwriting data that other threads still need.
+Brightness is data-parallel because each pixel gets the same independent adjustment. Rotation also gives each thread independent work, but the source position changes. We start with an output pixel and map backwards to its source, so every destination gets written. Here, that produces a ninety-degree counterclockwise rotation. We use nearest-neighbour sampling, keep the original dimensions and fill uncovered pixels with black. It's simple, but diagonal edges can look jagged and corners can be cropped.
 
 Sources: [1], [4], [5].
 
-## Slide 3: Threads, blocks and the image grid (45 seconds)
+## Slide 3: Threads, blocks and the image grid (30 seconds)
 
-CUDA organises threads into blocks and blocks into a grid. With a sixteen-by-sixteen block, each block contains two hundred and fifty-six threads. A 1024-by-1024 image needs sixty-four blocks across and sixty-four down, giving four thousand and ninety-six blocks. Multiplying the block count by the threads per block gives one million, forty-eight thousand, five hundred and seventy-six launched threads. The launch specifies the grid first and the block second. Each thread calculates its pixel coordinates from its block and thread indices. For other image dimensions, we round the grid up and check the image boundary.
+CUDA organises threads into blocks, and blocks into a grid. The launch here specifies both. For a one-thousand-and-twenty-four square image, sixteen-by-sixteen threads gives two hundred and fifty-six threads per block. We need sixty-four-by-sixty-four blocks: four thousand and ninety-six blocks, launching just over one million threads. Our bounds check handles images that don't divide evenly by sixteen.
 
 Sources: [1], [2].
 
-## Slide 4: Millions of threads share finite hardware (35 seconds)
+## Slide 4: Millions of threads share finite hardware (25 seconds)
 
-A launched thread is a logical unit of work. CUDA cores are physical execution units, so the GPU does not need a separate core for every pixel. Streaming multiprocessors accept blocks as resources become available. Each sixteen-by-sixteen block contains eight warps of thirty-two threads. Warp schedulers issue instructions from ready warps, and more blocks enter as earlier blocks finish. This lets thousands of cores process millions of pixels over time. The block order is unspecified, which is why our rotation design keeps output pixels independent.
+That doesn't mean we need a million CUDA cores. An SM, or streaming multiprocessor, keeps blocks resident and schedules warps of thirty-two threads. The execution units are reused over time. More blocks enter as resources become available. Register use limits residency, so a bigger block doesn't automatically improve performance.
 
 Sources: [2], [6].
 
-## Slide 5: Image size and transfer overhead (45 seconds)
+## Slide 5: Image size and transfer overhead (30 seconds)
 
-Larger images usually provide more blocks to keep the GPU busy and spread fixed launch overhead across more work. However, the improvement eventually levels off because execution and memory bandwidth are finite. Image transfers also grow with image size, so a fast kernel alone does not guarantee a faster application. A fair comparison includes input transfer, the kernel, output transfer and the setup costs being measured. Speed-up is CPU time divided by GPU total time for the same operation. Keeping several processing stages on the GPU can reduce repeated copies. This presentation makes no measured speed-up claim.
+Larger images usually keep more SMs busy and spread launch overhead across more pixels. Coalesced writes use memory bandwidth efficiently, while rotation's irregular reads can limit performance. Keeping intermediate images on the GPU avoids repeated copies. For a fair speed-up, compare CPU time against the complete GPU time: setup, both transfers and the kernel. Our next step is to measure those stages; we haven't claimed a benchmark result.
 
 Sources: [1], [3], [7].
 
-## Slide 6: GPUDirect Storage and image rotation (40 seconds)
+## Slide 6: GPUDirect Storage and image rotation (30 seconds)
 
-The conventional storage path stages image data in CPU memory before sending it to the GPU. GPUDirect Storage can provide a direct DMA path from supported storage to GPU memory, avoiding that CPU bounce buffer. The CPU still initiates and controls the operation. For a large batch of images, this may help when storage transfer limits throughput and image decoding also fits the GPU pipeline. The benefit may be small for one small image, for data already in RAM, or when decoding must run on the CPU. The conclusion is conditional: measure the complete pipeline and check the storage and software support.
+GPUDirect Storage can transfer data from supported storage into GPU memory through DMA, removing CPU RAM staging. The CPU still controls the I/O. It could help repeated large batches when storage is the bottleneck. It may offer little benefit for small jobs or CPU-only image decoding. So our design separates kernel performance from the complete pipeline. My teammate will now discuss what scaling that computing power means for AI.
 
 Sources: [8], [9].
 
@@ -82,6 +82,18 @@ The GPU schedules logical threads over finite physical hardware. Blocks occupy s
 
 Sources: [2], [6].
 
+### 8. Why might 32 x 8 differ from 16 x 16 when both contain 256 threads?
+
+Both launch eight warps per block. Thread indexing makes x the fastest-changing coordinate, so a 32-wide block spans one output row per warp, while a 16-wide block spans two. This can affect memory transactions, especially row alignment; rotation angle also changes source-read locality. Register use, resident blocks and bandwidth determine the outcome. Neither shape is universally faster. [2, 3, 6]
+
+Sources: [2], [3], [6].
+
+### 9. Does cudaMemcpyAsync guarantee overlap?
+
+No. Pinned host buffers support predictable asynchronous host transfers, non-default streams express independent work, and device copy engines and available resources determine overlap. Operations in one stream remain ordered. Keep buffers alive and wait for the stream or its completion event before reading, reusing or freeing them. [3, 7, 10]
+
+Sources: [3], [7], [10].
+
 ## Proposed rotation routine
 
 ### Representation and parallel ownership
@@ -124,6 +136,10 @@ The bounds check prevents extra threads from accessing invalid output pixels. A 
 
 The proposed benefit is an inference about the complete pipeline, not a benchmark result. A direct storage-to-GPU path can remove CPU-memory staging when the platform supports it. This is promising for repeated large reads and writes where storage I/O is the bottleneck. Compressed images still need decoding: using GDS to load compressed bytes does not itself decode them. CPU-only decoding can reintroduce CPU memory transfers. Check filesystem, storage, GPU, topology, operating system and driver support, and verify whether the actual path is direct or uses a compatibility fallback. [8, 9]
 
+### HD performance comparison: launch, memory and overlap
+
+The provided host launch, brightness kernel and rotation kernel illustrate different CUDA features. The new performance examples compare legal 16 x 16 and 32 x 8 blocks (both 256 threads): x-contiguous output writes can favour a 32-wide x dimension, but registers and memory behaviour determine actual occupancy and performance. Brightness reads corresponding contiguous pixels, while rotation gathers source pixels according to angle; equal thread counts therefore do not imply equal bandwidth efficiency. Pinned host buffers plus cudaMemcpyAsync in a non-default stream permit asynchronous submission. Independent images in separate streams may overlap transfers and kernels if hardware supports it, with additional buffers and host-memory pressure. A single image in one stream still has ordered H2D -> kernel -> D2H dependencies. Keeping multiple processing stages resident removes repeated transfers rather than merely hiding them. Profile end-to-end time and CUDA-event kernel time separately. These are mechanisms and hypotheses, not measured wins. [2, 3, 6, 7, 10]
+
 ## References
 
 [1] Monash University, Introduction to CUDA Programming with Google Colab, Week 9, Parts A-D (supplied notebook). ../../W9/Week 9 Applied/Week 9 Applied/[FIT3143] Introduction to CUDA Programming with Google Colab.ipynb. Accessed 6 October 2026. Course source for the seven reflection questions, RGB brightness and timing setup.
@@ -148,8 +164,8 @@ The proposed benefit is an inference about the complete pipeline, not a benchmar
 
 ## Team presentation and submission
 
-1. Use main slides 1-6 for Task 1. The planned speaking time is exactly 240 seconds. Rehearse aloud because actual speaking time varies.
-2. The additional guidance supplied by the student allocates 4 minutes to Task 1 and 3 minutes to Task 2. The written specification gives indicative allocations of 3 and 4 minutes. This deck follows the newer supplied guidance while preserving the 7-minute total. Confirm the allocation with the teaching team if these notes were not issued by them.
+1. Use main slides 1-6 for Task 1. The planned timing is 180 seconds. Rehearse aloud because actual speaking time varies.
+2. The latest confirmed allocation is three minutes each, six minutes total. This is within the rubric range of six to seven minutes. Leave Q&A outside the prepared script.
 3. When combining the team deck, insert the teammate's Task 2 slides after slide 6, then the shared Q&A slide. Move all clearly labelled Task 1 appendices after the shared Q&A section.
 4. Keep the AI declaration and prompt record in this companion PDF with the final submission. Append later prompts and declarations if further AI assistance is used.
 5. Add both students' names, IDs and Monash email addresses to the final submission. Both students must submit the same team files before the allocated class and attend the assessed session.
@@ -158,7 +174,7 @@ The proposed benefit is an inference about the complete pipeline, not a benchmar
 
 ## AI declaration
 
-I used OpenAI Codex on 6 October 2026 to interpret the assessment specification and marking rubric, locate the supplied CUDA workshop notebook, research NVIDIA documentation, draft Task 1 explanations and speaker notes, prepare editable diagrams, and provide illustrative CUDA code snippets. The generated presentation and companion notes require my own review and understanding. No GPU rotation prototype was compiled or executed, and no CPU/GPU performance measurements were generated. The user prompt records for this preparation session are included below. Student names, IDs and Monash email addresses must be added before submission. Any subsequent AI-assisted work must be declared and its prompt records appended.
+I used OpenAI Codex on 6 October 2026 to interpret the assessment specification and marking rubric, locate the supplied CUDA workshop notebook, research NVIDIA documentation, draft Task 1 explanations and speaker notes, prepare editable diagrams, and provide illustrative CUDA code snippets. The generated presentation and companion notes require my own review and understanding. No GPU rotation prototype was compiled or executed, and no CPU/GPU performance measurements were generated. The user prompt records for this preparation session are included below. Student names, IDs and Monash email addresses must be added before submission. Any subsequent AI-assisted work must be declared and its prompt records appended. A later preparation revision checked the HD criteria, added performance examples and condensed the spoken script to three minutes. The Task 2 PDF records these additional requests.
 
 ## User prompt records
 

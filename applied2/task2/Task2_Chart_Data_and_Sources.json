@@ -1,0 +1,116 @@
+{
+  "chartData": {
+    "electricity": {
+      "categories": [
+        "2025 estimate",
+        "2030 projection"
+      ],
+      "values": [
+        485,
+        950
+      ],
+      "unit": "TWh/year",
+      "scope": "Global electricity consumption of all data centres, including AI and non-AI workloads",
+      "source": "12"
+    },
+    "growth": {
+      "categories": [
+        "All data centres",
+        "AI-focused subset"
+      ],
+      "values": [
+        0.17,
+        0.5
+      ],
+      "unit": "Fractional year-on-year growth in electricity consumption, 2025 compared with 2024",
+      "scope": "Overlapping populations: AI-focused data centres are a subset of all data centres",
+      "source": "12"
+    }
+  },
+  "references": [
+    {
+      "id": "11",
+      "title": "NVIDIA, Megatron Core Parallelism Strategies Guide",
+      "year": "2026 documentation",
+      "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html",
+      "note": "Primary technical documentation for data, tensor and pipeline parallelism and communication considerations."
+    },
+    {
+      "id": "12",
+      "title": "IEA, Key Questions on Energy and AI, Executive summary",
+      "year": "2026",
+      "url": "https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary",
+      "note": "Published 16 April 2026. Reports 485 TWh in 2025, projects 950 TWh in 2030, and gives 17% and 50% electricity-demand growth figures for 2025. CC BY 4.0."
+    },
+    {
+      "id": "13",
+      "title": "IEA, Data centre electricity use surged in 2025",
+      "year": "2026",
+      "url": "https://www.iea.org/news/data-centre-electricity-use-surged-in-2025-even-with-tightening-bottlenecks-driving-a-scramble-for-solutions",
+      "note": "16 April 2026 press release. Explains efficiency, growing AI use, grid bottlenecks and affordability considerations."
+    },
+    {
+      "id": "14",
+      "title": "OECD, AI Principles",
+      "year": "Updated 2024",
+      "url": "https://www.oecd.org/en/topics/ai-principles.html",
+      "note": "Fairness, privacy, transparency, robustness and accountability as policy goals."
+    },
+    {
+      "id": "15",
+      "title": "NIST, AI Risk Management Framework 1.0 Playbook",
+      "year": "2023 framework; current online playbook",
+      "url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "note": "Voluntary suggested actions aligned with Govern, Map, Measure and Manage. The online resource notes that the framework is being updated."
+    },
+    {
+      "id": "16",
+      "title": "NSF, NAIRR at 2 years",
+      "year": "2026",
+      "url": "https://www.nsf.gov/cise/updates/nairr-2-years-advancing-american-artificial-intelligence",
+      "note": "19 March 2026. More than 600 teams and 6,000 students supported since 2024. A US access initiative, not a global participation statistic."
+    },
+    {
+      "id": "17",
+      "title": "A. Radovanovic et al., Carbon-Aware Computing for Datacenters",
+      "year": "2021",
+      "url": "https://arxiv.org/abs/2106.11750",
+      "note": "Primary research describing Google's scheduling of temporally flexible workloads using carbon-intensity forecasts while preserving daily capacity."
+    },
+    {
+      "id": "18",
+      "title": "P. Li et al., Making AI Less Thirsty",
+      "year": "2023 preprint",
+      "url": "https://arxiv.org/abs/2304.03271",
+      "note": "Primary research on water withdrawal/consumption and the spatial and temporal variation of AI water footprints. Used qualitatively, without presenting its model-specific numerical estimates as universal measurements."
+    },
+    {
+      "id": "19",
+      "title": "R. Schwartz et al., Green AI",
+      "year": "2019 position paper",
+      "url": "https://arxiv.org/abs/1907.10597",
+      "note": "Proposes evaluating efficiency and reporting financial cost alongside accuracy. Use as a policy argument, not a current electricity forecast."
+    },
+    {
+      "id": "20",
+      "title": "N. Ahmed and M. Wahed, The De-democratization of AI",
+      "year": "2020 research preprint",
+      "url": "https://arxiv.org/abs/2010.15581",
+      "note": "Studies conference participation and the compute divide. Historical evidence from its dataset, not a 2026 global access census."
+    },
+    {
+      "id": "21",
+      "title": "I. O. Gallegos et al., Bias and Fairness in Large Language Models: A Survey",
+      "year": "2024 revised survey; Computational Linguistics",
+      "url": "https://arxiv.org/abs/2309.00770",
+      "note": "Separates fairness metrics, evaluation datasets and mitigation stages. Fairness must be evaluated for specific harms and groups."
+    },
+    {
+      "id": "22",
+      "title": "L. Zhu, Z. Liu and S. Han, Deep Leakage from Gradients",
+      "year": "2019 research paper",
+      "url": "https://arxiv.org/abs/1906.08935",
+      "note": "Demonstrates input reconstruction from shared gradients under experimental conditions. Does not show that every production all-reduce is compromised."
+    }
+  ]
+}
