@@ -13,7 +13,7 @@ do
     echo "Testing OpenMP: n=$n, threads=$THREADS"
     echo "======================================"
 
-    output=$(./task3_benchmark --benchmark "$n" "$THREADS")
+    output=$(./build/task3_benchmark --benchmark "$n" "$THREADS")
 
     openmp_time=$(echo "$output" | awk '/Overall wall-clock time:/ {print $4}')
 

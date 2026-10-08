@@ -37,6 +37,7 @@
 #define MAX_THREAD_COUNT 1024
 #define TERMINAL_OUTPUT_LIMIT 100
 #define OUTPUT_FILE_BASENAME "task3_primes.txt"
+#define OUTPUT_BUFFER_SIZE (1U << 20)
 
 typedef struct {
     unsigned char *is_prime;
@@ -551,6 +552,12 @@ static int save_primes(const char *output_path,
         return 0;
     }
 
+    char *output_buffer = malloc(OUTPUT_BUFFER_SIZE);
+
+    if (output_buffer != NULL) {
+        (void)setvbuf(output, output_buffer, _IOFBF, OUTPUT_BUFFER_SIZE);
+    }
+
     if (limit > 2 &&
         fprintf(output, "2\n") < 0) {
         write_ok = 0;
@@ -571,6 +578,8 @@ static int save_primes(const char *output_path,
     if (fclose(output) == EOF) {
         write_ok = 0;
     }
+
+    free(output_buffer);
 
     if (!write_ok) {
         fputs("Error: failed while writing the prime output file.\n",

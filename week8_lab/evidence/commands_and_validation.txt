@@ -1,0 +1,14 @@
+Representative inspectable-output evidence
+Configuration: n=10000, MPI processes=4, Task 2 threads/process=2
+
+Task 1:
+mpirun --allow-run-as-root --bind-to none --oversubscribe -np 4 ./build/task1 10000 --strategy block-cyclic --benchmark
+
+Task 2:
+mpirun --allow-run-as-root --bind-to none --oversubscribe -np 4 ./build/task2 10000 2
+
+Validation performed after both commands:
+cmp -s evidence/task1_primes_n10000.txt evidence/task2_primes_n10000.txt
+
+PASS: both actual output files are byte-identical and each exactly matches an
+independent sieve containing 1,229 sorted primes strictly below 10,000.

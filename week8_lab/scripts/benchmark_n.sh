@@ -5,6 +5,11 @@ set -e
 RESULT_FILE="results/n_scaling.csv"
 PROCESSES=4
 
+MPI_RUN=(mpirun --bind-to none --oversubscribe)
+if [ "$(id -u)" -eq 0 ]; then
+    MPI_RUN+=(--allow-run-as-root)
+fi
+
 echo "n,processes,serial_time,mpi_time,speedup,efficiency" > "$RESULT_FILE"
 
 for n in $(seq 20000000 2000000 78000000)
@@ -19,7 +24,7 @@ do
     # ---------------------------
 
     serial_output=$(
-        ./task1_serial --benchmark "$n"
+        ./build/task1_serial --benchmark "$n"
     )
 
     serial_time=$(
@@ -30,13 +35,13 @@ do
     echo "Serial: $serial_time s"
 
     # ---------------------------
-    # MPI - cyclic
+    # MPI - block-cyclic
     # ---------------------------
 
     mpi_output=$(
-        mpirun -np "$PROCESSES" \
-        ./task1 "$n" \
-        --strategy cyclic \
+        "${MPI_RUN[@]}" -np "$PROCESSES" \
+        ./build/task1 "$n" \
+        --strategy block-cyclic \
         --benchmark
     )
 

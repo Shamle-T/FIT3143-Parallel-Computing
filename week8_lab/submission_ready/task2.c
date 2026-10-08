@@ -5,21 +5,6 @@
  * kernel as the Week 4 implementations. Open MPI distributes candidates
  * across processes and OpenMP parallelises each process's local work.
  *
- * Workload design:
- * - Only odd candidates are tested; 2 is handled separately.
- * - MPI uses block-cyclic distribution of short odd-candidate chunks. This
- *   gives every rank a mix of low- and high-valued candidates without the
- *   residue-class bias that pure one-candidate cyclic ownership can create
- *   when the process count has an odd factor.
- * - OpenMP uses dynamic scheduling inside each MPI process to smooth the
- *   remaining variation between cheap composite tests and expensive prime
- *   tests.
- * - Each rank compacts only its prime values before communication. Rank 0
- *   gathers these sorted local lists with MPI_Gatherv and performs a k-way
- *   merge in O(number_of_primes * log(number_of_processes)) while writing the
- *   final sorted output. This avoids gathering all candidate flags and avoids
- *   a full O(m log m) qsort on the root.
- *
  * Team members:
  * - Savin Vindiv De Alwis, 35221631, sdea0018@student.monash.edu
  * - Willwara Arachchilage Shamle Imal Thilaksiri, 35512075,
@@ -77,8 +62,7 @@ static int parse_uint64(const char *text, const char *name, uint64_t minimum,
 static size_t odd_candidate_count(uint64_t limit);
 static size_t block_cyclic_candidate_count(size_t odd_count, int rank,
                                            int process_count);
-static size_t global_odd_index(size_t local_index, int rank,
-                               int process_count);
+static size_t global_odd_index(size_t local_index, int rank, int process_count);
 static uint64_t odd_value(size_t global_index);
 static int is_prime_by_trial_division(uint64_t candidate);
 static int compute_local_primes(int rank, int process_count, int thread_count,
@@ -139,9 +123,10 @@ int main(int argc, char *argv[]) {
 
   if (provided_thread_level < MPI_THREAD_FUNNELED) {
     if (rank == ROOT_RANK) {
-      fputs("Error: the MPI implementation does not provide MPI_THREAD_FUNNELED "
-            "support required by this hybrid program.\n",
-            stderr);
+      fputs(
+          "Error: the MPI implementation does not provide MPI_THREAD_FUNNELED "
+          "support required by this hybrid program.\n",
+          stderr);
     }
     MPI_Finalize();
     return EXIT_FAILURE;
@@ -181,8 +166,8 @@ int main(int argc, char *argv[]) {
       block_cyclic_candidate_count(odd_count, rank, process_count);
 
   if (local_result.candidate_count > 0) {
-    local_result.is_prime = malloc(local_result.candidate_count *
-                                   sizeof(*local_result.is_prime));
+    local_result.is_prime =
+        malloc(local_result.candidate_count * sizeof(*local_result.is_prime));
     local_ok = local_result.is_prime != NULL;
   }
   if (!all_processes_ok(local_ok, communicator)) {
@@ -232,8 +217,8 @@ int main(int argc, char *argv[]) {
         malloc((size_t)process_count * sizeof(*per_rank_compute_seconds));
     per_rank_candidate_counts =
         malloc((size_t)process_count * sizeof(*per_rank_candidate_counts));
-    local_ok = per_rank_compute_seconds != NULL &&
-               per_rank_candidate_counts != NULL;
+    local_ok =
+        per_rank_compute_seconds != NULL && per_rank_candidate_counts != NULL;
   } else {
     local_ok = 1;
   }
@@ -250,9 +235,8 @@ int main(int argc, char *argv[]) {
   {
     uint64_t local_candidate_count = (uint64_t)local_result.candidate_count;
 
-    MPI_Gather(&local_compute_seconds, 1, MPI_DOUBLE,
-               per_rank_compute_seconds, 1, MPI_DOUBLE, ROOT_RANK,
-               communicator);
+    MPI_Gather(&local_compute_seconds, 1, MPI_DOUBLE, per_rank_compute_seconds,
+               1, MPI_DOUBLE, ROOT_RANK, communicator);
     MPI_Gather(&local_candidate_count, 1, MPI_UINT64_T,
                per_rank_candidate_counts, 1, MPI_UINT64_T, ROOT_RANK,
                communicator);
@@ -329,9 +313,10 @@ int main(int argc, char *argv[]) {
 
   if (!gather_ok) {
     if (rank == ROOT_RANK) {
-      fputs("Error: gathered result exceeds MPI_Gatherv's int count/displacement "
-            "range or root result allocation failed.\n",
-            stderr);
+      fputs(
+          "Error: gathered result exceeds MPI_Gatherv's int count/displacement "
+          "range or root result allocation failed.\n",
+          stderr);
     }
     exit_code = EXIT_FAILURE;
     goto cleanup;
@@ -380,13 +365,12 @@ int main(int argc, char *argv[]) {
     printf("Maximum computation time: %.9f seconds\n", max_compute_seconds);
     printf("Minimum computation time: %.9f seconds\n", min_compute_seconds);
     printf("Maximum gather time: %.9f seconds\n", max_gather_seconds);
-    printf("Root merge + file-write time: %.9f seconds\n",
-           merge_write_seconds);
+    printf("Root merge + file-write time: %.9f seconds\n", merge_write_seconds);
     printf("Per-rank computation balance:\n");
     for (int process_index = 0; process_index < process_count;
          ++process_index) {
-      printf("  Rank %d: %" PRIu64 " candidates, %.9f seconds\n",
-             process_index, per_rank_candidate_counts[process_index],
+      printf("  Rank %d: %" PRIu64 " candidates, %.9f seconds\n", process_index,
+             per_rank_candidate_counts[process_index],
              per_rank_compute_seconds[process_index]);
     }
     if (min_compute_seconds > 0.0) {
@@ -457,8 +441,7 @@ static int parse_uint64(const char *text, const char *name, uint64_t minimum,
     return 0;
   }
   if ((uint64_t)parsed < minimum || (uint64_t)parsed > maximum) {
-    fprintf(stderr, "Error: %s must be between %" PRIu64 " and %" PRIu64
-                    ".\n",
+    fprintf(stderr, "Error: %s must be between %" PRIu64 " and %" PRIu64 ".\n",
             name, minimum, maximum);
     return 0;
   }
@@ -496,8 +479,8 @@ static size_t global_odd_index(size_t local_index, int rank,
   size_t local_block = local_index / chunk;
   size_t offset_in_block = local_index % chunk;
 
-  return local_block * chunk * (size_t)process_count +
-         (size_t)rank * chunk + offset_in_block;
+  return local_block * chunk * (size_t)process_count + (size_t)rank * chunk +
+         offset_in_block;
 }
 
 static uint64_t odd_value(size_t global_index) {
@@ -539,9 +522,9 @@ static int compute_local_primes(int rank, int process_count, int thread_count,
     return 1;
   }
 
-#pragma omp parallel for default(none)                                        \
-    shared(is_prime, local_count, rank, process_count)                        \
-    num_threads(thread_count) schedule(dynamic, OMP_DYNAMIC_CHUNK)            \
+#pragma omp parallel for default(none)                                         \
+    shared(is_prime, local_count, rank, process_count)                         \
+    num_threads(thread_count) schedule(dynamic, OMP_DYNAMIC_CHUNK)             \
     reduction(+ : local_prime_count)
   for (local_index = 0; local_index < local_count; ++local_index) {
     size_t global_index = global_odd_index(local_index, rank, process_count);
@@ -647,8 +630,8 @@ static int merge_and_save_primes(const char *output_path, uint64_t limit,
 
       next_node.rank = node.rank;
       next_node.local_position = next_position;
-      next_node.value = gathered_primes[receive_displacements[node.rank] +
-                                          next_position];
+      next_node.value =
+          gathered_primes[receive_displacements[node.rank] + next_position];
       heap_push(heap, &heap_size, next_node);
     }
   }

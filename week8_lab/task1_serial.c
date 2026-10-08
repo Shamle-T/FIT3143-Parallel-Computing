@@ -35,6 +35,7 @@
 
 #define TERMINAL_OUTPUT_LIMIT 100
 #define OUTPUT_FILE_BASENAME "task1_serial_primes.txt"
+#define OUTPUT_BUFFER_SIZE (1U << 20)
 
 typedef struct {
     unsigned char *is_prime;
@@ -636,6 +637,18 @@ static int save_primes(
         return 0;
     }
 
+    char *output_buffer =
+        malloc(OUTPUT_BUFFER_SIZE);
+
+    if (output_buffer != NULL) {
+        (void)setvbuf(
+            output,
+            output_buffer,
+            _IOFBF,
+            OUTPUT_BUFFER_SIZE
+        );
+    }
+
     int write_ok = 1;
 
     /*
@@ -671,6 +684,8 @@ static int save_primes(
     if (fclose(output) == EOF) {
         write_ok = 0;
     }
+
+    free(output_buffer);
 
     if (!write_ok) {
 

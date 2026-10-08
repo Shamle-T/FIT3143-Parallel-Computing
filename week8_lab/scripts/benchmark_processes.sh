@@ -5,11 +5,16 @@ set -e
 RESULT_FILE="results/process_scaling.csv"
 N=60000000
 
+MPI_RUN=(mpirun --bind-to none --oversubscribe)
+if [ "$(id -u)" -eq 0 ]; then
+    MPI_RUN+=(--allow-run-as-root)
+fi
+
 echo "n,processes,serial_time,mpi_time,speedup,efficiency" > "$RESULT_FILE"
 
 echo "Running serial baseline..."
 
-serial_output=$(./task1_serial --benchmark "$N")
+serial_output=$(./build/task1_serial --benchmark "$N")
 serial_time=$(echo "$serial_output" | awk '/Overall wall-clock time:/ {print $4}')
 
 if [ -z "$serial_time" ]; then
@@ -26,8 +31,8 @@ do
     echo "======================================"
 
     mpi_output=$(
-        mpirun --use-hwthread-cpus -np "$p" \
-        ./task1 "$N" --strategy cyclic --benchmark
+        "${MPI_RUN[@]}" -np "$p" \
+        ./build/task1 "$N" --strategy block-cyclic --benchmark
     )
 
     mpi_time=$(echo "$mpi_output" | awk '/Overall wall-clock time:/ {print $4}')

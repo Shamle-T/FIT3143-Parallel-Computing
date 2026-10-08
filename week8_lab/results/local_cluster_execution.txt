@@ -1,0 +1,64 @@
+FIT3143 Week 8 local Open MPI execution evidence
+UTC timestamp: 2026-09-17T21:31:51Z
+
+Environment
+Linux Savins-Zenbook 5.15.167.4-microsoft-standard-WSL2 #1 SMP Tue Nov 5 00:21:55 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+
+CPU summary
+Model name:                           13th Gen Intel(R) Core(TM) i7-13700H
+Socket(s):                            1
+
+MPI runtime
+mpirun (Open MPI) 4.1.6
+
+
+Configuration: nodes=1, MPI processes=4, OpenMP threads/process=2, total workers=8, n=60000000
+
+Task 1 command
+mpirun --bind-to none --oversubscribe --allow-run-as-root -np 4 ./build/task1 60000000 --strategy block-cyclic --benchmark 
+Task 1 output
+
+Implementation: Open MPI
+Input limit: 60000000
+MPI processes: 4
+Workload strategy: block-cyclic
+Prime count: 3562115
+Candidates tested: 29999999
+Candidates per rank (min/max): 7499968 / 7500032
+Computation time (min): 6.446391763 seconds
+Computation time (avg): 6.472272461 seconds
+Computation time (max): 6.507284039 seconds
+Maximum result-gather time: 0.077168010 seconds
+Root merge + file-write time: 0.441344567 seconds
+Per-rank computation balance:
+  Rank 0: 7500032 candidates, 6.477283027 seconds
+  Rank 1: 7500031 candidates, 6.458131015 seconds
+  Rank 2: 7499968 candidates, 6.507284039 seconds
+  Rank 3: 7499968 candidates, 6.446391763 seconds
+Computation imbalance (max/min): 1.009446
+Overall wall-clock time: 6.965236173 seconds
+Output file: task1_mpi_primes.txt
+PASS: task1_mpi_primes.txt contains 3562115 sorted primes strictly below 60000000.
+
+Task 2 command
+mpirun --bind-to none --oversubscribe --allow-run-as-root -np 4 ./build/task2 60000000 2 
+Task 2 output
+Implementation: hybrid Open MPI + OpenMP
+Input limit: 60000000
+MPI processes: 4
+OpenMP threads per process: 2
+Total worker threads: 8
+Prime count: 3562115
+Maximum computation time: 4.684564425 seconds
+Minimum computation time: 4.567319982 seconds
+Maximum gather time: 0.015128345 seconds
+Root merge + file-write time: 0.460642709 seconds
+Per-rank computation balance:
+  Rank 0: 7500032 candidates, 4.662560820 seconds
+  Rank 1: 7500031 candidates, 4.567319982 seconds
+  Rank 2: 7499968 candidates, 4.684564425 seconds
+  Rank 3: 7499968 candidates, 4.668692144 seconds
+Computation imbalance (max/min): 1.025670
+Overall wall-clock time: 5.160690281 seconds
+Primes written to task2_primes.txt
+PASS: task2_primes.txt contains 3562115 sorted primes strictly below 60000000.
