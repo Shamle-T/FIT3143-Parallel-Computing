@@ -1,0 +1,39 @@
+{
+  "prompts": [
+    {
+      "date": "8 October 2026",
+      "title": "Brief presentation AI declaration",
+      "text": "You do not need to individually identify every single prompt asked in the AI declaration on the presentation. Replace all of this with just one slide, which states which AI models were used and how they were used, briefly. That's it. Remove all the slides where you've just listed the prompts that I gave you. "
+    },
+    {
+      "date": "8 October 2026",
+      "title": "Website references only",
+      "text": "From the references, remove any references to local content in the context folder. Only include references to websites."
+    },
+    {
+      "date": "8 October 2026",
+      "title": "Essential evidence beside each answer",
+      "text": "Review all of the content in the slides. If there are any diagrams or equations or calculations or code or anything else that's crucial or a core part of the answer to one of the Task 1 or 2 questions, move it from the appendix and directly put it in the answer in the slide that contains the answer to that section."
+    },
+    {
+      "date": "8 October 2026",
+      "title": "Reference pagination",
+      "text": "move reference 17 on page 40 to page 39, adjust spacing to make room for it"
+    },
+    {
+      "date": "8 October 2026",
+      "title": "Seven-minute presentation path",
+      "text": "I need to be able to fit the entire slides before the appendix. So from the start until the conclusion in a seven-minute presentation. So try and ensure that only the most crucial content required for each of the answers to Task 1 and Task 2 is present in the first couple of slides, and anything that is non-crucial and supporting evidence can be moved to the appendix, as the appendix does not need to be presented. Make sure you don't cut down on any content. There's no limit to the number of slides; you can have as much content in the appendix as necessary. It's just that the first couple of slides, the ones that need to be presented, should be able to present within seven minutes."
+    },
+    {
+      "date": "8 October 2026",
+      "title": "Conversational speaking script",
+      "text": "Now generate a script. It shouldn't sound too formal. It should be in speaking language for the presentation."
+    },
+    {
+      "date": "8 October 2026",
+      "title": "Submission packaging and push",
+      "text": "Place all materials that need to be submitted inside of one folder, inside the Applied To folder, and then push the changes."
+    }
+  ]
+}

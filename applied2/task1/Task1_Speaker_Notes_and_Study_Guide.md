@@ -1,241 +1,816 @@
-# Task 1: Image rotation with CUDA
-
-Prepared 6 October 2026. Use main slides 1-6 for a three-minute Task 1 presentation.
-
-## Slide 1: Image rotation with CUDA (30 seconds)
-
-I'll explain how we'd rotate a large image using CUDA. The CPU, or host, loads and decodes the image, allocates buffers and launches the work. The GPU, or device, calculates the output pixels. In this design, system RAM and GPU memory are separate. We copy the pixels across PCIe using a host-to-device cudaMemcpy, then copy the result back. Those transfers take time, even when the rotation kernel is fast.
-
-Sources: [1], [2], [3].
-
-## Slide 2: One thread computes one output pixel (35 seconds)
-
-Brightness is data-parallel because each pixel gets the same independent adjustment. Rotation also gives each thread independent work, but the source position changes. We start with an output pixel and map backwards to its source, so every destination gets written. Here, that produces a ninety-degree counterclockwise rotation. We use nearest-neighbour sampling, keep the original dimensions and fill uncovered pixels with black. It's simple, but diagonal edges can look jagged and corners can be cropped.
-
-Sources: [1], [4], [5].
-
-## Slide 3: Threads, blocks and the image grid (30 seconds)
-
-CUDA organises threads into blocks, and blocks into a grid. The launch here specifies both. For a one-thousand-and-twenty-four square image, sixteen-by-sixteen threads gives two hundred and fifty-six threads per block. We need sixty-four-by-sixty-four blocks: four thousand and ninety-six blocks, launching just over one million threads. Our bounds check handles images that don't divide evenly by sixteen.
-
-Sources: [1], [2].
-
-## Slide 4: Millions of threads share finite hardware (25 seconds)
-
-That doesn't mean we need a million CUDA cores. An SM, or streaming multiprocessor, keeps blocks resident and schedules warps of thirty-two threads. The execution units are reused over time. More blocks enter as resources become available. Register use limits residency, so a bigger block doesn't automatically improve performance.
-
-Sources: [2], [6].
-
-## Slide 5: Image size and transfer overhead (30 seconds)
-
-Larger images usually keep more SMs busy and spread launch overhead across more pixels. Coalesced writes use memory bandwidth efficiently, while rotation's irregular reads can limit performance. Keeping intermediate images on the GPU avoids repeated copies. For a fair speed-up, compare CPU time against the complete GPU time: setup, both transfers and the kernel. Our next step is to measure those stages; we haven't claimed a benchmark result.
-
-Sources: [1], [3], [7].
-
-## Slide 6: GPUDirect Storage and image rotation (30 seconds)
-
-GPUDirect Storage can transfer data from supported storage into GPU memory through DMA, removing CPU RAM staging. The CPU still controls the I/O. It could help repeated large batches when storage is the bottleneck. It may offer little benefit for small jobs or CPU-only image decoding. So our design separates kernel performance from the complete pipeline. My teammate will now discuss what scaling that computing power means for AI.
-
-Sources: [8], [9].
-
-## Part D: Reflection answers
-
-### 1. What is the role of the host and device in CUDA?
-
-The host CPU manages the application, loads or decodes files, allocates memory, arranges transfers and launches kernels. The device GPU executes the parallel kernel on image pixels. In a conventional discrete-GPU setup they have separate memories, so the host transfers input pixels to device memory and retrieves the result. Unified memory and integrated systems are alternatives, but are outside the illustrated pipeline.
-
-Sources: [1], [2], [3].
-
-### 2. How are threads organised into blocks and grids?
-
-A thread is one kernel instance. Threads form blocks, and blocks form the grid for one launch. A 2D grid and 2D blocks match an image naturally. The global coordinates are x = blockIdx.x * blockDim.x + threadIdx.x and y = blockIdx.y * blockDim.y + threadIdx.y. A block executes on one streaming multiprocessor. Blocks may run in any order. Threads within a block can use shared memory and block synchronisation when an algorithm needs them.
-
-Sources: [1], [2].
-
-### 3. Why is brightness adjustment a data-parallel problem?
-
-For each colour channel, output = clamp(input + brightness, 0, 255). Every output pixel depends only on its own input pixel and the same brightness constant. Threads therefore perform the same operation on different data without reading each other's results. Use a wider integer for the addition before clipping so that an unsigned 8-bit value does not wrap. The workshop uses an RGB pixel per thread and loops over its three channels.
-
-Sources: [1].
-
-### 4. Why does GPU acceleration generally improve as image size increases?
-
-More pixels supply more independent work and blocks, which improves utilisation when a small image leaves some execution resources idle. Fixed launch and setup costs also become smaller per pixel. This trend has limits: after the GPU is well occupied, memory bandwidth or compute throughput dominates. Transfer costs scale with image size too. The speed-up can level off and need not increase monotonically. CPU and GPU implementations must perform equivalent work.
-
-Sources: [1], [3], [7].
-
-### 5. What overhead comes from CPU-GPU memory transfers?
-
-Transfers take time, use PCIe and memory bandwidth, and can require synchronisation. Pageable host buffers may require staging in pinned memory. For a simple per-pixel operation, this cost can be larger than the kernel time. Include both host-to-device and device-to-host copies in an end-to-end comparison. Reusing GPU buffers and keeping intermediate data on the GPU reduces repeated work. Pinned memory with asynchronous copies and suitable hardware can support overlap in a more advanced pipeline.
-
-Sources: [1], [3], [7], [10].
-
-### 6. How many threads launch for a 1024 x 1024 image with 16 x 16 blocks?
-
-Grid dimensions: ceil(1024 / 16) x ceil(1024 / 16) = 64 x 64. Total blocks: 64 x 64 = 4,096. Threads per block: 16 x 16 = 256. Total threads: 4,096 x 256 = 1,048,576. With one thread per output pixel, this exactly matches the pixel count. There are 256 / 32 = 8 warps per block and 32,768 warps across the complete launch. These are launched totals, not counts simultaneously executing.
-
-Sources: [1], [2], [6].
-
-### 7. How can thousands of CUDA cores process millions of image pixels?
-
-The GPU schedules logical threads over finite physical hardware. Blocks occupy streaming multiprocessors subject to available registers, shared memory and thread limits. Schedulers issue ready warp instructions onto execution units. As work finishes, resources become available for more blocks. A core can therefore participate in work for many different logical threads over time. There is no permanent one-thread-to-one-core mapping and no requirement for all pixels to execute at once.
-
-Sources: [2], [6].
-
-### 8. Why might 32 x 8 differ from 16 x 16 when both contain 256 threads?
-
-Both launch eight warps per block. Thread indexing makes x the fastest-changing coordinate, so a 32-wide block spans one output row per warp, while a 16-wide block spans two. This can affect memory transactions, especially row alignment; rotation angle also changes source-read locality. Register use, resident blocks and bandwidth determine the outcome. Neither shape is universally faster. [2, 3, 6]
-
-Sources: [2], [3], [6].
-
-### 9. Does cudaMemcpyAsync guarantee overlap?
-
-No. Pinned host buffers support predictable asynchronous host transfers, non-default streams express independent work, and device copy engines and available resources determine overlap. Operations in one stream remain ordered. Keep buffers alive and wait for the stream or its completion event before reading, reusing or freeing them. [3, 7, 10]
-
-Sources: [3], [7], [10].
-
-## Proposed rotation routine
-
-### Representation and parallel ownership
-
-Assume an RGB image stored as a contiguous array of unsigned 8-bit channels. Use width W, height H and three channels. Each output pixel owns one thread, which reads from an immutable input buffer and writes one unique location in a separate output buffer. Multiple threads may read the same source pixel safely. The student selected a fixed output canvas of W x H pixels with black fill for uncovered pixels.
-
-### Host and device memory details
-
-System RAM may use DDR memory, while discrete GPU memory may use GDDR or HBM, depending on hardware. For this conventional design, load and decode the image into host RAM, allocate device buffers with cudaMalloc, copy pixels with cudaMemcpy(..., cudaMemcpyHostToDevice), launch the rotation, then retrieve the result with cudaMemcpy(..., cudaMemcpyDeviceToHost). PCIe and DMA/copy engines carry data between the separate memories. The CPU configures and controls the transfers; it need not copy each byte itself. Pinned host memory can avoid an extra pageable-memory staging copy. Use allocation, copy and cleanup API error checks in a full implementation. [2, 3, 7, 10]
-
-### Rotation about the centre
-
-For standard Cartesian coordinates with y pointing upward, forward counterclockwise rotation is x' = x cos(theta) - y sin(theta), y' = x sin(theta) + y cos(theta). Translate a point by the centre before rotating and translate it back afterwards. Inverse mapping starts with an output coordinate and uses the inverse transform to find its source. It assigns every output pixel rather than scattering source pixels to destinations, which can leave holes or create write collisions.
-
-### Image coordinates and the inverse formula
-
-Images typically use x to the right and y downward. For a visually counterclockwise positive angle theta, with cx = (W - 1) / 2 and cy = (H - 1) / 2, use sx = cos(theta)*(x-cx) - sin(theta)*(y-cy) + cx and sy = sin(theta)*(x-cx) + cos(theta)*(y-cy) + cy. These are inverse equations in image coordinates. The CPU computes sin(theta) and cos(theta) once and passes them to the kernel. Do not insert the Cartesian forward equations unchanged into a y-down image kernel.
-
-### Sampling and canvas choice
-
-Nearest-neighbour sampling rounds the source coordinate to the closest pixel index. If that index is valid, copy its RGB channels; otherwise write black. This is easy to explain but can look jagged. Bilinear interpolation is a future improvement: each output pixel combines up to four neighbouring input pixels, and still writes only its own result. With a fixed canvas, some rotated corners can be cropped. An expanded output canvas is an alternative if preserving all content matters.
-
-### Complexity
-
-For a fixed channel count, each output pixel takes constant work, so total work is O(W*H). Input and output storage are each O(W*H). GPU execution time is not O(1): finite execution resources, memory traffic, scheduling and transfer costs still grow with the amount of work. Nearest-neighbour and bilinear rotation both have O(W*H) total work, with different constant costs and quality.
-
-### Edge cases to reason through
-
-Check zero-size or null inputs before allocation, non-square images, angles 0/90/180/360 degrees, negative angles, and image sizes that are not multiples of 16. The kernel must reject threads outside the output dimensions. Check source indices after rounding. Large images need checked size calculations and enough GPU memory for both buffers. A full implementation must account for row pitch, channel format, alpha channels, CUDA API errors and kernel-launch errors.
-
-### Performance measurement plan
-
-Use the same image, angle, sampling rule, canvas and precision for CPU and GPU. Warm up the CUDA context and any JIT compilation before steady-state timings, and report what setup costs are included. Synchronise when timing asynchronous GPU work or use CUDA events for device timing. Measure allocation/setup, H2D transfer, kernel and D2H transfer separately and report the complete total. Exclude disk I/O from both paths or include it in both. The provided notebook measures brightness, not rotation, and its timed GPU total excludes the d_output allocation placed outside the timing intervals. Do not present those brightness results as rotation measurements.
-
-### Performance choices in the examples
-
-The bounds check prevents extra threads from accessing invalid output pixels. A 16 x 16 block is a useful teaching choice with eight full warps, but it is not guaranteed to be the fastest size. Compare legal block sizes when profiling; register usage, shared-memory use and occupancy affect how many blocks can reside on an SM. Contiguous output pixels encourage coalesced writes. Rotation can create less regular source reads, and bilinear interpolation adds read traffic. Keeping intermediate images on the GPU can avoid repeated H2D/D2H copies. These are performance hypotheses to assess, not measurements. [2, 3, 6, 7]
-
-### GPUDirect Storage judgement
-
-The proposed benefit is an inference about the complete pipeline, not a benchmark result. A direct storage-to-GPU path can remove CPU-memory staging when the platform supports it. This is promising for repeated large reads and writes where storage I/O is the bottleneck. Compressed images still need decoding: using GDS to load compressed bytes does not itself decode them. CPU-only decoding can reintroduce CPU memory transfers. Check filesystem, storage, GPU, topology, operating system and driver support, and verify whether the actual path is direct or uses a compatibility fallback. [8, 9]
-
-### HD performance comparison: launch, memory and overlap
-
-The provided host launch, brightness kernel and rotation kernel illustrate different CUDA features. The new performance examples compare legal 16 x 16 and 32 x 8 blocks (both 256 threads): x-contiguous output writes can favour a 32-wide x dimension, but registers and memory behaviour determine actual occupancy and performance. Brightness reads corresponding contiguous pixels, while rotation gathers source pixels according to angle; equal thread counts therefore do not imply equal bandwidth efficiency. Pinned host buffers plus cudaMemcpyAsync in a non-default stream permit asynchronous submission. Independent images in separate streams may overlap transfers and kernels if hardware supports it, with additional buffers and host-memory pressure. A single image in one stream still has ordered H2D -> kernel -> D2H dependencies. Keeping multiple processing stages resident removes repeated transfers rather than merely hiding them. Profile end-to-end time and CUDA-event kernel time separately. These are mechanisms and hypotheses, not measured wins. [2, 3, 6, 7, 10]
-
-## References
-
-[1] Monash University, Introduction to CUDA Programming with Google Colab, Week 9, Parts A-D (supplied notebook). ../../W9/Week 9 Applied/Week 9 Applied/[FIT3143] Introduction to CUDA Programming with Google Colab.ipynb. Accessed 6 October 2026. Course source for the seven reflection questions, RGB brightness and timing setup.
-
-[2] NVIDIA, CUDA Programming Guide, Programming Model. https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html. Accessed 6 October 2026. Host/device roles, kernel configuration, blocks and grids.
-
-[3] NVIDIA, CUDA C++ Best Practices Guide, Heterogeneous Computing. https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#heterogeneous-computing. Accessed 6 October 2026. Parallel work, memory transfers and measuring complete cost.
-
-[4] Monash University, Applied #2 Assessment Specification and Applied #2 Rubric (supplied PDFs). ../Applied #2 - Assessment Specification.pdf. Accessed 6 October 2026. Task 1 parts (a)-(c), diagrams, marking criteria and submission instructions.
-
-[5] NVIDIA, NPP Image Geometry Transforms, Rotate. https://docs.nvidia.com/cuda/archive/13.0.3/npp/image_geometry_transforms.html#rotate. Accessed 6 October 2026. An established CUDA image-processing library with rotation, shifts and interpolation parameters.
-
-[6] NVIDIA, CUDA C++ Programming Guide, SIMT Architecture and Hardware Multithreading. https://docs.nvidia.com/cuda/archive/13.0.0/cuda-c-programming-guide/index.html#simt-architecture. Accessed 6 October 2026. 32-thread warps, streaming multiprocessors and scheduling.
-
-[7] NVIDIA, CUDA C++ Best Practices Guide, Data Transfer Between Host and Device. https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#data-transfer-between-host-and-device. Accessed 6 October 2026. Transfer cost, pinned memory and overlap considerations.
-
-[8] NVIDIA, GPUDirect Storage Overview Guide. https://docs.nvidia.com/gpudirect-storage/overview-guide/index.html. Accessed 6 October 2026. Direct DMA path and CPU bounce-buffer avoidance.
-
-[9] NVIDIA, GPUDirect Storage Design Guide. https://docs.nvidia.com/gpudirect-storage/design-guide/index.html. Accessed 6 October 2026. Pipeline bottlenecks, topology and applicability.
-
-[10] NVIDIA, CUDA API Synchronization Behavior. https://docs.nvidia.com/cuda/cuda-driver-api/api-sync-behavior.html. Accessed 6 October 2026. Pageable/pinned memory staging and synchronisation caveats.
-
-## Team presentation and submission
-
-1. Use main slides 1-6 for Task 1. The planned timing is 180 seconds. Rehearse aloud because actual speaking time varies.
-2. The latest confirmed allocation is three minutes each, six minutes total. This is within the rubric range of six to seven minutes. Leave Q&A outside the prepared script.
-3. When combining the team deck, insert the teammate's Task 2 slides after slide 6, then the shared Q&A slide. Move all clearly labelled Task 1 appendices after the shared Q&A section.
-4. Keep the AI declaration and prompt record in this companion PDF with the final submission. Append later prompts and declarations if further AI assistance is used.
-5. Add both students' names, IDs and Monash email addresses to the final submission. Both students must submit the same team files before the allocated class and attend the assessed session.
-6. Study the seven reflection answers and the rotation decisions. The assessment prohibits AI tools during the presentation and oral interview.
-7. The CUDA examples are illustrative source snippets, not a compiled or benchmarked prototype. The diagram examples and thread counts are explanatory calculations. No hardware speed-up results are claimed.
-
-## AI declaration
-
-I used OpenAI Codex on 6 October 2026 to interpret the assessment specification and marking rubric, locate the supplied CUDA workshop notebook, research NVIDIA documentation, draft Task 1 explanations and speaker notes, prepare editable diagrams, and provide illustrative CUDA code snippets. The generated presentation and companion notes require my own review and understanding. No GPU rotation prototype was compiled or executed, and no CPU/GPU performance measurements were generated. The user prompt records for this preparation session are included below. Student names, IDs and Monash email addresses must be added before submission. Any subsequent AI-assisted work must be declared and its prompt records appended. A later preparation revision checked the HD criteria, added performance examples and condensed the spoken script to three minutes. The Task 2 PDF records these additional requests.
-
-## User prompt records
-
-### Prompt 1: Student mentoring instructions
-
-```text
-# AGENTS.md instructions
-
-<INSTRUCTIONS>
-"You are an expert computer science professor and senior software engineer acting as a student mentor.Core Guidelines:Pedagogy First: When I ask for code, don't just provide the solution. Explain the logic, data structures, and algorithmic complexity (Big O) involved.Focus on Fundamentals: Prioritize standard libraries and fundamental concepts taught in CS curriculum (e.g., Data Structures & Algorithms, Operating Systems).Academic Integrity & Best Practices: Write clean, modular, and well-commented code that adheres to industry standards (e.g., PEP8 for Python).Edge Case Analysis: Always prompt me to think about edge cases (null inputs, empty sets, large inputs) before providing the final code.Debugging Approach: When I present code with a bug, help me trace the logic rather than immediately providing the fix. Ask probing questions to guide me to the answer."
-</INSTRUCTIONS>
-```
-
-### Prompt 2: Task 1 scope and folder
-
-```text
-in folder "Applied 2" you will have the content I want you to work on, explain me what i need to do for task 1(since task 2 is done by someboday else), create evrrythign later on if your creating in this folder, you can access all the content in this folder and help me do this applied correctly, fo rthe moment only tell me what I need to do for task 1
-```
-
-### Prompt 3: Additional workshop context and authorisation
-
-```text
-here is some more context as well which you can add on - Parallel Computer Applied 10 - Based on image rotations
-Include diagrams
-
-for task 1 - (4min)
-focus on the Part D of the workshop from collab - 
-Part D: Reflection Questions
-Answer the following questions.
-
-What is the role of the host and device in CUDA?
-
-How are threads organised into blocks and grids?
-
-Why is brightness adjustment considered a data-parallel problem?
-
-Why does GPU acceleration generally improve as image size increases?
-
-What overhead is introduced by CPU-GPU memory transfers?
-
-How many threads are launched when using:
-
-      Image = 1024 x 1024
-      Block Size = 16 x 16
-If the GPU contained thousands of CUDA cores, how can they process millions of image pixels?
-
-
-
-Task 2 - (3min)
-explain how HPC is related to parallel computing
-how HPC relates to scaling and AI
-make sure to include statistics adn charts(make sure to get proper citation) and make sure you are able to properly explain this and the trend.
-
-- make sure to cover a few points not all (out of a,b,c,d), but not all have to be in detail (since some of them overlap) - make sure atleast 1 point is explained in detail.
-
-Ex: 
-
-total time to present 7 mins
-
-
-can task 1 be done by you or does it reqrueis desgnig somethign ? if you can do it go ahead and do task 1
-```
-
-Clarification response: Keep the original dimensions (recommended).
+# Task1: current presentation companion
+
+Generated from the current combined presentation on 8 October 2026.
+All assessment explanations, code excerpts, research comparisons, references and a brief AI declaration are visible in the presentation; this companion is optional.
+
+The current timed presentation path is in ../Presentation_Timing_and_Notes.md and in the PowerPoint speaker notes. Q&A remains outside this revision.
+
+## Combined slide 1: GPU image rotation and responsible HPC for AI
+
+FIT3143 • Applied 2 • Tasks 1 and 2
+GPU image rotation
+and responsible HPC for AI
+CUDA design and performance • Evidence, trade-offs and accountable use
+Savin Vindiv De Alwis · 35221631
+sdea0018@student.monash.edu
+Shamle Thilaksiri · 35512075
+wthi0003@student.monash.edu
+8 October 2026 • Focused answers first; full implementation and evidence in the appendix
+
+## Combined slide 2: Host–GPU image data flow
+
+Task 1(a)
+Host–GPU image data flow
+CPU: load/decode, allocate, launch, save
+GPU: read input, rotate, write output
+Storage
+encoded
+image
+Host RAM
+DDR example
+input pixels
+GPU memory
+GDDR / HBM
+input buffer
+GPU memory
+GDDR / HBM
+output buffer
+Host RAM
+output pixels
+CPU
+decode
+H2D
+PCIe
+CUDA
+kernel
+D2H
+PCIe
+H2D: host → device. D2H: device → host. Separate buffers; DMA (direct memory access) engines transfer
+bytes over PCIe.
+GPU memory bandwidth differs from PCIe bandwidth. Pinned RAM supports DMA; pageable RAM may
+stage. Complete output before saving or reuse.
+The CPU orchestrates I/O and launches; the GPU rotates decoded pixels.
+Sources: [1] NVIDIA CUDA programming model; [2] NVIDIA CUDA Best Practices
+2 / 46
+
+## Combined slide 3: Rotation as independent output work
+
+Task 1(b)
+Rotation as independent output work
+Inverse mapping in y-down image coordinates
+sx = c*(x-cx) - s*(y-cy) + cx;
+sy = s*(x-cx) + c*(y-cy) + cy;
+ix = floor(sx + 0.5);
+iy = floor(sy + 0.5);
+c = cos θ; s = sin θ; θ in radians; center = ((W−1)/2, (H−1)/2)
+Output pixel
+(x,y)
+Nearest input
+(ix,iy)
+lookup
+Forward [c s; −s c]; inverse [c −s; s c]. Positive θ is visually counterclockwise.
+Fixed RGB canvas can crop; black borders. Gathering avoids scatter holes;
+nearest-neighbour can alias.
+One thread owns one output pixel: gather a source value, then write once.
+Sources: [1] NVIDIA CUDA programming model
+3 / 46
+
+## Combined slide 4: CUDA maps pixels to scheduled threads
+
+Task 1(b) • Execution model
+CUDA maps pixels to scheduled threads
+Host launch + device pixel indexing
+dim3 block(16,16), grid(64,64);
+rotate_rgb<<<grid,block>>>(
+    d_in,d_out,1024,1024,c,s);
+int x = blockIdx.x*blockDim.x + threadIdx.x;
+int y = blockIdx.y*blockDim.y + threadIdx.y;
+if (x >= W || y >= H) return;
+Grid: 64 × 64 blocks
+Block: 16 × 16 threads
+256 threads = 8 warps
+SMs schedule resident warps
+32 threads/warp • SIMT
+Second kernel feature: clamp a brightness channel
+int v = int(in[p]) + delta;
+out[p] = v<0 ? 0 : (v>255 ? 255 : v);
+After bounds checks: p = 3*(size_t(y)*W+x)+ch; ch ∈ [0,2]; delta ∈ [−255,255].
+Separate RGB buffers. Uncompiled excerpts.
+Residency hides latency; registers and
+divergence limit execution.
+A logical grid exposes work; SMs execute resident warps with SIMT.
+Sources: [1] NVIDIA CUDA programming model; [2] NVIDIA CUDA Best Practices
+4 / 46
+
+## Combined slide 5: Throughput gains depend on the bottleneck
+
+Task 1(b) • Expected speedup
+Throughput gains depend on the bottleneck
+Why a GPU can be faster
+Many execution units and high device-memory
+bandwidth process independent pixels concurrently.
+Coalesced writes help; rotated gathers, registers
+and divergence can limit throughput.
+Large/resident images amortize setup. Streams can
+overlap transfers/compute with separate pinned
+buffers and supporting hardware.
+Compare completed equivalent work
+Speedup = TCPU / TGPU,total. Same
+rotation/sampling on one CPU thread; also test a
+multithreaded CPU.
+Sequential time: setup + H2D + kernel + D2H. For
+overlapped batches, measure the completed critical
+path; wait before reusing buffers.
+Amdahl: serial work bounds gains. No measured
+speedup; compile, verify and profile.
+Sources: [2] NVIDIA CUDA Best Practices
+5 / 46
+
+## Combined slide 6: GPUDirect Storage and rotation
+
+Task 1(c)
+GPUDirect Storage and rotation
+Conventional storage path
+Storage
+Host staging RAM
+GPU memory
+storage read
+H2D / PCIe
+GDS direct path (supported configuration)
+Storage-side DMA
+NVMe / NIC
+GPU memory
+PCIe data path bypasses host staging
+CPU issues cuFile I/O. Fallback may stage through RAM; GDS does not decode images or accelerate kernel
+arithmetic.
+Use conventional copies for CPU-decoded / already-in-RAM pixels. Consider GDS for storage-bound GPU-ready
+batches only with supported GPU/filesystem/driver/topology and lower completed batch time.
+GDS can reduce storage staging; it does not accelerate rotation arithmetic.
+Sources: [3] NVIDIA GDS overview; [4] NVIDIA GDS design
+6 / 46
+
+## Combined slide 11: Scale useful work, then verify the outcome
+
+Tasks 1 and 2 • Conclusions
+Scale useful work, then verify the outcome
+Task 1: conditional performance
+Independent inverse-gather pixels suit CUDA;
+locality, transfers and SM scheduling determine
+speedup.
+GDS helps only a compatible storage-bound path.
+Next: compile, compare CPU/GPU output and
+measure completed workloads.
+Task 2: accountable scaling
+Measure energy and useful output; protect data,
+evaluate group harms and allocate access
+transparently.
+Next: test a real cluster job and review outcomes.
+Sector projections and proposed policies are
+evidence limits, not measured results.
+Sources: [2] NVIDIA CUDA Best Practices; [3] NVIDIA GDS overview; [4] NVIDIA GDS design; [10] Schwartz et al. 2019: efficiency reporting; [16] NIST: Govern, Map, Measure,
+Manage
+11 / 46
+
+## Combined slide 12: Detailed answers and supporting evidence
+
+Appendix • Not part of the seven-minute presentation
+Detailed answers and supporting evidence
+Task 1: implementation and analysis
+Complete rotation and brightness examples,
+thread/grid calculations, host launch and stream
+completion.
+Worked rotation, coordinate assumptions,
+launch-shape trade-offs, Amdahl bound, profiling
+and GPUDirect Storage decision.
+Task 2: research and policy
+Parallel training, energy/carbon calculations,
+environmental accounting and research limitations.
+Risk owners, fairness example, allocation policy,
+framework roles, carbon-aware scheduling and
+cross-topic comparisons.
+FIT3143 Applied 2
+12 / 46
+
+## Combined slide 13: A 90-degree rotation example
+
+Appendix • Task 1 • Task 1(b) • Worked rotation
+A 90-degree rotation example
+Input
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+Output: 90° counterclockwise
+4
+9
+14
+19
+24
+3
+8
+13
+18
+23
+2
+7
+12
+17
+22
+1
+6
+11
+16
+21
+0
+5
+10
+15
+20
+θ = 90°
+c = 0, s = 1
+center = (2,2)
+Output (0,1) → source (3,0) → value 3
+The matrix values are illustrative pixel identifiers, not channel intensities.
+FIT3143 Applied 2
+13 / 46
+
+## Combined slide 14: CUDA launch and execution hierarchy
+
+Appendix • Task 1 • Task 1(b)
+CUDA launch and execution hierarchy
+dim3 block(16,16);
+dim3 grid(64,64);
+rotate_rgb<<<grid,block>>>(
+  d_in,d_out,1024,1024,c,s);
+x = blockIdx.x*blockDim.x + threadIdx.x;
+y = blockIdx.y*blockDim.y + threadIdx.y;
+if (x >= W || y >= H) return;
+1024 × 1024 output
+64 × 64 = 4,096 blocks
+16 × 16 = 256 threads/block
+1,048,576 logical threads
+32 threads/warp → 8 warps/block
+One highlighted warp within a 16-wide block
+Non-multiple dimensions: ceil-divide the grid and keep the bounds guard.
+A grid specifies logical work; finite SMs schedule its blocks and warps.
+Sources: [1] NVIDIA CUDA programming model
+14 / 46
+
+## Combined slide 15: CUDA rotation kernel
+
+Appendix • Task 1 • Task 1(b) • Rotation implementation
+CUDA rotation kernel
+__global__ void rotate_rgb(const unsigned char* in,
+    unsigned char* out, int W, int H, float c, float s) {
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  if (x >= W || y >= H) return;
+  float cx = (W-1)*0.5f, cy = (H-1)*0.5f;
+  int ix = int(floorf(c*(x-cx)-s*(y-cy)+cx+0.5f));
+  int iy = int(floorf(s*(x-cx)+c*(y-cy)+cy+0.5f));
+  size_t dst = 3*(size_t(y)*W + x);
+  if (ix >= 0 && ix < W && iy >= 0 && iy < H) {
+    size_t src = 3*(size_t(iy)*W + ix);
+    for (int ch=0; ch<3; ++ch) out[dst+ch] = in[src+ch];
+  } else {
+    for (int ch=0; ch<3; ++ch) out[dst+ch] = 0;
+  }
+}
+One thread owns one output
+pixel. Guard partial edge
+blocks.
+Inverse gather copies RGB;
+out-of-bounds indices write
+black.
+Disjoint outputs need no
+atomics/barrier. Work and
+storage: O(W × H).
+Separate RGB buffers; W/H >
+0; valid sizes, c/s. Uncompiled
+and unbenchmarked.
+Sources: [1] NVIDIA CUDA programming model
+15 / 46
+
+## Combined slide 16: Host orchestration and completion
+
+Appendix • Task 1 • Task 1(b) • Host orchestration
+Host orchestration and completion
+dim3 block(16, 16);
+dim3 grid(1u + (unsigned(W)-1u)/block.x,
+          1u + (unsigned(H)-1u)/block.y);
+cudaMemcpy(d_in, h_in, bytes,
+           cudaMemcpyHostToDevice);
+rotate_rgb<<<grid, block>>>(
+    d_in, d_out, W, H, c, s);
+cudaGetLastError();
+cudaMemcpy(h_out, d_out, bytes,
+           cudaMemcpyDeviceToHost);
+Illustrative excerpt, not a complete program: W/H > 0; bytes = 3 × W
+× H checked in size_t; valid separate buffers; grid/device limits
+validated.
+CPU loads/decodes, allocates host/device
+buffers, checks every API/launch/completion
+result, saves output and frees resources
+safely.
+For this ordered synchronous-copy example,
+D2H supplies completed host data. A launch is
+asynchronous; launch-error checks alone do
+not establish successful completion.
+Pinned host storage is page-locked and
+supports efficient DMA. Pageable memory
+may need runtime staging. Avoid excessive
+pinning.
+Sources: [1] NVIDIA CUDA programming model; [2] NVIDIA CUDA Best Practices
+16 / 46
+
+## Combined slide 17: CUDA features that affect throughput
+
+Appendix • Task 1 • Task 1(b)
+CUDA features that affect throughput
+Example: independent brightness channels
+size_t p = 3*(size_t(y)*W + x);
+for (int ch=0; ch<3; ++ch) {
+  int v = int(in[p+ch]) + delta;
+  out[p+ch] = v<0 ? 0 : (v>255 ? 255 : v);
+}
+After coordinate/bounds checks; valid RGB buffers; delta ∈ [−255,255].
+Pending blocks
+Streaming multiprocessor
+resident warps → execution units
+SIMT = single instruction, multiple
+threads. A warp issues common
+instructions; divergent paths can
+reduce efficiency.
+Resident warps hide latency; registers limit residency.
+Coalescing groups nearby accesses into fewer transactions;
+rotation can disrupt read locality.
+Concurrency helps only when memory access and resource use support it.
+Sources: [1] NVIDIA CUDA programming model; [2] NVIDIA CUDA Best Practices
+17 / 46
+
+## Combined slide 18: Launch shape and memory access
+
+Appendix • Task 1 • Task 1(b) • Memory access and launch shape
+Launch shape and memory access
+Choice
+Mechanism
+Performance implication
+16 × 16 block
+256 threads; each warp spans two 16-wide rows
+Reasonable 2D starting point; row edges/alignment matter.
+32 × 8 block
+256 threads; each warp spans one 32-wide row
+May improve row-oriented access; no universal winner.
+Output gathering
+Adjacent x threads write adjacent RGB pixels
+Useful write locality; per-channel byte operations still require efficient transactions.
+Rotated input reads
+Angle changes the source addresses visited by a warp
+Irregular gathers can reduce effective read bandwidth/cache reuse.
+Higher residency
+Registers, shared memory and block/thread limits constrain active warps
+Helps hide latency; maximum occupancy is not automatically fastest.
+Recompute grid for each block shape. Profile actual transactions, latency and registers before selecting a shape.
+Sources: [1] NVIDIA CUDA programming model; [2] NVIDIA CUDA Best Practices
+18 / 46
+
+## Combined slide 19: Expected speedup and its limits
+
+Appendix • Task 1 • Task 1(b)
+Expected speedup and its limits
+Baseline: single CPU thread, same rotation and sampling
+Also compare a multithreaded CPU; identical output and timing boundaries.
+Speedup = TCPU / TGPU,total
+TGPU,total = allocation/setup + H2D + kernel + D2H
+Many GPU execution units and high device
+bandwidth favor parallel throughput. Large or
+resident images amortize setup; gathered reads
+may limit bandwidth.
+Amdahl: S = 1 / (s + (1−s)/a). s is the unchanged
+serial share; a accelerates the remainder. s = 0.20
+gives a 5× ideal ceiling before added transfers.
+Theoretical, not measured.
+Expect gains for large or resident workloads; measure the whole pipeline.
+Sources: [2] NVIDIA CUDA Best Practices
+19 / 46
+
+## Combined slide 20: Streams, overlap and completed output
+
+Appendix • Task 1 • Task 1(b) • Concurrency and speedup
+Streams, overlap and completed output
+Ordered work in one stream
+cudaMemcpyAsync(d_in, h_in, bytes,
+  cudaMemcpyHostToDevice, stream);
+rotate_rgb<<<grid, block, 0, stream>>>(
+  d_in, d_out, W, H, c, s);
+cudaMemcpyAsync(h_out, d_out, bytes,
+  cudaMemcpyDeviceToHost, stream);
+// After enqueueing all batch images:
+cudaStreamSynchronize(stream);
+Batch: enqueue all streams before waiting. Check every API,
+launch and completion result; submission is not completion.
+Independent images / streams
+A
+H2D
+Kernel
+D2H
+B
+H2D
+Kernel
+D2H
+Possible overlap depends on supporting
+hardware and available resources.
+Separate pinned/device buffers and non-default streams; synchronize before reuse. More buffers cost memory.
+Keep images on the GPU across operations to avoid repeated transfers.
+Overlap can shorten the batch critical path; it changes scheduling, not total work.
+Sources: [2] NVIDIA CUDA Best Practices
+20 / 46
+
+## Combined slide 31: Conclusions and next measurements
+
+Appendix • Supporting material • Tasks 1 and 2 • Conclusions and limitations
+Conclusions and next measurements
+GPU rotation
+Inverse gathering exposes independent pixel work.
+SM scheduling, memory locality and transfer costs
+determine achieved performance.
+Choose a CPU baseline and compare completed
+equivalent pipelines. GDS is conditional on storage
+bottlenecks, a compatible data path and verified
+support.
+Next: compile the teaching examples, check output
+against a CPU reference and profile representative
+image sizes/angles/batches. No result is assumed.
+Responsible scaling
+More compute can enable valuable research while
+concentrating access and increasing resource
+demand. Approve scale for useful outcomes, with
+safeguards.
+Combine job-level energy/resource evidence,
+separate security/fairness evaluation, transparent
+allocations and deadline-aware scheduling.
+Next: measure a real cluster job’s energy, quality,
+scaling efficiency and allocation outcomes; revise
+policy when evidence or conditions change.
+Sources: [2] NVIDIA CUDA Best Practices; [3] NVIDIA GDS overview; [4] NVIDIA GDS design; [10] Schwartz et al. 2019: efficiency reporting; [14] Radovanovic et al. 2021: flexible
+scheduling; [16] NIST: Govern, Map, Measure, Manage
+31 / 46
+
+## Combined slide 32: Optional supporting material
+
+Appendix • Supporting material • Appendix • Reading guide
+Optional supporting material
+Task 1: implementation expansions
+The Task 1 answers already contain the rotation
+formula, worked calculation, kernel, host launch,
+launch-shape comparison and stream/overlap
+example.
+The following slides expand coordinate conventions
+and complete source examples, then give an
+optional profiling plan and GDS background.
+Task 2: supplementary comparisons
+The Task 2 answers already contain energy/carbon
+calculations, research comparisons, governance
+and fairness decisions, access policy and
+accountable scheduling.
+Additional parallelism and cross-topic comparison
+tables follow. Website references and one brief
+AI-use declaration complete the deck.
+FIT3143 Applied 2
+32 / 46
+
+## Combined slide 33: Rotation coordinates and sampling
+
+Appendix • Task 1 • Appendix A1
+Rotation coordinates and sampling
+Coordinate convention
+Input/output: contiguous 8-bit RGB; positive width W
+and height H; x points right and y points down. Input
+and output buffers are distinct.
+Rotate around cx = (W − 1)/2 and cy = (H − 1)/2.
+Positive θ is visually counterclockwise; the host
+supplies c = cos θ and s = sin θ in radians.
+Forward image-coordinate rotation uses [c s; −s c].
+Inverting it gives source offsets [c −s; s c] × output
+offsets, then restores the center.
+Deliberate design choices
+Nearest-neighbour indices: ix = floor(sx + 0.5), iy =
+floor(sy + 0.5). Copy three channels if the rounded
+indices are in bounds; otherwise write black.
+The fixed W × H canvas can crop rotated corners.
+Nearest-neighbour sampling can alias; bilinear
+interpolation improves smoothness but adds source
+reads/arithmetic.
+Forward scatter can leave holes or competing writes
+after rounding. Inverse gathering assigns every
+output exactly one writer. NPP offers library rotation
+with explicit interpolation/ROI choices.
+Sources: [17] NVIDIA NPP: library alternative
+33 / 46
+
+## Combined slide 34: Crafted CUDA example: RGB brightness
+
+Appendix • Task 1 • Appendix A2
+Crafted CUDA example: RGB brightness
+__global__ void brightness_rgb(const unsigned char* input,
+                               unsigned char* output,
+                               int width,
+                               int height,
+                               int brightness) {
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+    if (x >= width || y >= height) {
+        return;
+    }
+    const size_t offset =
+        (size_t(y) * size_t(width) + size_t(x)) * 3;
+    for (int channel = 0; channel < 3; ++channel) {
+        const int value = int(input[offset + channel]) + brightness;
+        output[offset + channel] =
+            value < 0 ? 0 : (value > 255 ? 255 : value);
+    }
+}
+Same operation on
+independent pixels: a
+data-parallel kernel.
+Assume brightness in
+[−255,255]. Integer addition
+avoids uint8 wrap; clamp each
+channel to [0,255].
+Adjacent threads touch
+adjacent pixel locations,
+providing useful locality.
+Illustrative CUDA C++;
+uncompiled and
+unbenchmarked.
+Sources: [1] NVIDIA CUDA programming model
+34 / 46
+
+## Combined slide 35: Crafted CUDA example: inverse mapping
+
+Appendix • Task 1 • Appendix A3
+Crafted CUDA example: inverse mapping
+__global__ void rotate_rgb(const unsigned char* input,
+                           unsigned char* output,
+                           int width,
+                           int height,
+                           float c,
+                           float s) {
+    const int x = blockIdx.x * blockDim.x + threadIdx.x;
+    const int y = blockIdx.y * blockDim.y + threadIdx.y;
+    if (x >= width || y >= height) {
+        return;
+    }
+
+    const float cx = (width - 1) * 0.5f;
+    const float cy = (height - 1) * 0.5f;
+    const float sx = c * (x - cx) - s * (y - cy) + cx;
+    const float sy = s * (x - cx) + c * (y - cy) + cy;
+    const int ix = int(floorf(sx + 0.5f));
+    const int iy = int(floorf(sy + 0.5f));
+Global coordinates come from
+block/thread indices.
+The guard handles partial edge
+blocks before any memory
+access.
+The host computes sine/cosine
+once per angle.
+Nearest-neighbour mapping
+uses the documented y-down
+convention.
+Sources: [1] NVIDIA CUDA programming model
+35 / 46
+
+## Combined slide 36: Crafted CUDA example: safe output writes
+
+Appendix • Task 1 • Appendix A4
+Crafted CUDA example: safe output writes
+    const size_t destination =
+        (size_t(y) * size_t(width) + size_t(x)) * 3;
+
+    if (ix >= 0 && ix < width && iy >= 0 && iy < height) {
+        const size_t source =
+            (size_t(iy) * size_t(width) + size_t(ix)) * 3;
+        for (int channel = 0; channel < 3; ++channel) {
+            output[destination + channel] = input[source + channel];
+        }
+    } else {
+        for (int channel = 0; channel < 3; ++channel) {
+            output[destination + channel] = 0;
+        }
+    }
+}
+RGB address = 3 × (row ×
+width + column).
+Every valid output gets three
+channels, including black
+borders.
+No atomics, mutex or block
+barrier is needed: writers have
+disjoint destinations.
+Total work Θ(W × H);
+input/output storage Θ(W × H)
+each.
+Sources: [1] NVIDIA CUDA programming model
+36 / 46
+
+## Combined slide 37: Asynchronous work within one stream
+
+Appendix • Task 1 • Appendix A5
+Asynchronous work within one stream
+cudaError_t enqueue_rotation(const unsigned char* h_input,
+                             unsigned char* h_output,
+                             unsigned char* d_input,
+                             unsigned char* d_output,
+                             size_t bytes, int width, int height,
+                             float c, float s,
+                             cudaStream_t stream) {
+    const dim3 block(32, 8);  // 256 threads.
+    const dim3 grid = rotation_grid(width, height, block);
+    cudaError_t status = cudaMemcpyAsync(d_input, h_input, bytes,
+                                        cudaMemcpyHostToDevice, stream);
+    if (status != cudaSuccess) return status;
+    rotate_rgb<<<grid, block, 0, stream>>>(d_input, d_output,
+                                         width, height, c, s);
+    status = cudaGetLastError();
+    if (status != cudaSuccess) return status;
+    return cudaMemcpyAsync(h_output, d_output, bytes,
+                           cudaMemcpyDeviceToHost, stream);
+}
+Full enqueue function;
+rotation_grid uses the
+ceil-division shown in the host
+orchestration answer.
+Pinned host buffers and
+checked sizes are
+preconditions.
+Success means submitted
+work; wait before reading,
+reusing or freeing buffers.
+On error, previously enqueued
+work may still be pending.
+Sources: [2] NVIDIA CUDA Best Practices
+37 / 46
+
+## Combined slide 38: Fair speedup comparison and profiling
+
+Appendix • Task 1 • Appendix A6
+Fair speedup comparison and profiling
+Comparable baselines
+Primary baseline: one CPU thread performs the
+same RGB inverse mapping, nearest-neighbour rule
+and fixed canvas. Also compare a multithreaded
+CPU for a stronger practical baseline.
+Use identical inputs/angles and verify identical or
+justified numerically equivalent outputs. Include file
+decoding/I/O in both paths or exclude it from both.
+For the stated decoded-buffer comparison, include
+GPU allocation, H2D, launch, completed kernel and
+D2H; CPU timing covers the corresponding output
+allocation and rotation.
+Measure the bottleneck
+Report cold-start and warmed repeated runs
+separately. Use CUDA events for kernel elapsed
+time after completion and a host timer through final
+completion for total latency.
+Vary image size, angle, block shape and batch size;
+record hardware, transfer mode, register use and
+effective memory/link bandwidth.
+The sequential sum does not apply unchanged to
+overlapping streams: measure the completed batch
+critical path. Lower kernel time alone cannot
+establish end-to-end speedup.
+Sources: [2] NVIDIA CUDA Best Practices
+38 / 46
+
+## Combined slide 39: GDS decision for the proposed pipeline
+
+Appendix • Task 1 • Appendix A7
+GDS decision for the proposed pipeline
+Conventional decoded-image path
+CPU decoding requires host-visible compressed
+bytes and produces pixels in RAM. Those pixels are
+copied to the GPU; the rotation kernel then runs.
+A single small image already in RAM gains little from
+bypassing a storage step that is no longer on its
+path.
+GDS does not decode an image, bypass an
+application’s CPU transformation, or make GPU
+memory access itself faster.
+Conditional batch alternative
+Large storage-bound batches of GPU-ready pixels,
+or a compatible GPU decoding pipeline, may avoid
+host staging via cuFile and storage-side DMA.
+Verify the GPU, storage/filesystem, software and
+PCIe topology support the direct path. Compatibility
+fallback uses host staging and is not evidence of
+direct DMA.
+Adopt only if completed batch time/CPU overhead
+improve on the real workload; include extra buffers,
+decoding and storage bandwidth. Otherwise retain
+conventional copies.
+Sources: [3] NVIDIA GDS overview; [4] NVIDIA GDS design
+39 / 46
+
+## Combined slide 42: References
+
+Appendix • References 1/4
+References
+[1] NVIDIA, “Programming model,” CUDA Programming Guide, online documentation, accessed Oct. 8, 2026.
+https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html
+[2] NVIDIA, CUDA C++ Best Practices Guide, online documentation, accessed Oct. 8, 2026.
+https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html
+[3] NVIDIA, GPUDirect Storage Overview Guide, online documentation, accessed Oct. 8, 2026.
+https://docs.nvidia.com/gpudirect-storage/overview-guide/index.html
+[4] NVIDIA, GPUDirect Storage Design Guide, online documentation, accessed Oct. 8, 2026.
+https://docs.nvidia.com/gpudirect-storage/design-guide/index.html
+FIT3143 Applied 2
+42 / 46
+
+## Combined slide 43: References
+
+Appendix • References 2/4
+References
+[5] NVIDIA, “Parallelism strategies guide,” Megatron Core, online documentation, accessed Oct. 8, 2026.
+https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html
+[6] International Energy Agency, Key Questions on Energy and AI, executive summary, Apr. 16, 2026, CC BY 4.0, accessed
+Oct. 8, 2026.
+https://www.iea.org/reports/key-questions-on-energy-and-ai/executive-summary
+[7] U.S. National Science Foundation, “NAIRR at 2 years: Advancing American artificial intelligence innovation and
+leadership,” Mar. 19, 2026, accessed Oct. 8, 2026.
+https://www.nsf.gov/cise/updates/nairr-2-years-advancing-american-artificial-intelligence
+[8] E. Strubell, A. Ganesh, and A. McCallum, “Energy and policy considerations for deep learning in NLP,” in Proc. ACL,
+2019, pp. 3645–3650, doi: 10.18653/v1/P19-1355.
+https://aclanthology.org/P19-1355/
+FIT3143 Applied 2
+43 / 46
+
+## Combined slide 44: References
+
+Appendix • References 3/4
+References
+[9] P. Li, J. Yang, M. A. Islam, and S. Ren, “Making AI less ‘thirsty’: Uncovering and addressing the secret water footprint of
+AI models,” arXiv:2304.03271v5, Mar. 26, 2025; first submitted 2023.
+https://arxiv.org/abs/2304.03271v5
+[10] R. Schwartz, J. Dodge, N. A. Smith, and O. Etzioni, “Green AI,” arXiv:1907.10597, 2019.
+https://arxiv.org/abs/1907.10597
+[11] L. Zhu, Z. Liu, and S. Han, “Deep leakage from gradients,” arXiv:1906.08935v2, 2019.
+https://arxiv.org/abs/1906.08935v2
+[12] I. O. Gallegos et al., “Bias and fairness in large language models: A survey,” Computational Linguistics, vol. 50, no. 3,
+pp. 1097–1179, 2024, doi: 10.1162/coli_a_00524.
+https://aclanthology.org/2024.cl-3.8/
+FIT3143 Applied 2
+44 / 46
+
+## Combined slide 45: References
+
+Appendix • References 4/4
+References
+[13] N. Ahmed and M. Wahed, “The de-democratization of AI: Deep learning and the compute divide in artificial intelligence
+research,” arXiv:2010.15581v1, 2020.
+https://arxiv.org/abs/2010.15581v1
+[14] A. Radovanovic et al., “Carbon-aware computing for datacenters,” arXiv:2106.11750v1, 2021.
+https://arxiv.org/abs/2106.11750v1
+[15] OECD, “OECD AI Principles,” adopted 2019, updated 2024, accessed Oct. 8, 2026.
+https://www.oecd.org/en/topics/ai-principles.html
+[16] NIST, AI Risk Management Framework 1.0 Playbook, framework 2023, current online resource, accessed Oct. 8, 2026.
+https://airc.nist.gov/airmf-resources/playbook/
+[17] NVIDIA, “Rotate,” NPP Image Geometry Transforms, CUDA 13.0.3 archive documentation, accessed Oct. 8, 2026.
+https://docs.nvidia.com/cuda/archive/13.0.3/npp/image_geometry_transforms.html#rotate
+FIT3143 Applied 2
+45 / 46
+
+## Combined slide 46: AI use declaration
+
+Appendix • AI declaration
+AI use declaration
+AI model and tool
+OpenAI GPT-6, accessed through Codex.
+How AI was used
+Research and source checks; drafting and revision
+of explanations and CUDA teaching examples;
+creation of diagrams and charts; presentation
+formatting and assembly.
+FIT3143 Applied 2
+46 / 46

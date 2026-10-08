@@ -1,0 +1,46 @@
+{
+  "prompts": [
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task1 preparation, record 1",
+      "provenance": "applied2\\task1\\Task1_Speaker_Notes_and_Study_Guide.md",
+      "text": "# AGENTS.md instructions\n\n<INSTRUCTIONS>\n\"You are an expert computer science professor and senior software engineer acting as a student mentor.Core Guidelines:Pedagogy First: When I ask for code, don't just provide the solution. Explain the logic, data structures, and algorithmic complexity (Big O) involved.Focus on Fundamentals: Prioritize standard libraries and fundamental concepts taught in CS curriculum (e.g., Data Structures & Algorithms, Operating Systems).Academic Integrity & Best Practices: Write clean, modular, and well-commented code that adheres to industry standards (e.g., PEP8 for Python).Edge Case Analysis: Always prompt me to think about edge cases (null inputs, empty sets, large inputs) before providing the final code.Debugging Approach: When I present code with a bug, help me trace the logic rather than immediately providing the fix. Ask probing questions to guide me to the answer.\"\n</INSTRUCTIONS>"
+    },
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task1 preparation, record 2",
+      "provenance": "applied2\\task1\\Task1_Speaker_Notes_and_Study_Guide.md",
+      "text": "in folder \"Applied 2\" you will have the content I want you to work on, explain me what i need to do for task 1(since task 2 is done by someboday else), create evrrythign later on if your creating in this folder, you can access all the content in this folder and help me do this applied correctly, fo rthe moment only tell me what I need to do for task 1"
+    },
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task1 preparation, record 3",
+      "provenance": "applied2\\task1\\Task1_Speaker_Notes_and_Study_Guide.md",
+      "text": "here is some more context as well which you can add on - Parallel Computer Applied 10 - Based on image rotations\nInclude diagrams\n\nfor task 1 - (4min)\nfocus on the Part D of the workshop from collab - \nPart D: Reflection Questions\nAnswer the following questions.\n\nWhat is the role of the host and device in CUDA?\n\nHow are threads organised into blocks and grids?\n\nWhy is brightness adjustment considered a data-parallel problem?\n\nWhy does GPU acceleration generally improve as image size increases?\n\nWhat overhead is introduced by CPU-GPU memory transfers?\n\nHow many threads are launched when using:\n\n      Image = 1024 x 1024\n      Block Size = 16 x 16\nIf the GPU contained thousands of CUDA cores, how can they process millions of image pixels?\n\n\n\nTask 2 - (3min)\nexplain how HPC is related to parallel computing\nhow HPC relates to scaling and AI\nmake sure to include statistics adn charts(make sure to get proper citation) and make sure you are able to properly explain this and the trend.\n\n- make sure to cover a few points not all (out of a,b,c,d), but not all have to be in detail (since some of them overlap) - make sure atleast 1 point is explained in detail.\n\nEx: \n\ntotal time to present 7 mins\n\n\ncan task 1 be done by you or does it reqrueis desgnig somethign ? if you can do it go ahead and do task 1"
+    },
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task2 preparation, record 1",
+      "provenance": "applied2\\task2\\Task2_Speaker_Notes_and_Study_Guide.md",
+      "text": "Are you able to push the changes to this git page and create a new folder named applied2 https://github.com/Shamle-T/FIT3143-Parallel-Computing dont include any refernces of codex in the naming when your creating a new folder. Let me know whether this is possible"
+    },
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task2 preparation, record 2",
+      "provenance": "applied2\\task2\\Task2_Speaker_Notes_and_Study_Guide.md",
+      "text": "using a detailed comit message push the current changes to git and also do we need to do any code for task 1?\nonce pushed do task 2 as well, and push the task 2 to git are required"
+    },
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task2 preparation, record 3",
+      "provenance": "applied2\\task2\\Task2_Speaker_Notes_and_Study_Guide.md",
+      "text": "1)once you have compelted task 2, make sure you have aimed for HD in rubric yeah? for both task 1 and task 2 - if not update both tasks to cover HD level in the rubric\n2) create a 6 minute script for both me (task1) and (task2) for my firend , make sure it doesnt sound overly robotic since we will have to speak this out."
+    },
+    {
+      "date": "6 October 2026",
+      "title": "Earlier task2 preparation, record 4",
+      "provenance": "applied2\\task2\\Task2_Speaker_Notes_and_Study_Guide.md",
+      "text": "Six minutes total: 3 minutes each"
+    }
+  ]
+}

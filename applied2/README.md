@@ -1,55 +1,37 @@
-# Applied 2: GPU image rotation and the ethics of scaling HPC for AI
+# Applied 2: GPU rotation and responsible HPC for AI
 
-## Task 1
+All files to upload are collected in [submission/](submission/README.md): the combined PowerPoint/PDF, associated CUDA sources, chart data and the required AI prompt-record PDF. The speaking script is rehearsal material in this parent folder. Run tools/package_submission.py after changing the canonical files to refresh the upload copies.
 
-The `task1` folder contains a three-minute presentation, a study guide with answers to all seven workshop reflection questions and additional performance questions, editable speaker notes, and illustrative CUDA examples. Present the six main slides. Keep the five clearly labelled appendix slides for Q&A and references.
+Use [the combined PowerPoint](Applied2_Combined_Presentation.pptx) and [its PDF copy](Applied2_Combined_Presentation.pdf) as the current presentation package. Both contain the assessment explanations, code excerpts, research comparisons, citations, references and a brief AI declaration. No separate report is needed to understand Tasks 1 and 2.
 
-The proposed rotation uses one thread per output pixel, inverse mapping about the image centre, nearest-neighbour sampling, the original output dimensions, and black fill for uncovered pixels.
+## Presentation structure
 
-### Is a CUDA program compulsory?
-
-The assessment specification encourages a CUDA prototype or reference to an established image-processing library. It does not require a working program. The marking rubric rewards sample code that explains the programming model. The provided kernels support that explanation, but they are not a standalone program and have not been compiled, executed or benchmarked. No measured speed-up is claimed.
-
-### Submission preparation
-
-Add both students' names, IDs and Monash email addresses. Rehearse the presentation and prepare to answer questions without AI tools. The study-guide PDF includes the AI declaration and prompt record required by the specification.
-
-The latest confirmed allocation is **three minutes each, six minutes total**. The rubric expects six to seven minutes; rehearse with a timer and leave natural pauses. Q&A is separate.
-
-## Task 2
-
-The `task2` folder contains four main slides, three reference appendix slides, a detailed study guide, editable notes, and the chart data with source URLs. It connects HPC, parallel computing and AI training, then covers all four required ethical topics. Environmental and energy impacts receive the most detail; governance, security, fairness, access and policy receive concise coverage.
-
-The two native PowerPoint charts have embedded editable workbooks. IEA 2026 figures distinguish the 2025 estimate from the 2030 projection and distinguish whole-sector electricity totals from the AI-focused subset. The growth percentages describe overlapping categories and must not be added or interpreted as shares. Research comparisons cover gradient privacy, fairness evaluation, the compute divide, Green AI and carbon-aware scheduling.
-
-## Combined presentation and spoken script
-
-Use `Applied2_Combined_Presentation.pptx` for the team presentation:
-
-| Slides | Presenter / purpose | Planned time |
-| --- | --- | --- |
-| 1-6 | You: Task 1 | 3 minutes |
-| 7-10 | Your friend: Task 2 | 3 minutes |
-| 11 | Shared Q&A | Separate 1-2 minutes |
-| 12-19 | Clearly labelled CUDA and reference appendices | As needed |
-
-`Applied2_Six_Minute_Spoken_Script.pdf` and its editable Markdown version provide conversational wording, slide cues, time targets and a handover. The scripts contain 385 and 367 words. Timing is a rehearsal target, not a measured performance.
-
-## HD rubric review
-
-| Criterion | Supporting material |
+| Slides | Content |
 | --- | --- |
-| Task 1a: memory transfer | H2D/D2H diagram; PCIe, DMA, RAM and GPU buffers; pinned-memory explanation |
-| Task 1b: CUDA and speed-up | Launch and hierarchy diagrams; brightness/rotation kernels; block-shape and asynchronous-stream examples; coalescing, occupancy and end-to-end timing discussion |
-| Task 1c: GPUDirect Storage | Conventional/direct paths; workload-dependent benefit; platform support, fallback and image-decoding limitations |
-| Task 2: four topics and research | Current primary sources, research comparisons for each topic, two cited charts and a parallel-training diagram |
-| Clarity, limitations and future work | Six-minute natural scripts; stated limitations; proposed measurement plans |
-| Q&A: 40% | Concise study answers and rehearsal prompts in both guides |
+| 1 | Cover with both students' verified details |
+| 2–6 | Task 1: transfer/rotation diagrams, CUDA launch and features, expected speedup and GDS |
+| 7–10 | Task 2: environment, governance/fairness, access and responsible-use framework |
+| 11 | Conclusions, limitations and next measurements |
+| 12–41 | Full detailed answers, implementations, calculations and research comparisons; not presented |
+| 42–45 | Numbered website references |
+| 46 | One brief AI model/tool and use declaration |
 
-The material targets the HD descriptors. The grade also depends on your oral explanation and independent Q&A performance. The CUDA examples remain uncompiled and unbenchmarked; no measured speed-up is claimed.
+Present slides 1–11, including the cover and conclusion. The target is 6:20, with a 40-second buffer within seven minutes. [Timing and optional narration](Presentation_Timing_and_Notes.md) are also embedded in the PowerPoint speaker notes. Detailed content has been retained in the appendix, followed by website references and one AI-use declaration. Timing targets support the seven-minute limit; actual delivery duration needs rehearsal. No Q&A slide was added.
 
-Submit both companion PDFs to preserve the complete AI declaration and preparation prompt record. Add both students' identifying details. Moodle requires the actual files, not just this repository link.
+## Design and evidence
 
-## Assessment sources
+Task 1 uses inverse gathering, contiguous 8-bit RGB, nearest-neighbour sampling, a fixed canvas and black borders for out-of-bounds rounded source indices. It states serial and multithreaded CPU comparison options, theoretical speedup limits and conditional GDS benefits. The CUDA teaching examples are uncompiled and unbenchmarked; no measured GPU performance is claimed.
 
-The `assessment` folder preserves the supplied specification and marking rubric. Sources used in explanations are cited in the slides and study guide.
+Task 2 distinguishes current sector estimates/projections, original research and proposed policy. The chart values remain 485/950 TWh and 17%/50%, with source scope and forecast caveats. Tables, diagrams and charts in the PowerPoint remain native/editable; chart values have embedded workbooks. The PDF is a high-resolution visual copy.
+
+The content follows [teaching-team guidance](TEACHING_TEAM_GUIDANCE.md), the [specification](<assessment/Applied #2 - Assessment Specification.pdf>) and [rubric](<assessment/Applied #2 Rubric.pdf>). The presentation references only public websites; local course-file references and citations have been removed at the student's request.
+
+## Supporting files
+
+The current [conversational presentation script](Applied2_Presentation_Script.md) and [printable PDF](Applied2_Presentation_Script.pdf) follow slides 1–11. They include a suggested Savin/Shamle split, slide timings and brief diagram cues; the 755 spoken words fit the 6:20 planning target at the stated pace.
+
+The task folders contain synchronized standalone decks, optional slide companions and source examples/chart data. The presentation contains one brief AI-use slide, as requested. Historical prompt sources remain in tools/ai_prompt_record.json and tools/deck_content.mjs; prompt-by-prompt slides are excluded from the presentation and its companions.
+
+The earlier six-minute spoken script belongs to the previous deck and is now under archive/. Its slide cues are obsolete. It is not part of the current submission package.
+
+The original review/action plan is retained as a historical audit with a revision-status section. Build sources and content checks are under tools/; private renders and validation receipts are ignored by Git. Moodle requires actual files rather than repository links.
