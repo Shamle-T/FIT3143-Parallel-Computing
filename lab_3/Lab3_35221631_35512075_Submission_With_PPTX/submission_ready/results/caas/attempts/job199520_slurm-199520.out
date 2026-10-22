@@ -1,0 +1,85 @@
+PASS: ties, recent alert, recent low observation, expiry, isolated node
+PASS: independent oracle for every station in all 1..7 by 1..7 shapes, four cache states, three variants
+
+PASS 1x1 full: all three versions; complete shutdown
+PASS 1x1 empty: all three versions; complete shutdown
+PASS 1x7 full: all three versions; complete shutdown
+PASS 7x1 mixed: all three versions; complete shutdown
+PASS 3x3 ties: all three versions; complete shutdown
+PASS 3x3 full: all three versions; complete shutdown
+PASS 2x5 empty: all three versions; complete shutdown
+PASS 3x4 random: all three versions; complete shutdown
+SCALING 1/90 grid_2x2_v0_r0 2.437s
+SCALING 2/90 grid_2x2_v1_r0 2.352s
+SCALING 3/90 grid_2x2_v2_r0 2.364s
+SCALING 4/90 grid_2x2_v1_r1 2.223s
+SCALING 5/90 grid_2x2_v2_r1 2.305s
+SCALING 6/90 grid_2x2_v0_r1 2.524s
+SCALING 7/90 grid_2x2_v2_r2 2.282s
+SCALING 8/90 grid_2x2_v0_r2 2.392s
+SCALING 9/90 grid_2x2_v1_r2 2.233s
+SCALING 10/90 grid_2x3_v0_r0 2.720s
+SCALING 11/90 grid_2x3_v1_r0 2.671s
+SCALING 12/90 grid_2x3_v2_r0 2.681s
+SCALING 13/90 grid_2x3_v1_r1 2.787s
+SCALING 14/90 grid_2x3_v2_r1 2.652s
+SCALING 15/90 grid_2x3_v0_r1 2.914s
+SCALING 16/90 grid_2x3_v2_r2 2.708s
+SCALING 17/90 grid_2x3_v0_r2 3.061s
+SCALING 18/90 grid_2x3_v1_r2 2.682s
+SCALING 19/90 grid_3x3_v0_r0 3.929s
+SCALING 20/90 grid_3x3_v1_r0 3.632s
+SCALING 21/90 grid_3x3_v2_r0 3.737s
+SCALING 22/90 grid_3x3_v1_r1 3.678s
+SCALING 23/90 grid_3x3_v2_r1 3.636s
+SCALING 24/90 grid_3x3_v0_r1 4.349s
+SCALING 25/90 grid_3x3_v2_r2 3.775s
+SCALING 26/90 grid_3x3_v0_r2 4.020s
+SCALING 27/90 grid_3x3_v1_r2 3.690s
+SCALING 28/90 grid_3x4_v0_r0 5.226s
+SCALING 29/90 grid_3x4_v1_r0 4.524s
+SCALING 30/90 grid_3x4_v2_r0 4.649s
+SCALING 31/90 grid_3x4_v1_r1 4.454s
+SCALING 32/90 grid_3x4_v2_r1 4.503s
+SCALING 33/90 grid_3x4_v0_r1 5.014s
+SCALING 34/90 grid_3x4_v2_r2 4.458s
+SCALING 35/90 grid_3x4_v0_r2 4.958s
+SCALING 36/90 grid_3x4_v1_r2 4.405s
+SCALING 37/90 grid_3x5_v0_r0 6.029s
+SCALING 38/90 grid_3x5_v1_r0 5.165s
+SCALING 39/90 grid_3x5_v2_r0 5.085s
+SCALING 40/90 grid_3x5_v1_r1 4.942s
+SCALING 41/90 grid_3x5_v2_r1 5.137s
+SCALING 42/90 grid_3x5_v0_r1 6.130s
+SCALING 43/90 grid_3x5_v2_r2 5.068s
+SCALING 44/90 grid_3x5_v0_r2 5.834s
+SCALING 45/90 grid_3x5_v1_r2 4.802s
+SCALING 46/90 line_1x4_v0_r0 2.231s
+SCALING 47/90 line_1x4_v1_r0 2.116s
+SCALING 48/90 line_1x4_v2_r0 2.000s
+SCALING 49/90 line_1x4_v1_r1 2.116s
+SCALING 50/90 line_1x4_v2_r1 2.136s
+SCALING 51/90 line_1x4_v0_r1 2.113s
+SCALING 52/90 line_1x4_v2_r2 2.113s
+SCALING 53/90 line_1x4_v0_r2 2.104s
+SCALING 54/90 line_1x4_v1_r2 2.193s
+SCALING 55/90 line_1x6_v0_r0 2.595s
+SCALING 56/90 line_1x6_v1_r0 2.533s
+SCALING 57/90 line_1x6_v2_r0 2.547s
+SCALING 58/90 line_1x6_v1_r1 2.609s
+SCALING 59/90 line_1x6_v2_r1 2.590s
+SCALING 60/90 line_1x6_v0_r1 2.720s
+SCALING 61/90 line_1x6_v2_r2 2.579s
+SCALING 62/90 line_1x6_v0_r2 2.855s
+SCALING 63/90 line_1x6_v1_r2 2.506s
+SCALING 64/90 line_1x9_v0_r0 4.055s
+SCALING 65/90 line_1x9_v1_r0 3.574s
+SCALING 66/90 line_1x9_v2_r0 3.388s
+SCALING 67/90 line_1x9_v1_r1 3.282s
+SCALING 68/90 line_1x9_v2_r1 3.301s
+SCALING 69/90 line_1x9_v0_r1 3.981s
+SCALING 70/90 line_1x9_v2_r2 3.428s
+SCALING 71/90 line_1x9_v0_r2 4.202s
+SCALING 72/90 line_1x9_v1_r2 3.504s
+SCALING 73/90 line_1x12_v0_r0 5.512s
+SCALING 74/90 line_1x12_v1_r0 4.339s

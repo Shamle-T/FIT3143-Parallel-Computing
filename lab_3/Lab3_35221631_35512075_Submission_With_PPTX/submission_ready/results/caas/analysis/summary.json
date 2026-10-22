@@ -1,0 +1,208 @@
+{
+  "source_sha256": "28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd",
+  "runs": 119,
+  "scaling_runs": 90,
+  "raw_records": 10440,
+  "station_placements": 1041,
+  "comparison": {
+    "grid": {
+      "query": {
+        "v1_speedup_median": 1.6386378173880842,
+        "v2_speedup_median": 1.8059080009884714
+      },
+      "reply": {
+        "v1_speedup_median": 1.7196394242168405,
+        "v2_speedup_median": 1.768573389697804
+      },
+      "report": {
+        "v1_speedup_median": 0.9213510146696133,
+        "v2_speedup_median": 0.8972746499180418
+      },
+      "redirect": {
+        "v1_speedup_median": 1.1479745894059403,
+        "v2_speedup_median": 1.092663348398388
+      },
+      "control": {
+        "v1_speedup_median": 0.8192700229010889,
+        "v2_speedup_median": 0.9315008744172004
+      },
+      "flags": {
+        "v1_speedup_median": 1.1839912401918278,
+        "v2_speedup_median": 1.4603619559937473
+      },
+      "sync": {
+        "v1_speedup_median": 1.0289576558264513,
+        "v2_speedup_median": 1.0394640491011005
+      },
+      "ack": {
+        "v1_speedup_median": 0.8248770203899127,
+        "v2_speedup_median": 0.9780207090615944
+      },
+      "alert_roundtrip": {
+        "v1_speedup_median": 1.1479938101280502,
+        "v2_speedup_median": 1.0926354120043824
+      }
+    },
+    "line": {
+      "query": {
+        "v1_speedup_median": 2.3405467771972304,
+        "v2_speedup_median": 2.4916889038095413
+      },
+      "reply": {
+        "v1_speedup_median": 1.2196776728175738,
+        "v2_speedup_median": 1.2495917736306474
+      },
+      "report": {
+        "v1_speedup_median": 0.9644086294399922,
+        "v2_speedup_median": 1.0610847586237415
+      },
+      "redirect": {
+        "v1_speedup_median": 1.2464516862433832,
+        "v2_speedup_median": 1.3020369608359847
+      },
+      "control": {
+        "v1_speedup_median": 0.8889050548654065,
+        "v2_speedup_median": 1.0951734864858316
+      },
+      "flags": {
+        "v1_speedup_median": 1.4398998407171806,
+        "v2_speedup_median": 1.4757337309079832
+      },
+      "sync": {
+        "v1_speedup_median": 1.1481066574745904,
+        "v2_speedup_median": 1.11026546349765
+      },
+      "ack": {
+        "v1_speedup_median": 0.9780373950971696,
+        "v2_speedup_median": 1.0102761382885428
+      },
+      "alert_roundtrip": {
+        "v1_speedup_median": 1.2464089935824205,
+        "v2_speedup_median": 1.3020015973453873
+      }
+    }
+  },
+  "selection_scores": {
+    "0": 1.0,
+    "1": 1.1570424809278053,
+    "2": 1.1973185046748849
+  },
+  "selected_variant": "2",
+  "expiry_results": [
+    {
+      "expiry": 0,
+      "alerts": 24,
+      "candidate_recommendations": 6
+    },
+    {
+      "expiry": 0.1,
+      "alerts": 24,
+      "candidate_recommendations": 6
+    },
+    {
+      "expiry": 1,
+      "alerts": 24,
+      "candidate_recommendations": 0
+    },
+    {
+      "expiry": 30,
+      "alerts": 24,
+      "candidate_recommendations": 0
+    }
+  ],
+  "candidate_benchmark": [
+    {
+      "nodes": "10",
+      "variant": "0",
+      "repetitions": "10000",
+      "seconds": "0.000424762",
+      "checksum": "16000"
+    },
+    {
+      "nodes": "10",
+      "variant": "1",
+      "repetitions": "10000",
+      "seconds": "0.000232499",
+      "checksum": "16000"
+    },
+    {
+      "nodes": "10",
+      "variant": "2",
+      "repetitions": "10000",
+      "seconds": "0.00023799",
+      "checksum": "16000"
+    },
+    {
+      "nodes": "100",
+      "variant": "0",
+      "repetitions": "10000",
+      "seconds": "0.004091474",
+      "checksum": "19600"
+    },
+    {
+      "nodes": "100",
+      "variant": "1",
+      "repetitions": "10000",
+      "seconds": "0.000240133",
+      "checksum": "19600"
+    },
+    {
+      "nodes": "100",
+      "variant": "2",
+      "repetitions": "10000",
+      "seconds": "0.000229484",
+      "checksum": "19600"
+    },
+    {
+      "nodes": "1000",
+      "variant": "0",
+      "repetitions": "10000",
+      "seconds": "0.039446566",
+      "checksum": "19960"
+    },
+    {
+      "nodes": "1000",
+      "variant": "1",
+      "repetitions": "10000",
+      "seconds": "0.000234573",
+      "checksum": "19960"
+    },
+    {
+      "nodes": "1000",
+      "variant": "2",
+      "repetitions": "10000",
+      "seconds": "0.000229534",
+      "checksum": "19960"
+    },
+    {
+      "nodes": "10000",
+      "variant": "0",
+      "repetitions": "10000",
+      "seconds": "0.39270387",
+      "checksum": "19996"
+    },
+    {
+      "nodes": "10000",
+      "variant": "1",
+      "repetitions": "10000",
+      "seconds": "0.000229474",
+      "checksum": "19996"
+    },
+    {
+      "nodes": "10000",
+      "variant": "2",
+      "repetitions": "10000",
+      "seconds": "0.000229663",
+      "checksum": "19996"
+    }
+  ],
+  "candidate_v0_v2_n10000": 1709.9135254699277,
+  "stderr_warning_commands": 60,
+  "launch_warnings": [
+    "srun: Warning: can't honor --ntasks-per-node set to 3 which doesn't match the requested tasks 5 with the number of requested nodes 2. Ignoring --ntasks-per-node.\n",
+    "srun: Warning: can't honor --ntasks-per-node set to 4 which doesn't match the requested tasks 7 with the number of requested nodes 2. Ignoring --ntasks-per-node.\n",
+    "srun: Warning: can't honor --ntasks-per-node set to 6 which doesn't match the requested tasks 11 with the number of requested nodes 2. Ignoring --ntasks-per-node.\n",
+    "srun: Warning: can't honor --ntasks-per-node set to 7 which doesn't match the requested tasks 13 with the number of requested nodes 2. Ignoring --ntasks-per-node.\n"
+  ],
+  "qualification": "Descriptive medians of three launches; no statistical significance or universal best variant is established."
+}

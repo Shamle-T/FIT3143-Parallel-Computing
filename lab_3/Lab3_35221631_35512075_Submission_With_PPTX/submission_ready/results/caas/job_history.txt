@@ -1,0 +1,6 @@
+JobID|JobName|State|ExitCode|Elapsed|NodeList|AllocCPUS
+199444|fit3143-lab3-audit|FAILED|1:0|00:01:18|student-caas-n[03,05]|32
+199460|fit3143-lab3-audit|FAILED|1:0|00:00:03|student-caas-n[09-10]|32
+199513|fit3143-lab3-launch-probe|COMPLETED|0:0|00:01:25|student-caas-n[13-14]|4
+199520|fit3143-lab3-audit|TIMEOUT|0:0|00:05:01|student-caas-n[12-13]|32
+199603|fit3143-lab3-audit|COMPLETED|0:0|00:06:54|student-caas-n[10-11]|32

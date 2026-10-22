@@ -1,0 +1,5 @@
+# host=student-caas-n13 world=0 station=-1 variant=2 ports=2 threshold=1 expiry=30 tick=0
+{"round":0,"source":0,"coordinates":[0,0],"discovered_utc":"2026-10-22T09:56:17Z","free":0,"neighbour_messages":0,"neighbour_bytes":0,"neighbours":[{"rank":-2,"free":-1},{"rank":-2,"free":-1},{"rank":-2,"free":-1},{"rank":-2,"free":-1}],"inferred_candidates":[]}
+{"round":1,"source":0,"coordinates":[0,0],"discovered_utc":"2026-10-22T09:56:17Z","free":0,"neighbour_messages":0,"neighbour_bytes":0,"neighbours":[{"rank":-2,"free":-1},{"rank":-2,"free":-1},{"rank":-2,"free":-1},{"rank":-2,"free":-1}],"inferred_candidates":[]}
+# alerts=2 elapsed_seconds=0.004931346 shutdown_acks=1
+# measured_point_to_point_messages=5 measured_payload_bytes=156 collective_operations=7 (warmup excluded; MPI protocol overhead excluded)

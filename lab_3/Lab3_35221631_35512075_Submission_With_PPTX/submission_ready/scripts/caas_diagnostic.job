@@ -1,0 +1,47 @@
+#!/bin/bash
+# Savin Vindiv De Alwis 35221631 sdea0018@student.monash.edu
+# Shamle Thilaksiri 35512075 wthi0003@student.monash.edu
+#SBATCH --job-name=fit3143-lab3-launch-probe
+#SBATCH --partition=defq
+#SBATCH --nodes=2
+#SBATCH --ntasks=2
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=1G
+#SBATCH --time=00:04:00
+#SBATCH --output=results/caas/diagnostic-%j.out
+#SBATCH --error=results/caas/diagnostic-%j.err
+set -uo pipefail
+cd "$SLURM_SUBMIT_DIR"
+module load openmpi/4.1.5-gcc-11.2.0-ux65npg
+export OMP_NUM_THREADS=2 OMP_WAIT_POLICY=PASSIVE OMP_PLACES=cores OMP_PROC_BIND=close
+mkdir -p results/caas/diagnostic
+date -u
+scontrol show job "$SLURM_JOB_ID"
+mpicc -std=c11 -O2 -g -fopenmp -Wall -Wextra -Wpedantic -Werror src/wsn.c -o wsn_caas -lm || exit 1
+sha256sum src/wsn.c
+timeout 25s srun --mpi=none --exact -N2 -n2 --ntasks-per-node=1 -c2 bash -c 'hostname; hostname -I; ip -brief address; command -v orted'
+for mode in none pmi2 pmix; do
+  echo "PROBE srun --mpi=$mode --exact"
+  timeout 25s srun --mpi="$mode" --exact -N2 -n2 --ntasks-per-node=1 -c2 \
+    ./wsn_caas 1 1 2 --variant 2 --scenario full --rounds 2 --tick 0 \
+    --output "results/caas/diagnostic/srun_$mode" \
+    > "results/caas/diagnostic/srun_$mode.stdout" 2> "results/caas/diagnostic/srun_$mode.stderr"
+  code=$?
+  echo "PROBE_EXIT srun_$mode=$code"
+  cat "results/caas/diagnostic/srun_$mode.stdout" "results/caas/diagnostic/srun_$mode.stderr"
+done
+iface=$(ip -o -4 route show default | awk '{print $5;exit}')
+if [[ -n "$iface" ]]; then
+  echo "PROBE mpirun TCP, actual default-route interface=$iface"
+  timeout 25s mpirun -np 2 --map-by node:PE=2 --bind-to core \
+    --mca btl self,tcp --mca btl_tcp_if_include "$iface" --mca oob_tcp_if_include "$iface" \
+    ./wsn_caas 1 1 2 --variant 2 --scenario full --rounds 2 --tick 0 \
+    --output results/caas/diagnostic/mpirun_tcp \
+    > results/caas/diagnostic/mpirun_tcp.stdout 2> results/caas/diagnostic/mpirun_tcp.stderr
+  code=$?
+  echo "PROBE_EXIT mpirun_tcp=$code"
+  cat results/caas/diagnostic/mpirun_tcp.stdout results/caas/diagnostic/mpirun_tcp.stderr
+fi
+date -u
+echo 'LAUNCH_DIAGNOSTICS_COMPLETE (individual probe exit codes above)'

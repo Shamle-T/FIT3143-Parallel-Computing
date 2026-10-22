@@ -1,0 +1,348 @@
+{
+  "grid": {
+    "query": {
+      "first_five_median_us": 3312.2095833333333,
+      "last_five_median_us": 52526.579600000005,
+      "large_to_small_ratio": 15.858470992991462,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "reply": {
+      "first_five_median_us": 1878.6356851851851,
+      "last_five_median_us": 28205.505647727274,
+      "large_to_small_ratio": 15.01382405867955,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "report": {
+      "first_five_median_us": 9.05155,
+      "last_five_median_us": 20.657168750035627,
+      "large_to_small_ratio": 2.282169214116436,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "redirect": {
+      "first_five_median_us": 4336.807833333333,
+      "last_five_median_us": 79396.58043181818,
+      "large_to_small_ratio": 18.307608610546346,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "control": {
+      "first_five_median_us": 557.7735079365079,
+      "last_five_median_us": 48136.41582857143,
+      "large_to_small_ratio": 86.30100774533533,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "flags": {
+      "first_five_median_us": 678.0605000000019,
+      "last_five_median_us": 14698.840134920638,
+      "large_to_small_ratio": 21.677770840390494,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "sync": {
+      "first_five_median_us": 4314.614574074074,
+      "last_five_median_us": 108661.99876984127,
+      "large_to_small_ratio": 25.18463628774081,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "ack": {
+      "first_five_median_us": 43.4078,
+      "last_five_median_us": 62.31527272724546,
+      "large_to_small_ratio": 1.435577770060806,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    },
+    "alert_roundtrip": {
+      "first_five_median_us": 4346.914305555555,
+      "last_five_median_us": 79424.81327840908,
+      "large_to_small_ratio": 18.271538773354823,
+      "small_nodes": [
+        4,
+        6,
+        8,
+        9,
+        10
+      ],
+      "large_nodes": [
+        40,
+        42,
+        44,
+        45,
+        48
+      ]
+    }
+  },
+  "line": {
+    "query": {
+      "first_five_median_us": 27.723708333333335,
+      "last_five_median_us": 28466.81136111111,
+      "large_to_small_ratio": 1026.803882757788,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "reply": {
+      "first_five_median_us": 19.879361111111113,
+      "last_five_median_us": 18665.77175,
+      "large_to_small_ratio": 938.9522955829398,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "report": {
+      "first_five_median_us": 5.432375,
+      "last_five_median_us": 26.20611607143482,
+      "large_to_small_ratio": 4.824062416794646,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "redirect": {
+      "first_five_median_us": 255.48408333333333,
+      "last_five_median_us": 90396.17244642857,
+      "large_to_small_ratio": 353.8231081444222,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "control": {
+      "first_five_median_us": 38.450964285714285,
+      "last_five_median_us": 26639.898396313365,
+      "large_to_small_ratio": 692.8278364714746,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "flags": {
+      "first_five_median_us": 11.461333333333332,
+      "last_five_median_us": 12613.396785714285,
+      "large_to_small_ratio": 1100.5174021970352,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "sync": {
+      "first_five_median_us": 118.54033333333334,
+      "last_five_median_us": 94030.17970238095,
+      "large_to_small_ratio": 793.2336366725892,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "ack": {
+      "first_five_median_us": 18.2025,
+      "last_five_median_us": 89.92754838715484,
+      "large_to_small_ratio": 4.94039546145611,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "alert_roundtrip": {
+      "first_five_median_us": 260.2597916666667,
+      "last_five_median_us": 90419.45794642858,
+      "large_to_small_ratio": 347.42000432489107,
+      "small_nodes": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "large_nodes": [
+        27,
+        28,
+        29,
+        30,
+        31
+      ]
+    }
+  }
+}

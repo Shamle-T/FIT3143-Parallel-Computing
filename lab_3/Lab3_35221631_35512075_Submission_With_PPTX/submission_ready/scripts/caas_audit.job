@@ -1,0 +1,50 @@
+#!/bin/bash
+# Savin Vindiv De Alwis 35221631 sdea0018@student.monash.edu
+# Shamle Thilaksiri 35512075 wthi0003@student.monash.edu
+#SBATCH --job-name=fit3143-lab3-audit
+#SBATCH --partition=defq
+#SBATCH --nodes=2
+#SBATCH --ntasks=16
+#SBATCH --ntasks-per-node=8
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=2G
+#SBATCH --time=00:10:00
+#SBATCH --output=results/caas/slurm-%j.out
+#SBATCH --error=results/caas/slurm-%j.err
+set -euo pipefail
+cd "$SLURM_SUBMIT_DIR"
+module load openmpi/4.1.5-gcc-11.2.0-ux65npg
+export OMP_NUM_THREADS=2 OMP_DYNAMIC=FALSE OMP_WAIT_POLICY=PASSIVE
+export OMP_PLACES=cores OMP_PROC_BIND=close
+mkdir -p results/caas
+# Preserve an earlier study before starting fresh command/run journals.
+python3 - "$SLURM_JOB_ID" <<'PY'
+from pathlib import Path
+import shutil
+import sys
+out = Path('results/caas')
+if (out/'commands.jsonl').exists() or (out/'runs.jsonl').exists():
+    archive = out/'attempts'/('previous_study_before_'+sys.argv[1])
+    archive.mkdir(parents=True, exist_ok=False)
+    current = {'slurm-'+sys.argv[1]+'.out','slurm-'+sys.argv[1]+'.err'}
+    for source in out.iterdir():
+        if source.is_file() and source.name not in current and not source.name.startswith('diagnostic'):
+            shutil.move(str(source),str(archive/source.name))
+PY
+{
+  date -u
+  hostname
+  module list
+  mpicc --version
+  mpirun --version
+  scontrol show job "$SLURM_JOB_ID"
+  scontrol show hostnames "$SLURM_JOB_NODELIST"
+  sha256sum src/wsn.c scripts/caas_audit.job scripts/caas_experiments.py tests/test_candidates.c tests/benchmark_candidates.c
+} > results/caas/environment.txt 2>&1
+mpicc -std=c11 -O2 -g -fopenmp -Wall -Wextra -Wpedantic -Werror src/wsn.c -o wsn_caas -lm
+mpicc -std=c11 -O2 -fopenmp -Wall -Wextra -Wpedantic -Werror tests/test_candidates.c -o tests/test_candidates -lm
+mpicc -std=c11 -O2 -fopenmp -Wall -Wextra -Wpedantic -Werror tests/benchmark_candidates.c -o tests/benchmark_candidates -lm
+cp src/wsn.c results/caas/measured_source.c
+python3 scripts/caas_experiments.py
+date -u
+echo 'CAAS_EXPERIMENTS_COMPLETE'

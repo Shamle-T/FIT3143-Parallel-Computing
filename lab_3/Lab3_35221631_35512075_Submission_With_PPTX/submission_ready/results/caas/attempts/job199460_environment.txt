@@ -1,0 +1,90 @@
+Thu Oct 22 09:51:41 UTC 2026
+student-caas-n09
+
+Currently Loaded Modules:
+  1) shared
+  2) DefaultModules
+  3) gcc/11.2.0
+  4) slurm/21.08.8-gcc-11.2.0-3ykg6zx
+  5) libiconv/1.17-gcc-11.2.0-zee3orq
+  6) xz/5.4.1-gcc-11.2.0-3huxeuz
+  7) zlib-ng/2.1.3-gcc-11.2.0-myrntce
+  8) libxml2/2.10.3-gcc-11.2.0-hxhpgns
+  9) cuda/12.0.1-gcc-11.2.0-q6qmg7g
+ 10) bzip2/1.0.8-gcc-11.2.0-w4ziagj
+ 11) ncurses/6.4-gcc-11.2.0-jsxwinf
+ 12) pigz/2.7-gcc-11.2.0-gskywck
+ 13) zstd/1.5.5-gcc-11.2.0-xhtopb6
+ 14) tar/1.34-gcc-11.2.0-7zfsd7b
+ 15) gettext/0.21.1-gcc-11.2.0-adbzmbb
+ 16) pkgconf/1.9.5-gcc-11.2.0-mejuzrd
+ 17) elfutils/0.189-gcc-11.2.0-fqzgzf2
+ 18) libffi/3.4.4-gcc-11.2.0-zn4lc4g
+ 19) pcre/8.45-gcc-11.2.0-pikwf6n
+ 20) berkeley-db/18.1.40-gcc-11.2.0-4ie72xq
+ 21) readline/8.2-gcc-11.2.0-pg3d2ur
+ 22) gdbm/1.23-gcc-11.2.0-vb2cy7z
+ 23) perl/5.38.0-gcc-11.2.0-h3r5gez
+ 24) libmd/1.0.4-gcc-11.2.0-p3dmvpv
+ 25) libbsd/0.11.7-gcc-11.2.0-5yhtbh2
+ 26) expat/2.5.0-gcc-11.2.0-xltxrjj
+ 27) libxcrypt/4.4.35-gcc-11.2.0-nphrade
+ 28) openssl/3.1.2-gcc-11.2.0-hihv54z
+ 29) sqlite/3.42.0-gcc-11.2.0-75jz2zl
+ 30) util-linux-uuid/2.38.1-gcc-11.2.0-oktzstx
+ 31) python/3.10.12-gcc-11.2.0-q7kbxyf
+ 32) glib/2.72.2-gcc-11.2.0-pfe5q4r
+ 33) libpng/1.6.39-gcc-11.2.0-tpdvov2
+ 34) pixman/0.42.2-gcc-11.2.0-pgarcg6
+ 35) cairo/1.16.0-gcc-11.2.0-w6entxe
+ 36) libpciaccess/0.17-gcc-11.2.0-lhyoksm
+ 37) hwloc/2.9.1-gcc-11.2.0-ajp4xld
+ 38) numactl/2.0.14-gcc-11.2.0-53dqo72
+ 39) krb5/1.20.1-gcc-11.2.0-kke3u7g
+ 40) libedit/3.1-20210216-gcc-11.2.0-sj4nwyr
+ 41) openssh/9.3p1-gcc-11.2.0-qrwvqh2
+ 42) libevent/2.1.12-gcc-11.2.0-3l2lsig
+ 43) pmix/4.2.4-gcc-11.2.0-km22yjy
+ 44) openmpi/4.1.5-gcc-11.2.0-ux65npg
+
+ 
+
+gcc (GCC) 11.2.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+mpirun (Open MPI) 4.1.5
+
+Report bugs to http://www.open-mpi.org/community/help/
+JobId=199460 JobName=fit3143-lab3-audit
+   UserId=nobody(1061684) GroupId=nobody(1121) MCS_label=N/A
+   Priority=4294758784 Nice=0 Account=(null) QOS=normal
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:01 TimeLimit=00:10:00 TimeMin=N/A
+   SubmitTime=2026-10-22T20:03:53 EligibleTime=2026-10-22T20:27:14
+   AccrueTime=2026-10-22T20:03:53
+   StartTime=2026-10-22T20:51:40 EndTime=2026-10-22T21:01:40 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T20:51:40 Scheduler=Main
+   Partition=defq AllocNode:Sid=student-caas-headnode:655646
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=student-caas-n[09-10]
+   BatchHost=student-caas-n09
+   NumNodes=2 NumCPUs=32 NumTasks=16 CPUs/Task=2 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=32,mem=4G,node=2,billing=32
+   Socks/Node=* NtasksPerN:B:S:C=8:0:*:* CoreSpec=*
+   MinCPUsNode=16 MinMemoryNode=2G MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+   Command=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_audit.job
+   WorkDir=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075
+   StdErr=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/results/caas/slurm-199460.err
+   StdIn=/dev/null
+   StdOut=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/results/caas/slurm-199460.out
+   Power=
+   
+
+student-caas-n09
+student-caas-n10
+653050ba910dfd9118526b1c03feacf4a71a31a880c37cf0aac6ef72ffa89fde  src/wsn.c

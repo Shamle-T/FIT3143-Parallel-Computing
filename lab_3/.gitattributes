@@ -1,0 +1,2 @@
+# Preserve authenticated execution evidence and SHA-256 manifests byte-for-byte.
+* -text

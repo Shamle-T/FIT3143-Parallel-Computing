@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_experiments.py", line 98, in <module>
+    main()
+  File "/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_experiments.py", line 50, in main
+    test = launch(1, './tests/test_candidates', nodes=1)
+  File "/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_experiments.py", line 22, in launch
+    result = subprocess.run(command, cwd=str(ROOT), stdout=subprocess.PIPE,
+  File "/cm/shared/apps/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/python-3.10.12-q7kbxyfnn6apcnlipu5optf6br6jvvd3/lib/python3.10/subprocess.py", line 505, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/cm/shared/apps/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/python-3.10.12-q7kbxyfnn6apcnlipu5optf6br6jvvd3/lib/python3.10/subprocess.py", line 1154, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/cm/shared/apps/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/python-3.10.12-q7kbxyfnn6apcnlipu5optf6br6jvvd3/lib/python3.10/subprocess.py", line 2022, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/cm/shared/apps/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/python-3.10.12-q7kbxyfnn6apcnlipu5optf6br6jvvd3/lib/python3.10/subprocess.py", line 1198, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['srun', '--mpi=pmix', '--nodes=1', '--ntasks=1', '--cpus-per-task=2', '--distribution=cyclic', '--cpu-bind=cores', './tests/test_candidates']' timed out after 75 seconds

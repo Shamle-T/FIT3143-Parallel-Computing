@@ -1,0 +1,10 @@
+{
+  "criterion": "median baseline/variant alert-response round-trip ratio across 60 matched sizes",
+  "scores": {
+    "0": 1.0,
+    "1": 0.9872130685126803,
+    "2": 1.0178530343797254
+  },
+  "selected_variant": 2,
+  "qualification": "Descriptive local result. Three repeats, shared hardware and oversubscription limit generalization."
+}

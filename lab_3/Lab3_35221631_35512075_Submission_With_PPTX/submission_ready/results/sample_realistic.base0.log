@@ -1,0 +1,6 @@
+# host=fit3143-lab3-a world=0 station=-1 variant=2 ports=6 threshold=2 expiry=30 tick=10
+{"round":0,"source":2,"coordinates":[0,2],"discovered_utc":"2026-10-18T08:52:12Z","free":0,"neighbour_messages":8,"neighbour_bytes":32,"neighbours":[{"rank":-2,"free":-1},{"rank":5,"free":1},{"rank":1,"free":1},{"rank":-2,"free":-1}],"inferred_candidates":[0]}
+{"round":0,"source":5,"coordinates":[1,2],"discovered_utc":"2026-10-18T08:52:12Z","free":1,"neighbour_messages":12,"neighbour_bytes":48,"neighbours":[{"rank":2,"free":0},{"rank":8,"free":1},{"rank":4,"free":1},{"rank":-2,"free":-1}],"inferred_candidates":[3,7]}
+{"round":2,"source":2,"coordinates":[0,2],"discovered_utc":"2026-10-18T08:52:32Z","free":1,"neighbour_messages":8,"neighbour_bytes":32,"neighbours":[{"rank":-2,"free":-1},{"rank":5,"free":0},{"rank":1,"free":0},{"rank":-2,"free":-1}],"inferred_candidates":[0]}
+# alerts=3 elapsed_seconds=30.590055488 shutdown_acks=9
+# measured_point_to_point_messages=125 measured_payload_bytes=720 collective_operations=10 (warmup excluded; MPI protocol overhead excluded)

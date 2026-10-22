@@ -1,0 +1,4 @@
+JobID|JobName|State|ExitCode|Elapsed|NodeList|AllocCPUS
+199444|fit3143-lab3-audit|FAILED|1:0|00:01:18|student-caas-n[03,05]|32
+199444.batch|batch|FAILED|1:0|00:01:18|student-caas-n03|16
+199444.0|test_candidates|CANCELLED by 1061684||00:01:15|student-caas-n03|16

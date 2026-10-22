@@ -1,0 +1,10 @@
+PASS: ties, recent alert, recent low observation, expiry, isolated node
+PASS: independent oracle for every station in all 1..7 by 1..7 shapes, four cache states, three variants
+PASS 1x1 full: all three versions; complete shutdown
+PASS 1x1 empty: all three versions; complete shutdown
+PASS 1x7 full: all three versions; complete shutdown
+PASS 7x1 mixed: all three versions; complete shutdown
+PASS 3x3 ties: all three versions; complete shutdown
+PASS 3x3 full: all three versions; complete shutdown
+PASS 2x5 empty: all three versions; complete shutdown
+PASS 3x4 random: all three versions; complete shutdown

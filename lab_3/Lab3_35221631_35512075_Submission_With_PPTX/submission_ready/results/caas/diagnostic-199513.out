@@ -1,0 +1,56 @@
+Thu Oct 22 09:56:16 UTC 2026
+JobId=199513 JobName=fit3143-lab3-launch-probe
+   UserId=nobody(1061684) GroupId=nobody(1121) MCS_label=N/A
+   Priority=4294758756 Nice=0 Account=(null) QOS=normal
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:01 TimeLimit=00:04:00 TimeMin=N/A
+   SubmitTime=2026-10-22T20:56:05 EligibleTime=2026-10-22T20:56:05
+   AccrueTime=2026-10-22T20:56:05
+   StartTime=2026-10-22T20:56:15 EndTime=2026-10-22T21:00:15 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-22T20:56:15 Scheduler=Backfill
+   Partition=defq AllocNode:Sid=student-caas-headnode:690301
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=student-caas-n[13-14]
+   BatchHost=student-caas-n13
+   NumNodes=2 NumCPUs=4 NumTasks=2 CPUs/Task=2 ReqB:S:C:T=0:0:*:*
+   TRES=cpu=4,mem=2G,node=2,billing=4
+   Socks/Node=* NtasksPerN:B:S:C=1:0:*:* CoreSpec=*
+   MinCPUsNode=2 MinMemoryNode=1G MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null)
+   Command=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_diagnostic.job
+   WorkDir=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075
+   StdErr=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/results/caas/diagnostic-199513.err
+   StdIn=/dev/null
+   StdOut=/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/results/caas/diagnostic-199513.out
+   Power=
+   
+
+28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd  src/wsn.c
+student-caas-n13
+172.23.168.143 
+student-caas-n14
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+ens192           UP             172.23.168.143/26 fe80::250:56ff:fe97:60a3/64 
+/cm/shared/apps/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/openmpi-4.1.5-ux65npg7pphlp47ursjcabetfzxyz2qx/bin/orted
+172.23.168.144 
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+ens192           UP             172.23.168.144/26 fe80::250:56ff:fe97:ea42/64 
+/cm/shared/apps/spack/opt/spack/linux-rhel8-zen2/gcc-11.2.0/openmpi-4.1.5-ux65npg7pphlp47ursjcabetfzxyz2qx/bin/orted
+PROBE srun --mpi=none --exact
+PROBE_EXIT srun_none=0
+PROBE srun --mpi=pmi2 --exact
+PROBE_EXIT srun_pmi2=0
+PROBE srun --mpi=pmix --exact
+PROBE_EXIT srun_pmix=124
+srun: forcing job termination
+srun: got SIGCONT
+srun: launch/slurm: launch_p_step_launch: StepId=199513.3 aborted before step completely launched.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: error: Timed out waiting for job step to complete
+PROBE mpirun TCP, actual default-route interface=ens192
+PROBE_EXIT mpirun_tcp=124
+mpirun: Forwarding signal 18 to job
+Thu Oct 22 09:57:39 UTC 2026
+LAUNCH_DIAGNOSTICS_COMPLETE (individual probe exit codes above)

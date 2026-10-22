@@ -1,0 +1,116 @@
+filename,classification,reason
+docs/AI_Prompt_Records.pdf,Required,Specification p2: upload available AI prompt records in PDF; missing histories are not fabricated.
+docs/AI_RECORD.md,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+docs/Lab3_Presentation_Documentation.pdf,Required,"Chosen Task 3/4 documentation and incorporated AI declaration; specification pp2,7-8."
+docs/Lab3_Presentation_Editable.pptx,Supporting/conditional,Editable alternative to the required presentation PDF; either format satisfies Task 4; both may be included.
+docs/Lab3_Technical_Report.pdf,Required,"Chosen Task 3/4 documentation and incorporated AI declaration; specification pp2,7-8."
+Makefile,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+README.md,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+results/analysis/ack.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/alert_roundtrip.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/all_message_delays.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/audit.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/comparison.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/control.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/flags.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/independent_verification.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/query.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/recommendation.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/redirect.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/reply.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/report.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/analysis/run_means.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/scaling_trends.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/analysis/sync.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/audit_sanitizer.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/audit_validation.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/all_base_station_logs.log,Required,"Specification p8: sample base logs and all timing logs; contains incident details, elapsed times and shutdown evidence."
+results/caas/all_station_logs.log,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/all_timing_measurements.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/caas/analysis/ack.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/alert_roundtrip.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/all_message_delays.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/analysis/control.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/flags.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/query.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/redirect.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/reply.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/report.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis/run_means.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/analysis/summary.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/analysis/sync.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.
+results/caas/analysis_run.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/attempts/job199444_accounting.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199444_environment.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199460_accounting.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199460_commands.jsonl,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199460_environment.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199520_accounting.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199520_environment.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199520_slurm-199520.err,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/job199520_slurm-199520.out,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/README.txt,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/slurm-199444.err,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/slurm-199444.out,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/slurm-199460.err,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/attempts/slurm-199460.out,Supporting/conditional,Authentic failed launcher attempt and recovery provenance; not successful simulation evidence.
+results/caas/candidate_benchmark.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/caas/commands.jsonl,Required,Recorded CAAS command-level timings and exit results; retain with all measurement logs under Task 3.
+results/caas/consolidated_reproduction.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/correctness.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/mpirun_tcp.stderr,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/mpirun_tcp.stdout,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_none.base0.log,Required,"Specification p8: sample base logs and all timing logs; contains incident details, elapsed times and shutdown evidence."
+results/caas/diagnostic/srun_none.metrics.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/caas/diagnostic/srun_none.node0.log,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_none.stderr,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_none.stdout,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_pmi2.base0.log,Required,"Specification p8: sample base logs and all timing logs; contains incident details, elapsed times and shutdown evidence."
+results/caas/diagnostic/srun_pmi2.metrics.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/caas/diagnostic/srun_pmi2.node0.log,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_pmi2.stderr,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_pmi2.stdout,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_pmix.stderr,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic/srun_pmix.stdout,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic-199513.err,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic-199513.out,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/diagnostic_accounting.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/environment.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/evidence/caas_execution.png,Supporting/conditional,Authentic local-viewer screenshot of CAAS output; already embedded in presentation appendix.
+results/caas/evidence/caas_ties.png,Supporting/conditional,Authentic local-viewer screenshot of CAAS output; already embedded in presentation appendix.
+results/caas/host_placement.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/job_accounting.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/job_history.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/manifest.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/runs.jsonl,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/slurm-199603.err,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/slurm-199603.out,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/caas/verification.txt,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/candidate_benchmark.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/cluster/all_base_station_logs.log,Required,"Specification p8: sample base logs and all timing logs; contains incident details, elapsed times and shutdown evidence."
+results/cluster/all_timing_measurements.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/cluster/environment.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/cluster/host_placement.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/cluster/manifest.csv,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/cluster/timed_source_snapshot.c,Required,Specification p8: all C/C++ source; includes tested helper sources and local measured snapshot.
+results/evidence/provided_folder_structure.png,Supporting/conditional,"User-supplied local project folder screenshot; file organisation only, not CAAS execution evidence."
+results/final_artifact_verification.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+results/sample_realistic.base0.log,Required,"Specification p8: sample base logs and all timing logs; contains incident details, elapsed times and shutdown evidence."
+results/validation/all_base_station_logs.log,Required,"Specification p8: sample base logs and all timing logs; contains incident details, elapsed times and shutdown evidence."
+results/validation/all_timing_measurements.csv,Required,"Specification p8: all time measurement logs; CSV is the raw measurement log format, not an optional spreadsheet."
+results/validation/provenance.json,Supporting/conditional,"Run metadata, correctness/provenance evidence or derived tables; supports audit and reproducibility."
+scripts/analyze.py,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+scripts/analyze_caas.py,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+scripts/benchmark.py,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+scripts/caas_audit.job,Required,Specification p8: CAAS cluster scripts if available; these scripts were used or supplied for CAAS execution.
+scripts/caas_diagnostic.job,Required,Specification p8: CAAS cluster scripts if available; these scripts were used or supplied for CAAS execution.
+scripts/caas_experiments.py,Required,Specification p8: CAAS cluster scripts if available; these scripts were used or supplied for CAAS execution.
+scripts/caas_run.sh,Required,Specification p8: CAAS cluster scripts if available; these scripts were used or supplied for CAAS execution.
+scripts/cluster.py,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+scripts/Dockerfile,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+scripts/validate.py,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+SHA256SUMS.txt,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+src/wsn.c,Required,Specification p8: all C/C++ source; includes tested helper sources and local measured snapshot.
+SUBMISSION_CHECKLIST.csv,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
+tests/benchmark_candidates.c,Required,Specification p8: all C/C++ source; includes tested helper sources and local measured snapshot.
+tests/test_candidates.c,Required,Specification p8: all C/C++ source; includes tested helper sources and local measured snapshot.

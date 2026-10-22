@@ -1,0 +1,2 @@
+PASS: ties, recent alert, recent low observation, expiry, isolated node
+PASS: independent oracle for every station in all 1..7 by 1..7 shapes, four cache states, three variants

@@ -1,0 +1,104 @@
+PASS: ties, recent alert, recent low observation, expiry, isolated node
+PASS: independent oracle for every station in all 1..7 by 1..7 shapes, four cache states, three variants
+
+PASS 1x1 full: all three versions; complete shutdown
+PASS 1x1 empty: all three versions; complete shutdown
+PASS 1x7 full: all three versions; complete shutdown
+PASS 7x1 mixed: all three versions; complete shutdown
+PASS 3x3 ties: all three versions; complete shutdown
+PASS 3x3 full: all three versions; complete shutdown
+PASS 2x5 empty: all three versions; complete shutdown
+PASS 3x4 random: all three versions; complete shutdown
+SCALING 1/90 grid_2x2_v0_r0 2.342s
+SCALING 2/90 grid_2x2_v1_r0 2.212s
+SCALING 3/90 grid_2x2_v2_r0 2.150s
+SCALING 4/90 grid_2x2_v1_r1 2.233s
+SCALING 5/90 grid_2x2_v2_r1 2.119s
+SCALING 6/90 grid_2x2_v0_r1 2.358s
+SCALING 7/90 grid_2x2_v2_r2 2.167s
+SCALING 8/90 grid_2x2_v0_r2 2.209s
+SCALING 9/90 grid_2x2_v1_r2 2.139s
+SCALING 10/90 grid_2x3_v0_r0 2.736s
+SCALING 11/90 grid_2x3_v1_r0 2.579s
+SCALING 12/90 grid_2x3_v2_r0 2.720s
+SCALING 13/90 grid_2x3_v1_r1 2.645s
+SCALING 14/90 grid_2x3_v2_r1 2.553s
+SCALING 15/90 grid_2x3_v0_r1 2.854s
+SCALING 16/90 grid_2x3_v2_r2 2.599s
+SCALING 17/90 grid_2x3_v0_r2 2.778s
+SCALING 18/90 grid_2x3_v1_r2 2.739s
+SCALING 19/90 grid_3x3_v0_r0 4.033s
+SCALING 20/90 grid_3x3_v1_r0 3.551s
+SCALING 21/90 grid_3x3_v2_r0 3.595s
+SCALING 22/90 grid_3x3_v1_r1 3.607s
+SCALING 23/90 grid_3x3_v2_r1 3.565s
+SCALING 24/90 grid_3x3_v0_r1 3.866s
+SCALING 25/90 grid_3x3_v2_r2 3.561s
+SCALING 26/90 grid_3x3_v0_r2 3.742s
+SCALING 27/90 grid_3x3_v1_r2 3.511s
+SCALING 28/90 grid_3x4_v0_r0 4.849s
+SCALING 29/90 grid_3x4_v1_r0 4.327s
+SCALING 30/90 grid_3x4_v2_r0 4.078s
+SCALING 31/90 grid_3x4_v1_r1 4.105s
+SCALING 32/90 grid_3x4_v2_r1 4.325s
+SCALING 33/90 grid_3x4_v0_r1 5.005s
+SCALING 34/90 grid_3x4_v2_r2 4.169s
+SCALING 35/90 grid_3x4_v0_r2 4.922s
+SCALING 36/90 grid_3x4_v1_r2 4.476s
+SCALING 37/90 grid_3x5_v0_r0 5.789s
+SCALING 38/90 grid_3x5_v1_r0 5.034s
+SCALING 39/90 grid_3x5_v2_r0 4.936s
+SCALING 40/90 grid_3x5_v1_r1 4.899s
+SCALING 41/90 grid_3x5_v2_r1 4.836s
+SCALING 42/90 grid_3x5_v0_r1 5.971s
+SCALING 43/90 grid_3x5_v2_r2 5.154s
+SCALING 44/90 grid_3x5_v0_r2 5.793s
+SCALING 45/90 grid_3x5_v1_r2 5.207s
+SCALING 46/90 line_1x4_v0_r0 2.222s
+SCALING 47/90 line_1x4_v1_r0 2.028s
+SCALING 48/90 line_1x4_v2_r0 2.055s
+SCALING 49/90 line_1x4_v1_r1 2.047s
+SCALING 50/90 line_1x4_v2_r1 2.170s
+SCALING 51/90 line_1x4_v0_r1 2.011s
+SCALING 52/90 line_1x4_v2_r2 2.122s
+SCALING 53/90 line_1x4_v0_r2 2.076s
+SCALING 54/90 line_1x4_v1_r2 2.121s
+SCALING 55/90 line_1x6_v0_r0 2.593s
+SCALING 56/90 line_1x6_v1_r0 2.558s
+SCALING 57/90 line_1x6_v2_r0 2.579s
+SCALING 58/90 line_1x6_v1_r1 2.500s
+SCALING 59/90 line_1x6_v2_r1 2.470s
+SCALING 60/90 line_1x6_v0_r1 2.658s
+SCALING 61/90 line_1x6_v2_r2 2.400s
+SCALING 62/90 line_1x6_v0_r2 2.556s
+SCALING 63/90 line_1x6_v1_r2 2.507s
+SCALING 64/90 line_1x9_v0_r0 3.796s
+SCALING 65/90 line_1x9_v1_r0 3.395s
+SCALING 66/90 line_1x9_v2_r0 3.473s
+SCALING 67/90 line_1x9_v1_r1 3.441s
+SCALING 68/90 line_1x9_v2_r1 3.216s
+SCALING 69/90 line_1x9_v0_r1 3.847s
+SCALING 70/90 line_1x9_v2_r2 3.309s
+SCALING 71/90 line_1x9_v0_r2 3.770s
+SCALING 72/90 line_1x9_v1_r2 3.366s
+SCALING 73/90 line_1x12_v0_r0 5.125s
+SCALING 74/90 line_1x12_v1_r0 4.304s
+SCALING 75/90 line_1x12_v2_r0 4.135s
+SCALING 76/90 line_1x12_v1_r1 4.018s
+SCALING 77/90 line_1x12_v2_r1 4.221s
+SCALING 78/90 line_1x12_v0_r1 5.381s
+SCALING 79/90 line_1x12_v2_r2 4.312s
+SCALING 80/90 line_1x12_v0_r2 5.292s
+SCALING 81/90 line_1x12_v1_r2 4.151s
+SCALING 82/90 line_1x15_v0_r0 6.249s
+SCALING 83/90 line_1x15_v1_r0 4.742s
+SCALING 84/90 line_1x15_v2_r0 4.826s
+SCALING 85/90 line_1x15_v1_r1 4.829s
+SCALING 86/90 line_1x15_v2_r1 4.663s
+SCALING 87/90 line_1x15_v0_r1 6.616s
+SCALING 88/90 line_1x15_v2_r2 4.715s
+SCALING 89/90 line_1x15_v0_r2 6.519s
+SCALING 90/90 line_1x15_v1_r2 4.949s
+PASS: 24 correctness runs, 90 scaling runs, 4 expiry runs, 1 realistic run, candidate tests and benchmark.
+Thu Oct 22 10:25:02 UTC 2026
+CAAS_EXPERIMENTS_COMPLETE

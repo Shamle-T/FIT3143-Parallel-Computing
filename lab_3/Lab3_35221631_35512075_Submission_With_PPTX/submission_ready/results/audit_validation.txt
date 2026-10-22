@@ -1,0 +1,12 @@
+PASS: ties, recent alert, recent low observation, expiry, isolated node
+PASS: independent oracle for every station in all 1..7 by 1..7 shapes, four cache states, three variants
+PASS 1 1 full all three variants
+PASS 1 1 empty all three variants
+PASS 1 7 full all three variants
+PASS 7 1 mixed all three variants
+PASS 3 3 ties all three variants
+PASS 3 3 full all three variants
+PASS 2 5 empty all three variants
+PASS 3 4 random all three variants
+PASS nonfinite, negative and overflowing time arguments
+PASS invalid inputs/process counts; 25 successful integration runs

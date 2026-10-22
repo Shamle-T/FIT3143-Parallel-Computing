@@ -1,0 +1,25 @@
+Please remember to set the correct job configuration when submitting a job to CAAS.
+
+If you execute scontrol show partition defq  on the terminal for CAAS, you will see the following:
+
+PartitionName=defq
+AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL
+AllocNodes=ALL Default=YES QoS=N/A
+DefaultTime=00:05:00 DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO
+MaxNodes=UNLIMITED MaxTime=00:20:00 MinNodes=1 LLN=NO MaxCPUsPerNode=UNLIMITED
+Nodes=student-caas-n[01-14]
+PriorityJobFactor=1 PriorityTier=1 RootOnly=NO ReqResv=NO OverSubscribe=YES:4
+OverTimeLimit=NONE PreemptMode=OFF
+State=UP TotalCPUs=224 TotalNodes=14 SelectTypeParameters=NONE
+JobDefaults=(null)
+DefMemPerCPU=100 MaxMemPerNode=UNLIMITED
+
+Note that the max time is 20 minutes. If you set a longer running time, your job will remain in PD mode, with the reason PartitionTimeLimit or PartitionConfig
+
+Additionally, you do not need to use all 14 nodes on CAAS. You can test with fewer nodes.
+
+In Task 3 of the marking guidelines, although you should test with 30 different grid combinations (HD criteria), you don't have to test them on CAAS. You can test this combination on your local machine and report the findings. 
+
+For CAAS, you can test a set of grid combinations (e.g., 3x3, 4x4, 6x6, 8x8) and report these findings in your slides, along with your observations. You don't have to test up to 30 different grid combinations on CAAS. You can test about 4 to 5 different grid combinations on CAAS. This would reduce the number of jobs being queued on CAAS.
+
+Most importantly, please be patient when running jobs on CAAS. We completely understand that most students want to do well in this lab, and that running on CAAS is an important part of it. Nevertheless, please ensure that your submitted jobs are correctly configured and that you refer to the guidelines above. 

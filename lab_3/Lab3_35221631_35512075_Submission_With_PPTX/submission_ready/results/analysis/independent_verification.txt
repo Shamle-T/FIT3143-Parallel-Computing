@@ -1,0 +1,4 @@
+PASS: 107208 raw records; 540 scaling runs; 30 grid + 30 line sizes; three versions x three repeats; nine classes; all shutdown ACKs and two-host station placements.
+PASS: all 4860 run means, 1620 plotted records, comparison ratios and selection scores independently recomputed from raw CSV.
+PASS: every incident source/cycle and every station message/collective count in all 540 scaling runs matches an independent mixed-workload/topology model.
+Source environment: supplied two-container shared-host TCP study, 18 October 2026. These are not CAAS measurements.

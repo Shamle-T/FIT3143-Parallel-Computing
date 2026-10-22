@@ -1,0 +1,38 @@
+{
+  "grid": {
+    "query": {
+      "v1_speedup_median": 2.5811835066161493,
+      "v2_speedup_median": 2.2715038862467756
+    },
+    "report": {
+      "v1_speedup_median": 0.9384540933452024,
+      "v2_speedup_median": 0.8978130777933375
+    },
+    "redirect": {
+      "v1_speedup_median": 1.0861343375724404,
+      "v2_speedup_median": 0.9867807288390062
+    },
+    "alert_roundtrip": {
+      "v1_speedup_median": 1.0952255357280698,
+      "v2_speedup_median": 0.9863982663926523
+    }
+  },
+  "line": {
+    "query": {
+      "v1_speedup_median": 3.0244873968893895,
+      "v2_speedup_median": 2.7616271092797424
+    },
+    "report": {
+      "v1_speedup_median": 0.9822848943576569,
+      "v2_speedup_median": 1.0217741868158177
+    },
+    "redirect": {
+      "v1_speedup_median": 0.8442425767994527,
+      "v2_speedup_median": 1.041708661320342
+    },
+    "alert_roundtrip": {
+      "v1_speedup_median": 0.8504210434372776,
+      "v2_speedup_median": 1.041749425538051
+    }
+  }
+}

@@ -1,0 +1,3 @@
+PASS: 119 complete CAAS simulations; 90 scaling runs; five grid and five line sizes x three versions x three launches; all rank metrics, message/byte summaries, two compute hosts, 24 correctness checks, expiry periods, 30-second realistic run, source hash and successful command exits verified.
+Source SHA-256: 28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd
+60 launches emitted only the recorded uneven-task per-node-cap warning; actual placement is balanced and at most eight ranks per node. No unexpected stderr was accepted.

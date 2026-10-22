@@ -1,0 +1,2 @@
+PASS: 119 complete CAAS simulations; 90 scaling runs; five grid and five line sizes x three versions x three launches; all rank metrics, message/byte summaries, two compute hosts, 24 correctness checks, expiry periods, 30-second realistic run, source hash and successful command exits verified.
+{"raw_records": 10440, "selection_scores": {"0": 1.0, "1": 1.1570424809278053, "2": 1.1973185046748849}, "selected_variant": "2"}

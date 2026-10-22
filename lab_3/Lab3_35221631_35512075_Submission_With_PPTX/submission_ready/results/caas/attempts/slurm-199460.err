@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_experiments.py", line 110, in <module>
+    main()
+  File "/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_experiments.py", line 62, in main
+    test = launch(1, './tests/test_candidates', nodes=1)
+  File "/srv/home/sdea0018/lab3_audit_20261022_35221631_35512075/scripts/caas_experiments.py", line 37, in launch
+    raise RuntimeError(json.dumps(entry))
+RuntimeError: {"command": ["mpirun", "-np", "1", "--map-by", "node:PE=2", "--bind-to", "core", "./tests/test_candidates"], "returncode": 1, "wall_seconds": 0.43988549802452326, "stdout": "", "stderr": "--------------------------------------------------------------------------\nAn ORTE daemon has unexpectedly failed after launch and before\ncommunicating back to mpirun. This could be caused by a number\nof factors, including an inability to create a connection back\nto mpirun due to a lack of common network interfaces and/or no\nroute found between them. Please check network connectivity\n(including firewalls and network routing requirements).\n--------------------------------------------------------------------------\n"}

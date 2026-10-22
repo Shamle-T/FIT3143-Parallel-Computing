@@ -1,0 +1,1 @@
+PASS: 540 runs; 30 distinct grid node counts and 30 line sizes; 3 variants x 3 repeats; all shutdown ACKs; both container hosts used in every run; all nine timing categories present.

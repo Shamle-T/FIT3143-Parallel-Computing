@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "source_sha256": "28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd",
+  "caas_as_run_file_hashes_verified": 5,
+  "pdf_pages": {
+    "Lab3_Presentation_Documentation.pdf": 35,
+    "Lab3_Technical_Report.pdf": 8,
+    "AI_Prompt_Records.pdf": 8
+  },
+  "pptx_slides": 35,
+  "pptx_charts": 54,
+  "pptx_workbooks": 54,
+  "pptx_authentic_images": 3,
+  "original_chart_xml_preserved": 36,
+  "original_workbooks_byte_identical": 36,
+  "new_caas_charts_matched_to_all_table_values": 18,
+  "historical_prompt_pages_preserved": 4,
+  "attached_request_lines_verified": true,
+  "original_raw_files_unchanged": [
+    "results/cluster/all_timing_measurements.csv",
+    "results/cluster/all_base_station_logs.log",
+    "results/cluster/timed_source_snapshot.c",
+    "results/candidate_benchmark.csv",
+    "results/sample_realistic.base0.log"
+  ],
+  "native_powerpoint_open_render_and_pdf_export": true,
+  "structural_and_layout_findings": 0,
+  "visual_qa": "All 35 slide thumbnails and all 16 report/prompt pages reviewed; changed and evidence slides inspected at native render size. Report split table corrected. No clipping or unreadable replacement figures observed."
+}

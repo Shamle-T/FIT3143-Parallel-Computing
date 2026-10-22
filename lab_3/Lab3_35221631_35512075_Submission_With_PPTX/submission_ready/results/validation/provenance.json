@@ -1,0 +1,7 @@
+{
+  "environment": "Local WSL Ubuntu; not CAAS",
+  "source_sha256": "28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd",
+  "successful_simulations": 25,
+  "raw_records": 1773,
+  "command": "OMPI_ALLOW_RUN_AS_ROOT=1 OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1 OMP_WAIT_POLICY=PASSIVE python3 scripts/validate.py"
+}

@@ -1,0 +1,11 @@
+# Local execution helpers, authentication state and intermediate renderings.
+/audit_work/
+/.chart-data-*/
+/context/
+
+# Keep the definitive submission; older input copies remain local.
+/Lab3_35221631_35512075_Submission_With_PPTX/*
+!/Lab3_35221631_35512075_Submission_With_PPTX/submission_ready/
+
+# These are authentic scheduler stdout records, not compiled .out binaries.
+!/Lab3_35221631_35512075_Submission_With_PPTX/submission_ready/results/**/*.out
