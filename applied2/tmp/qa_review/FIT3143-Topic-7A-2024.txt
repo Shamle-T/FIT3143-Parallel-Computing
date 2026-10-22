@@ -1,0 +1,266 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 7A: 
+Parallel Application Performance Modelling 
+–
+Part A
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information Technology
+© 2024 Monash University
+
+=== PAGE 2 ===
+2
+§Unlike applications on standalone systems, parallel systems can be extremely sensitive to performance problems, to the extent of making a system unusable;§Foundation knowledge: Because parallel systems are now widely used, understanding their performance is essential to both design and implementation of code;§Practical skills: When coding parallel applications you will have to design the application with due consideration to performance constraints in the algorithms used;§Practical skills: If you do not understand performance problems in parallel systems, you might end up producing code that appears to be correct, functions as intended, but is unusable due to performance problems that cannot be fixed as they result from the behaviourof the algorithm used in the parallel system;
+Why Study Parallel Application Performance?
+
+=== PAGE 3 ===
+3
+§Performance of parallel applications is an inherently complicated problem and requires a good understanding of machine architecture, operating systems and networks, and most importantly –how they interact as a system!§Because performance behaviourof parallel systems is complicated and difficult to understand by people without a good understanding of machine architecture, operating systems and networks, such people often choose to IGNORE the problem and the huge risks resulting in major system failures§Many well known case studies of parallel systems failures due to foolish or absent performance estimations –example: ABS Census system crash in August 2016 (settled out of court)
+Should We IgnoreParallel Application Performance?
+
+=== PAGE 4 ===
+Performance in Parallel Multiprocessing
+
+=== PAGE 5 ===
+5
+§Any individual stored program processor will have performance limitations.§These limitations are determined by internal design features:§How quickly it can execute an instruction.§How quickly it can fetch instructions and load/store operands.§Speedup can be effected by performing operations in parallel –i.e. concurrently.§Exploiting opportunities for concurrency is the basis of superscalar / parallel architectures.
+The Parallelism Problem
+
+=== PAGE 6 ===
+6
+§Some computations exhibit a property which is termed “data dependency”.§A data dependency between two computations arises when one of these computations depends upon the result of the other.§Therefore, the dependent computation cannot be executed until the computation upon which it depends is completed.
+The Data Dependency Problem
+
+=== PAGE 7 ===
+7
+§Data dependencies can arise at the instruction/operand level, function or subroutine level, and at the program level.§The level at which data dependency occurs determines what techniques we can use to exploit parallelism and make the program run faster.§Programs with frequent data dependencies at all levels do not lend themselves to speedup via parallel techniques.
+Data Dependency Levels
+
+=== PAGE 8 ===
+8
+§A system with N CPUs can do more useful work than a system with a single CPU, but only where the application program being executed can be divided across all N CPUs.§In general, a program can be functionally divided into computations which are “serial” and computations which are “parallel”.§“Serial” computations have some data dependencies and cannot be parallelised, unlike the “parallel” computations.
+Performance Gains in Multiprocessing -Amdahl
+
+=== PAGE 9 ===
+9
+§Assume a program has no computations with mutual dependencies.§If this is true, then running the program on a machine with N CPUs results in an N-fold gain in performance as the workload can be evenly divided across all N CPUs. §This N-fold gain in performance is termed “linear speedup”.§What happens if the program comprises only computations with mutual dependencies?
+Performance Gains in Multiprocessing
+
+=== PAGE 10 ===
+10
+§Assume a program only has computations with mutual dependencies.§Then the program cannot be usefully divided across a pool of N CPUs, and no performance gain can be realised.§Many computational programs fall into this category and are not suitable for multiprocessing systems.§What happens if a program contains a mix of computations, some of which are “serial” and and some of which are “parallel”?
+Performance Gains in Multiprocessing
+
+=== PAGE 11 ===
+Amdahl’s Law
+
+=== PAGE 12 ===
+12
+§In 1967 Gene Amdahl formulated “Amdahl’s Law” which describes the achievable speedup in a multiprocessing (MIMD) system which is executing a program with a mix of “serial” and “parallel” computations. §The paper is Amdahl, G.M. Validity of the single-processor approach to achieving large scale computing capabilities.In AFIPS Conference Proceedings vol. 30 (Atlantic City, N.J., Apr. 18-20). AFIPS Press, Reston, Va., 1967, pp. 483-485).
+Amdahl’s Law
+(IBM Archives, 1960)
+
+=== PAGE 13 ===
+13
+§Assume N is the number of processors, and s, p are the respective fractions of time spent on the serial and parallel components of a program, where:      𝑆=!"#$%   where s	+	p	=	1§This expression is known as Amdahl’s Law, and it shows that the performance gain in a multiple processor system depends strongly upon the behaviour of the program. §Adding CPUs only makes sense when the program has a large parallel component. Amdahl’s Law can also be remapped into a queueing system model.
+Amdahl’s Law
+
+=== PAGE 14 ===
+14
+1.31% Serial Fraction1.7% Serial Fraction
+25
+35
+40
+45
+50 Linear (Ideal) Speedup
+Number of CPU cores [−]
+Amdahl’s Law [Measurement on live system 1994]
+454035302520151050
+Speedup [−]
+0
+5
+10
+15
+20
+30
+Amdahl’s Law Example (Measured 1994 PHA Pty Ltd)
+Increasing Serial Fraction
+
+=== PAGE 15 ===
+15
+ 1
+ 10
+ 100
+ 1000
+ 10000
+ 100000
+ 1x106
+1*10-9 10*10-9 100*10-9 1*10-6 10*10-6 100*10-6 1*10-3 10*10-3 100*10-3 1*100
+Speedup [CPU Cores]
+Serial Workload Fraction [-]
+Amdahl's Law Parametrised by Number of CPU Cores
+# Cores = 4 
+# Cores = 10 
+# Cores = 20 
+# Cores = 40 
+# Cores = 100 
+# Cores = 200 
+# Cores = 400 
+# Cores = 1,000 
+# Cores = 2,000 
+# Cores = 4,000 
+# Cores = 10,000 
+# Cores = 100,000 
+# Cores = 1,000,000 
+Amdahl’s Law Example (Model for High Core Count)
+
+=== PAGE 16 ===
+16
+Example: Intel Sapphire Rapids 2023 (Up to 60 cores)
+
+
+=== PAGE 17 ===
+Amdahl’s Law – Effect of Fabric Latency
+
+=== PAGE 18 ===
+18
+§Amdahl’s Law was originally defined for multiple CPU systems, during that period mainframes with CPUs sharing a bus and memory§Clusters / clouds which involve local interconnection of hosts, represent in architectural terms “distributed multiprocessors”.§A cluster / cloud is subject to the same fundamental performance constraints imposed by Amdahl’s Law for bussed multiprocessors.§In a distributed environment, data dependencies result in fabric or network communications which increase the total time required to complete a serial component. Latency in messaging adds to delays.§Fabric (network) performance is therefore critical to cluster / cloud design.
+Clusters / Clouds == Distributed Multiprocessors (MIMD)
+
+=== PAGE 19 ===
+19
+Cluster Fabric Topology Example – Fat Tree Model
+AggregationLayer Routers
+EdgeLayer Routers
+Server Pod 0 Server Pod 1 Server Pod 2 Server Pod 3
+Core Layer Routers
+Note core layer routers will be higher performing compared to aggregation and edge layer switches
+
+=== PAGE 20 ===
+20
+§Consider Amdahl’s Law:                              𝑆=!"#$%   where s	+	p	=	1
+§The variable p reflects the fraction of time processing data with no dependencies, which can be parallelised. p is “parallel” time.§The variable s reflects the fraction of time processing data with dependencies, which cannot be parallelised. s is “serial” time.
+Amdahl’s Law in Distributed Parallel Processing
+
+=== PAGE 21 ===
+21
+§In a distributed environment, the fraction of time consumed performing “serial”  computation comprises the time consumed by the CPUs doing the work, and the time consumed communicating, when hosts working on data with dependencies must transmit the results of communitations.§Therefore:     	𝑠=𝑠!"#$+	𝑠%&'()!§Where sfabric is the time for these results to be encapsulated in a message, sent across the fabric, and extracted for use at the destination.
+Amdahl’s Law in Distributed Parallel Processing
+
+=== PAGE 22 ===
+22
+§This results in Amdahl’s Law for Distributed Parallel Processing:		𝑆=!"&'($	#	"*+,-.&	#	$%    where scomp	+	sfabric	+	p	=	1
+§What is important is that the fabric (network) can impact speedup performance no differently than the fraction of time expended on computations with dependencies.§If the fabric provides extremely high capacity and thus short latency to transmit, then scomp	>>	sfabric		and the system behaves no differently from a conventional “bussed” multiprocessor such as a multicore CPU chip
+Amdahl’s Law in Distributed Parallel Processing
+
+=== PAGE 23 ===
+23
+§The time it takes a message to travel across a fabric depends on a number of factors:A.Processing delays on the middleware libraries and protocols stack at the transmitting end;B.Cumulative queueing delays in routers along the transmission route through the fabric;C.Propagation delay through cables in the fabric, proportional to total cable length;D.Processing delays on the middleware libraries and protocols stack at the receiving end.§Only C) is constant in time, the remainder being time variant, and depend on fabric congestion.
+The Impact of Fabric (Network) Performance
+
+=== PAGE 24 ===
+24
+Example: Latency in Cluster/Cloud Fat Tree Fabric TopologyNote core layer routers will be higher performing compared to aggregation and edge layer switches
+AggregationLayer Routers
+EdgeLayer Routers
+Server Pod 0 Server Pod 1 Server Pod 2 Server Pod 3
+Core Layer Routers
+Source NodeDestination Node
+Route ThroughCluster Fabric
+
+=== PAGE 25 ===
+25
+Amdahl’s Law Example with Fabric Queuing Delay
+ 0
+ 100
+ 200
+ 300
+ 400
+ 500
+ 600
+ 700
+ 800
+ 900
+ 1000
+ 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+Speedup [-]
+M/M/1 Queue Utilisation in Interprocess Channel [-]
+Amdahl's Law in Distributed System with Serial M/M/1 Queueing Delay
+Number of CPUs=10 Sc=0.003Number of CPUs=100 Sc=0.003Number of CPUs=1,000 Sc=0.003Number of CPUs=10,000 Sc=0.003Number of CPUs=100,000 Sc=0.003Number of CPUs=1,000,000 Sc=0.003
+Saturated FabricLightly Loaded Fabric
+Increasing Load on Fabric èIncreasing Delay (Latency) Through Fabric è
+
+=== PAGE 26 ===
+26
+Example: Causes of Latency in Cluster/Cloud Fat Tree Fabric
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+ReceivedPacketProcessing
+TCP Processing
+IP Processing
+UDP Processing
+Socket Level Processing
+User Application Process
+Cluster Node
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+DelayPropagationDelayPropagationDelayPropagationDelayPropagationDelay
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+TCP Processing
+IP Processing
+UDP Processing
+Socket Level Processing
+User Application Process
+Cluster Node
+PropagationDelayPropagation
+Network Interface Controller Network Interface ControllerNetwork Interface ControllerNetwork Interface Controller Network Interface ControllerNetwork Interface Controller
+Network Device DriverNetwork Device Driver
+Network Interface Controller
+Network Device Driver Network Device Driver Network Device Driver Network Device DriverNetwork Device Driver
+A
+B
+DCA.Middleware and protocol stack delays in source nodeB.Queuing delays in routers including protocol stack processing delaysC.Propagation delays through cables in fabric (and/or WAN) proportional to total length in pathD.Middleware and protocol stack delays in destination node
+
+=== PAGE 27 ===
+27
+§The result of Amdahl’s Law and network delays is that the performance of a cluster / cloud improves with decreasing frequency of messages required, decreasing size of messages required, and decreasing network load.§If an application is to be run on a cluster / cloud, it is therefore important to understand what data dependencies exist in the algorithm.§For many problems, there will be choices in the “granularity” of the computation, i.e. the size of the “chunks” distributed across the grid.§Increasing N also increases sfabric costing speed.
+The Impact of Fabric Performance
+
+=== PAGE 28 ===
+28
+§Distributed gaming and military simulation applications – well suited to operation over wide area networks since typically runtime messages are short and relatively infrequent comprising state information.§Parametric processing applications – often well suited since runtime messaging may be both infrequent and short. Where dependencies exist between parameter sets, care must be taken.§Mesh based computations, eg finite element models, require careful analysis to determine the best partitioning of the problem, to maximise speedup given some sfabric
+Distributed Application Performance
+
+=== PAGE 29 ===
+Summary
+
+=== PAGE 30 ===
+30
+§Parallelism concepts§Data dependency problem§Amdahl’s Law introduction§Impact of fabric latency on Amdahl’s Law
+Summary
+
+=== PAGE 31 ===
+Reading Materials
+
+=== PAGE 32 ===
+32
+§https://users.monash.edu/~ckopp/SYSTEMS/Vector-CPU-0600.htm §https://users.monash.edu/~ckopp/SYSTEMS/Moores-Law-0700.htm §https://users.monash.edu/~ckopp/SYSTEMS/GHz-CPU-Performance-0801.htm §https://users.monash.edu/~ckopp/SYSTEMS/Backplanes-vs-Cables-1100.htm §https://users.monash.edu/~ckopp/SYSTEMS/Cluster-Practical-1299.htm §http://hint.byu.edu/documentation/Gus/AmdahlsLaw/Amdahls.html §Browne J. C. - Internet/Grid Computing -Fall 2002 -What is Performance for Internet/Grid Computation?
+Reading and References

@@ -1,0 +1,201 @@
+=== PAGE 1 ===
+www.infotech.monash.edu
+Information Technology
+ 
+FIT3143 Parallel Computing 
+ 
+Semester 2 2024
+Topic 
+7 Non
+-
+Examinable Supplement: 
+Queuing Theory Primer
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information Technology
+© 2008 
+-
+ 
+2024 Monash University
+
+
+=== PAGE 2 ===
+www.infotech.monash.edu
+2
+Reading / References•C. Kopp, Primer on Network Congestion, Monash Lens 2020: https://lens.monash.edu/@carlo-kopp/2020/04/03/1379973/a-road-more-travelled-network-congestion-a-consequence-of-working-from-home•Rashid J., Analysis and Provision of QoS for Distributed Grid Applications URL: http://www.wesc.ac.uk/resources/publications/pdf/final-jogc.pdf1.L. Kleinrock, Queuing Systems, Volumes I & II. New York: Wiley, 19762.Lazowska E.D. et al, Quantitative System Performance, http://www.cs.washington.edu/homes/lazowska/qsp/ 3.Thomas G. Robertazzi, Computer Networks and Systems, Springer-Verlag, 19904.Myron Hlynka's Queueing Theory Page URL:  http://www2.uwindsor.ca/~hlynka/queue.html 5.Myron Hlynka's Queueing Definitions URL: http://www2.uwindsor.ca/~hlynka/qdef.html 
+
+=== PAGE 3 ===
+www.infotech.monash.edu
+3
+Queuing Theory PrimerNot Examinable – Recommended Reading Only
+
+=== PAGE 4 ===
+www.infotech.monash.edu
+4
+Overview•What is a queue and why is it important?•Queueing systems – air traffic, automobile traffic, shopping queues, production lines, networks•Concepts in queueing theory:1.Random processes and interarrival time2.M/M/1 queue attributes3.The queue saturation problem – open/closed4.Modelling queue behaviour5.Queued system failures – congestion collapse6.Well designed vs poorly designed queueing systems
+
+=== PAGE 5 ===
+www.infotech.monash.edu
+5
+What is a queue?•Any system which exhibits queueing behaviour can be mathematically modelled as a queue.•The simplest queue is a system where some entities or activities must wait to be serviced.•The behaviour of queueing systems can be readily modelled with mathematics, accepting that some types of queues can be intractable, and others easy.•Leonard Kleinrock: “We study the phenomena of standing, waiting, and serving, and we call this study Queueing Theory.” “Any system in which arrivals place demands upon a finite capacity resource may be termed a queueing system.”
+
+=== PAGE 6 ===
+www.infotech.monash.edu
+6
+Examples of Queueing Systems•Automobile traffic – every set of traffic lights forms a queue, in which the automobiles queue up for access to the intersection.•Production lines – production workpieces flow through a line and must queue for every production task to be done.•Shopping queues – shops, banks, etc. Customers queue up for access to tellers or checkout operators.•Telephone switches – subscribers must queue for access to lines out of the exchange.•Packet switch networks – packets queue at routers.
+
+=== PAGE 7 ===
+www.infotech.monash.edu
+7
+A Trivial Queueing System•Imagine a village with a single well, which uses a pulley system to lower and raise a bucket.•Villagers must queue at the well to fill their buckets, barrels or bags with water.•If every villager takes the same amount of time to fill a container, how many villagers are in the queue?•How long must the villagers stand in the queue?•What happens if the villagers arrive at random times?•What happens if the villagers have random sized containers to fill?•How long is the queue, and how much time must the villagers spend waiting in the queue?
+
+=== PAGE 8 ===
+www.infotech.monash.edu
+8
+A Trivial Queueing System
+
+=== PAGE 9 ===
+www.infotech.monash.edu
+9
+Queuing Theory Concepts (1)•All packet switching and routing networks by their nature employ buffering mechanisms to store incoming packets, which are then forwarded to other switches or routers.•Any ‘store and forward’ buffering system behaves as a queue, and is thus subject to the mathematical properties of queueing systems.•To properly understand the behaviour of circuit and packet switching systems, we must have a good understanding of how queues behave under increasing load.•In all such systems incoming packets arriving at the switch or router will typically arrive at unequal time intervals, or ’inter-arrival times’. The same is true of telephone calls arriving at a switch.
+
+=== PAGE 10 ===
+www.infotech.monash.edu
+10
+Interarrival Times
+Time
+Timestamps
+Inter−Arrival Times Between Events
+
+=== PAGE 11 ===
+www.infotech.monash.edu
+11
+Queuing Theory Concepts (2)•Interarrival times are distributed statistically in time, and the statistical properties of this distribution are very important if we wish to model and analyse the behaviour of a specific queue type.•To model interarrival times, we require knowledge of their statistical properties.•This is usually determined collection of large amounts of statistical data, and then analysing the data.•Broadly we can divide interarrival times into periodic and aperiodic.•Aperiodic interarrival times are random, and behave as a random process.
+
+=== PAGE 12 ===
+www.infotech.monash.edu
+12
+Interarrival Times Poisson + Periodic
+Harmonically
+Related?
+Periodic #2
+Are These
+ANALYSIS OF INTER−ARRIVAL TIMES
+FAST
+SLOW
+Fraction of Events [−]
+Inter−Arrival Time [msec]
+Aperiodic (Poisson)
+Periodic #1
+
+=== PAGE 13 ===
+www.infotech.monash.edu
+13
+Poisson Process•Very common random process in nature.•Usually human behaviours follow Poisson statistics – frequency of phone calls, database accesses, web server accesses.•Random failures in equipment also exhibit Poisson properties.•The rate of the process is λ (lambda). P is probability.)(#)( ttimeatnArrivalsPtPn
+==
+t
+n
+n
+e
+n
+t
+tP
+ll -
+=
+!
+)(
+)(
+
+=== PAGE 14 ===
+www.infotech.monash.edu
+14
+Poisson Process Example (Robertazzi)•A telephone exchange receives on average 100 calls per minute, Poisson distributed in time.•What is the probability that no calls are received in an interval of five seconds?•Tutorial – do some other examples
+00024.0
+!0
+)12/1100(
+!
+)(
+)(
+12/1100
+0
+===
+-- xt
+n
+n
+e
+x
+e
+n
+t
+tP
+ll
+
+=== PAGE 15 ===
+www.infotech.monash.edu
+15
+Other Poisson Properties•The mean of of a Poisson process can be shown to be:<n> = λ t•The variance of a Poisson process can be shown to be:σn2 = λ t•The memoryless (Markov) property: the distribution of time until the next event is the same no matter what point in time we are at (Robertazzi).•Example: Trains arrive at a station with a Poisson distributed mean time between trains of 20 minutes. The last train arrived 19 minutes ago. When will be next train arrive?•Is the correct answer 1 minute?
+
+=== PAGE 16 ===
+www.infotech.monash.edu
+16
+Poisson and Service Times•Until now we have looked at Poisson behaviour in arrival times.•Service time in a queue is the time it takes for the task being queued for to be executed and completed.•The duration of telephone calls is an example of service time.•How are service times distributed statistically?•For many systems, services times are also Poisson, where μ is mean service rate:
+t
+n
+n
+e
+n
+t
+tP
+µ
+µ -
+=
+!
+)(
+)(
+
+=== PAGE 17 ===
+www.infotech.monash.edu
+17
+Markovian Systems – M/M/1 Queueing System
+•Markovian arrival times, Markovian service times, single queue.
+M/M/1 Queueing System
+Poisson Interarrival Times Exponential Service Times
+
+=== PAGE 18 ===
+www.infotech.monash.edu
+18
+Properties of M/M/1 Queues•Whether we look at a bunch of villagers queueing for a well, a telephone system, or a switching device, we will be interested in how long the queue will be, and what waiting time is spent in the queue, as the load on the system varies.•A light load is where λ→0 and a heavy load where λ→μ (maximum) for the system of interest.•We define utilisation U = ρ = λ / μ ; utilisation is a measure of how busy the queueing system is, by comparing the arrival rate with the service rate.•If the arrival rate is 0, U =0, if the arrival rate is as big as the service rate, U = 1.
+
+=== PAGE 19 ===
+www.infotech.monash.edu
+19
+What Happens as ρ → 1?•As we increase the load on an M/M/1 queue, an interesting thing happens.•The average number in the queue can be shown to be:
+•As utilisation approaches 1, the queue saturates, and the lower half of the fraction tends to zero, driving the length of the queue to infinity.•Saturated queues therefore experience extremely long delay times, as tasks pile up waiting to be serviced.
+r
+r
+-
+=><
+1
+n
+
+=== PAGE 20 ===
+www.infotech.monash.edu
+20
+What Happens as ρ → 1?
+
+
+=== PAGE 21 ===
+www.infotech.monash.edu
+21
+Little’s Law•Little showed that the mean number of customers in a queue, the arrival rate, and the mean waiting time are related by:<n> = λ <τ>•Where <τ> is the mean waiting time.•We can then determine <τ>  to be:
+)1(
+/1
+r
+µ
+t
+-
+=><
+
+=== PAGE 22 ===
+www.infotech.monash.edu
+22
+End Queuing Theory PrimerNot Examinable – Recommended Reading Only

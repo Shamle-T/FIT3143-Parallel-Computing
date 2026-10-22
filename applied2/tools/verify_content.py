@@ -77,7 +77,7 @@ def main():
         for old in baseline['slides']:
             if old['id'].startswith('references-') or old['id'] == 'ai-declaration':
                 continue
-            new_id = 'conclusions-detail' if old['id']=='conclusions' else old['id']
+            new_id = {'conclusions':'conclusions-detail','environment':'sector-evidence'}.get(old['id'],old['id'])
             new = current[new_id]
             for key, value in old.items():
                 if key not in {'id','label','number'}:
@@ -105,7 +105,18 @@ def main():
         for n in charts:
             root=ET.fromstring(z.read(n))
             values.append([float(v.text) for v in root.findall('.//c:val/c:numRef/c:numCache/c:pt/c:v',NS)])
-        assert sorted(values) == sorted([[485,950],[.17,.50]]),values
+        assert {tuple(v) for v in values} == {(485,950),(.17,.50)},values
+        # Each chart owner needs its own chart part for PowerPoint compatibility.
+        owner_counts = {}
+        for part in parts:
+            owner_rel = part.rsplit('/',1)[0]+'/_rels/'+part.rsplit('/',1)[1]+'.rels'
+            relroot=ET.fromstring(z.read(owner_rel))
+            for rel in relroot:
+                if rel.get('Type','').endswith('/chart'):
+                    target=rel.get('Target')
+                    if ET.fromstring(z.read(part)).find('.//{http://schemas.openxmlformats.org/drawingml/2006/chart}chart[@{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id="'+rel.get('Id')+'"]') is not None:
+                        owner_counts[target]=owner_counts.get(target,0)+1
+        assert all(count==1 for count in owner_counts.values()),owner_counts
         workbooks=[]
         for n in z.namelist():
             if n.endswith('.xlsx'):

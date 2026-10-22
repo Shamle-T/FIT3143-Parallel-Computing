@@ -40,3 +40,9 @@ task[1-4]
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Installed dependencies and Python bytecode caches
+node_modules/
+__pycache__/
+*.pyc
+

@@ -1,0 +1,280 @@
+{"kind":"deck","id":"pr/jm4sxv","name":"Deck"}
+{"kind":"layout","layoutId":"91fa8ed4-9764-403a-b520-a558368ac12f","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"5981eceb-f8f0-46a1-b3bd-c682f9c3a5ff","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/5i0r2a","slide":1,"title":"FIT3143 • PARALLEL COMPUTING","textShapes":6}
+{"kind":"shape","id":"sh/587ux8bi","slide":1,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/ilgbmtsr","slide":1,"text":"FIT3143 • PARALLEL COMPUTING","textPreview":"FIT3143 • PARALLEL COMPUTING","textChars":28,"textLines":1,"bbox":[74,74,650,24]}
+{"kind":"textbox","id":"sh/jmpcvytc","slide":1,"text":"Prime Search at Scale","textPreview":"Prime Search at Scale","textChars":21,"textLines":1,"bbox":[74,135,1060,76]}
+{"kind":"textbox","id":"sh/wjetkjal","slide":1,"text":"Open MPI and hybrid MPI + OpenMP","textPreview":"Open MPI and hybrid MPI + OpenMP","textChars":32,"textLines":1,"bbox":[74,222,950,48]}
+{"kind":"shape","id":"sh/hk7utob6","slide":1,"bbox":[74,318,470,5]}
+{"kind":"textbox","id":"sh/uhwbitsv","slide":1,"text":"Correctness • workload balance • measured scalability","textPreview":"Correctness • workload balance • measured scalability","textChars":53,"textLines":1,"bbox":[74,350,920,34]}
+{"kind":"textbox","id":"sh/vi5cret0","slide":1,"text":"Savin Vindiv De Alwis (35221631)\nWillwara Arachchilage Shamle Imal Thilaksiri (35512075)","textPreview":"Savin Vindiv De Alwis (35221631) | Willwara Arachchilage Shamle Imal Thilaksiri (35512075)","textChars":88,"textLines":2,"bbox":[74,505,820,64]}
+{"kind":"textbox","id":"sh/8fetgjup","slide":1,"text":"Main presentation: 6 min 25 s","textPreview":"Main presentation: 6 min 25 s","textChars":29,"textLines":1,"bbox":[74,620,420,24]}
+{"kind":"notes","id":"nt/5i0r2a","slide":1,"text":""}
+{"kind":"slide","id":"sl/et1ivq","slide":2,"title":"FIT3143 • LAB 2","textShapes":20}
+{"kind":"shape","id":"sh/8zqtw72d","slide":2,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/nyhsnm1s","slide":2,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/mx8buhk7","slide":2,"text":"Experimental setup and correctness","textPreview":"Experimental setup and correctness","textChars":34,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/lwzalcjm","slide":2,"text":"2 / 9","textPreview":"2 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/0vqts721","slide":2,"bbox":[58,122,360,150]}
+{"kind":"shape","id":"sh/zuhsj21g","slide":2,"bbox":[58,122,7,150]}
+{"kind":"textbox","id":"sh/yt8bqxkv","slide":2,"text":"PLATFORM","textPreview":"PLATFORM","textChars":8,"textLines":1,"bbox":[80,138,322,22]}
+{"kind":"textbox","id":"sh/5s3uxwjq","slide":2,"text":"1 node • 14C / 20T","textPreview":"1 node • 14C / 20T","textChars":18,"textLines":1,"bbox":[80,167,322,42]}
+{"kind":"textbox","id":"sh/krut4ril","slide":2,"text":"WSL2 Ubuntu • Open MPI 4.1.6\nIntel Core i7-13700H","textPreview":"WSL2 Ubuntu • Open MPI 4.1.6 | Intel Core i7-13700H","textChars":49,"textLines":2,"bbox":[80,213,322,46]}
+{"kind":"shape","id":"sh/yx43ax4z","slide":2,"bbox":[460,122,360,150]}
+{"kind":"shape","id":"sh/zyd4j25k","slide":2,"bbox":[460,122,7,150]}
+{"kind":"textbox","id":"sh/kzmlc7m5","slide":2,"text":"PRIMARY WORKLOAD","textPreview":"PRIMARY WORKLOAD","textChars":16,"textLines":1,"bbox":[482,138,322,22]}
+{"kind":"textbox","id":"sh/l0vmlcna","slide":2,"text":"n = 60,000,000","textPreview":"n = 60,000,000","textChars":14,"textLines":1,"bbox":[482,167,322,42]}
+{"kind":"textbox","id":"sh/atk36xon","slide":2,"text":"3,562,115 primes below n\nall output written by rank 0","textPreview":"3,562,115 primes below n | all output written by rank 0","textChars":53,"textLines":2,"bbox":[482,213,322,46]}
+{"kind":"shape","id":"sh/bud4f258","slide":2,"bbox":[862,122,360,150]}
+{"kind":"shape","id":"sh/cvml87mt","slide":2,"bbox":[862,122,7,150]}
+{"kind":"textbox","id":"sh/xwvmhsne","slide":2,"text":"COVERAGE","textPreview":"COVERAGE","textChars":8,"textLines":1,"bbox":[884,138,322,22]}
+{"kind":"textbox","id":"sh/upo3ih47","slide":2,"text":"30 n values","textPreview":"30 n values","textChars":11,"textLines":1,"bbox":[884,167,322,42]}
+{"kind":"textbox","id":"sh/vqx4rm5s","slide":2,"text":"20M–78M • MPI ranks 1–16\nOpenMP threads 1–16 • up to 64 workers","textPreview":"20M–78M • MPI ranks 1–16 | OpenMP threads 1–16 • up to 64 workers","textChars":63,"textLines":2,"bbox":[884,213,322,46]}
+{"kind":"shape","id":"sh/rap03el4","slide":2,"bbox":[58,310,560,290]}
+{"kind":"textbox","id":"sh/q9gja94j","slide":2,"text":"Measurement discipline","textPreview":"Measurement discipline","textChars":22,"textLines":1,"bbox":[82,334,500,28]}
+{"kind":"textbox","id":"sh/dcri5o3u","slide":2,"text":"Process and hybrid scaling","textPreview":"Process and hybrid scaling","textChars":26,"textLines":1,"bbox":[82,386,230,22]}
+{"kind":"textbox","id":"sh/sbi1cjmp","slide":2,"text":"Median of 3 end-to-end runs; computation, gather and root post-processing recorded separately.","textPreview":"Median of 3 end-to-end runs; computation, gather and root post-processing recorded separately.","textChars":94,"textLines":1,"bbox":[82,414,485,56]}
+{"kind":"textbox","id":"sh/fy907yl0","slide":2,"text":"n sweep","textPreview":"n sweep","textChars":7,"textLines":1,"bbox":[82,496,230,22]}
+{"kind":"textbox","id":"sh/ed0jetkf","slide":2,"text":"One run at every required n; every runtime exceeds one second. Oversubscription is included explicitly.","textPreview":"One run at every required n; every runtime exceeds one second. Oversubscription is included explicitly.","textChars":103,"textLines":1,"bbox":[82,524,485,56]}
+{"kind":"shape","id":"sh/10ri9836","slide":2,"bbox":[652,310,570,290]}
+{"kind":"textbox","id":"sh/0zi1g32l","slide":2,"text":"Independent exact validation","textPreview":"Independent exact validation","textChars":28,"textLines":1,"bbox":[680,334,500,28]}
+{"kind":"textbox","id":"sh/n2t0bylc","slide":2,"text":"Both programs were compared value-for-value with a separate sieve across MPI ranks 1–5 and thread counts 1–3, including n = 0, 1, 2, 3, 4, 10 and 1000.","textPreview":"Both programs were compared value-for-value with a separate sieve across MPI ranks 1–5 and thread counts 1–3, including n = 0, 1, 2, 3, 4...","textChars":151,"textLines":1,"bbox":[680,388,500,98]}
+{"kind":"textbox","id":"sh/210jitkr","slide":2,"text":"PASS: sorted • unique • complete • prime-only • < n","textPreview":"PASS: sorted • unique • complete • prime-only • < n","textChars":51,"textLines":1,"bbox":[680,522,500,44]}
+{"kind":"notes","id":"nt/et1ivq","slide":2,"text":"Sources: results/local_cluster_execution.txt; scripts/verify_correctness.sh; results/n_scaling.csv; results/task1_process_scaling.csv; results/hybrid_scaling.csv."}
+{"kind":"slide","id":"sl/rd5tst","slide":3,"title":"FIT3143 • LAB 2","textShapes":25}
+{"kind":"shape","id":"sh/2t0vud4n","slide":3,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/pwbupsne","slide":3,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/4vidwnmt","slide":3,"text":"Task 1: robust block-cyclic MPI partition","textPreview":"Task 1: robust block-cyclic MPI partition","textChars":41,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/ritcr25k","slide":3,"text":"3 / 9","textPreview":"3 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/qxkvyx4z","slide":3,"bbox":[58,120,540,250]}
+{"kind":"textbox","id":"sh/dkbutsna","slide":3,"text":"Odd-candidate index space","textPreview":"Odd-candidate index space","textChars":25,"textLines":1,"bbox":[82,142,460,25]}
+{"kind":"textbox","id":"sh/cj2d0nmp","slide":3,"text":"Chunks of 64 odd candidates are assigned round-robin.","textPreview":"Chunks of 64 odd candidates are assigned round-robin.","textChars":53,"textLines":1,"bbox":[82,178,460,28]}
+{"kind":"textbox","id":"sh/zmtwv25g","slide":3,"text":"rank 0","textPreview":"rank 0","textChars":6,"textLines":1,"bbox":[86,230,76,26]}
+{"kind":"shape","id":"sh/elkv2x4v","slide":3,"bbox":[170,225,62,30]}
+{"kind":"textbox","id":"sh/sb2dorm9","slide":3,"text":"C0","textPreview":"C0","textChars":2,"textLines":1,"bbox":[170,230,62,20]}
+{"kind":"shape","id":"sh/twbexwnu","slide":3,"bbox":[252,225,62,30]}
+{"kind":"textbox","id":"sh/690vmh4j","slide":3,"text":"C3","textPreview":"C3","textChars":2,"textLines":1,"bbox":[252,230,62,20]}
+{"kind":"shape","id":"sh/7atwvm5o","slide":3,"bbox":[334,225,62,30]}
+{"kind":"textbox","id":"sh/gz2dsbml","slide":3,"text":"C6","textPreview":"C6","textChars":2,"textLines":1,"bbox":[334,230,62,20]}
+{"kind":"shape","id":"sh/h0be1g36","slide":3,"bbox":[416,225,62,30]}
+{"kind":"textbox","id":"sh/uxkvq14f","slide":3,"text":"C9","textPreview":"C9","textChars":2,"textLines":1,"bbox":[416,230,62,20]}
+{"kind":"textbox","id":"sh/fytwz6l0","slide":3,"text":"rank 1","textPreview":"rank 1","textChars":6,"textLines":1,"bbox":[86,276,76,26]}
+{"kind":"shape","id":"sh/43mdwbmh","slide":3,"bbox":[170,271,62,30]}
+{"kind":"textbox","id":"sh/p4ve5g32","slide":3,"text":"C1","textPreview":"C1","textChars":2,"textLines":1,"bbox":[170,276,62,20]}
+{"kind":"shape","id":"sh/xkrepgv6","slide":3,"bbox":[252,271,62,30]}
+{"kind":"textbox","id":"sh/cjidgbel","slide":3,"text":"C4","textPreview":"C4","textChars":2,"textLines":1,"bbox":[252,276,62,20]}
+{"kind":"shape","id":"sh/bi9cn6d0","slide":3,"bbox":[334,271,62,30]}
+{"kind":"textbox","id":"sh/ah0ve1wv","slide":3,"text":"C7","textPreview":"C7","textChars":2,"textLines":1,"bbox":[334,276,62,20]}
+{"kind":"shape","id":"sh/lobetgvi","slide":3,"bbox":[416,271,62,30]}
+{"kind":"textbox","id":"sh/knidkbex","slide":3,"text":"C10","textPreview":"C10","textChars":3,"textLines":1,"bbox":[416,276,62,20]}
+{"kind":"textbox","id":"sh/zm9wrqdc","slide":3,"text":"rank 2","textPreview":"rank 2","textChars":6,"textLines":1,"bbox":[86,322,76,26]}
+{"kind":"shape","id":"sh/yl0vilwr","slide":3,"bbox":[170,317,62,30]}
+{"kind":"textbox","id":"sh/1s7uhwvy","slide":3,"text":"C2","textPreview":"C2","textChars":2,"textLines":1,"bbox":[170,322,62,20]}
+{"kind":"shape","id":"sh/gryd8red","slide":3,"bbox":[252,317,62,30]}
+{"kind":"textbox","id":"sh/6xwbixcb","slide":3,"text":"C5","textPreview":"C5","textChars":2,"textLines":1,"bbox":[252,322,62,20]}
+{"kind":"shape","id":"sh/ry5sb2tw","slide":3,"bbox":[334,317,62,30]}
+{"kind":"textbox","id":"sh/szetk7uh","slide":3,"text":"C8","textPreview":"C8","textChars":2,"textLines":1,"bbox":[334,322,62,20]}
+{"kind":"shape","id":"sh/t0nadsb2","slide":3,"bbox":[416,317,62,30]}
+{"kind":"textbox","id":"sh/e1wbmxcn","slide":3,"text":"C11","textPreview":"C11","textChars":3,"textLines":1,"bbox":[416,322,62,20]}
+{"kind":"textbox","id":"sh/f25sf2ts","slide":3,"text":"Equal-sized chunks preserve locality while mixing cheap composites and expensive large candidates across ranks.","textPreview":"Equal-sized chunks preserve locality while mixing cheap composites and expensive large candidates across ranks.","textChars":111,"textLines":1,"bbox":[82,388,490,62]}
+{"kind":"textbox","id":"sh/gneto7ud","slide":3,"text":"Rank 0 performs an O(m log p) k-way merge and buffered output.","textPreview":"Rank 0 performs an O(m log p) k-way merge and buffered output.","textChars":62,"textLines":1,"bbox":[82,468,490,48]}
+{"kind":"textbox","id":"sh/1onahcby","slide":3,"text":"Measured computation-time imbalance (max / min)","textPreview":"Measured computation-time imbalance (max / min)","textChars":47,"textLines":1,"bbox":[636,126,586,28]}
+{"kind":"shape","id":"sh/v6ls3ido","slide":3,"bbox":[636,414,586,146]}
+{"kind":"textbox","id":"sh/batgra1g","slide":3,"text":"Why this is the selected partition","textPreview":"Why this is the selected partition","textChars":34,"textLines":1,"bbox":[660,436,530,25]}
+{"kind":"textbox","id":"sh/a9kzi50v","slide":3,"text":"It had the lowest worst-case imbalance among the three measured strategies: ≤ 1.06 for p = 3–5. Pure cyclic collapses at odd p because divisibility patterns align with rank strides.","textPreview":"It had the lowest worst-case imbalance among the three measured strategies: ≤ 1.06 for p = 3–5. Pure cyclic collapses at odd p because di...","textChars":181,"textLines":1,"bbox":[660,474,530,70]}
+{"kind":"table","id":"tb/p0re947i","slide":3,"name":"","rows":4,"cols":4,"preview":"Strategy | p = 3 | p = 4 | p = 5","bbox":[636,170,586,212]}
+{"kind":"notes","id":"nt/rd5tst","slide":3,"text":"Source: results/partition_balance.csv. Each value is the median of three runs at n=20,000,000. The strategy comparison uses identical primality testing, merge and output code."}
+{"kind":"slide","id":"sl/h4dpv0","slide":4,"title":"FIT3143 • LAB 2","textShapes":4}
+{"kind":"shape","id":"sh/oj6h4j6p","slide":4,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/nixgbep4","slide":4,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/2hoz2toj","slide":4,"text":"Graph 1 — runtime across 30 problem sizes","textPreview":"Graph 1 — runtime across 30 problem sizes","textChars":41,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/x8zyh876","slide":4,"text":"4 / 9","textPreview":"4 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/b6hgfypg","slide":4,"bbox":[265,604,750,54]}
+{"kind":"textbox","id":"sh/a58z6tov","slide":4,"text":"All 30 values are shown; no run is below one second.","textPreview":"All 30 values are shown; no run is below one second.","textChars":52,"textLines":1,"bbox":[283,617,714,30]}
+{"kind":"chart","id":"ch/wfmpkbip","slide":4,"name":"","chartType":"scatter","title":"End-to-end runtime","bbox":[70,118,1140,470]}
+{"kind":"notes","id":"nt/h4dpv0","slide":4,"text":"Sources: results/n_scaling.csv (current serial and MPI sweep) and results/openmp_n_scaling.csv (prior Week 4 OpenMP sweep). Both use the same machine, n values and 4 workers, but were measured in separate sessions; absolute runtime may include session noise."}
+{"kind":"slide","id":"sl/3hh4z4","slide":5,"title":"FIT3143 • LAB 2","textShapes":4}
+{"kind":"shape","id":"sh/dwb6hszi","slide":5,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/qtkn6d07","slide":5,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/rutofihc","slide":5,"text":"Graph 2 — speedup across 30 problem sizes","textPreview":"Graph 2 — speedup across 30 problem sizes","textChars":41,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/4r254ni1","slide":5,"text":"5 / 9","textPreview":"5 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/ip0n2d0v","slide":5,"bbox":[145,604,990,54]}
+{"kind":"textbox","id":"sh/3q9obihg","slide":5,"text":"MPI stays near 3.3–3.6× at four processes; the OpenMP series is noisier but uses its own matched serial session.","textPreview":"MPI stays near 3.3–3.6× at four processes; the OpenMP series is noisier but uses its own matched serial session.","textChars":112,"textLines":1,"bbox":[163,617,954,30]}
+{"kind":"chart","id":"ch/pgzqpsv6","slide":5,"name":"","chartType":"scatter","title":"Speedup against each implementation's matched serial baseline","bbox":[70,118,1140,470]}
+{"kind":"notes","id":"nt/3hh4z4","slide":5,"text":"Sources: MPI speedup from results/n_scaling.csv. OpenMP speedup = results/task3_n_scaling.csv serial_total divided by results/openmp_n_scaling.csv openmp_time for the same n. This avoids mixing serial baselines across sessions."}
+{"kind":"slide","id":"sl/ft50wl","slide":6,"title":"FIT3143 • LAB 2","textShapes":4}
+{"kind":"shape","id":"sh/epsvixkz","slide":6,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/1s3edcja","slide":6,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/0rudk72p","slide":6,"text":"Graphs 3 and 6 — Task 1 scaling and Amdahl comparison","textPreview":"Graphs 3 and 6 — Task 1 scaling and Amdahl comparison","textChars":53,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/r21w7i18","slide":6,"text":"6 / 9","textPreview":"6 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/cnadgn2t","slide":6,"bbox":[115,590,1050,54]}
+{"kind":"textbox","id":"sh/by5wjm1c","slide":6,"text":"At p = 16: 6.02× empirical versus 12.67× Amdahl — collectives, contention and root-only output are not in the ideal model.","textPreview":"At p = 16: 6.02× empirical versus 12.67× Amdahl — collectives, contention and root-only output are not in the ideal model.","textChars":122,"textLines":1,"bbox":[133,603,1014,30]}
+{"kind":"chart","id":"ch/qpk7i5on","slide":6,"name":"","chartType":"line","title":"Graph 3 • matching worker counts","bbox":[54,122,575,440]}
+{"kind":"chart","id":"ch/dcbqtkny","slide":6,"name":"","chartType":"scatter","title":"Graph 6 • MPI empirical vs Amdahl","bbox":[651,122,575,440]}
+{"kind":"notes","id":"nt/ft50wl","slide":6,"text":"Graph 3 sources: results/task1_process_scaling.csv and results/openmp_thread_scaling.csv. Graph 6 source: results/task1_process_scaling.csv. Process-scaling points are medians of three runs at n=60,000,000."}
+{"kind":"slide","id":"sl/vdzss0","slide":7,"title":"FIT3143 • LAB 2","textShapes":22}
+{"kind":"shape","id":"sh/kvq9ov21","slide":7,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/juh8vq1w","slide":7,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/it87mlkb","slide":7,"text":"Task 2: hybrid decomposition and measured balance","textPreview":"Task 2: hybrid decomposition and measured balance","textChars":49,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/xszqtgjq","slide":7,"text":"7 / 9","textPreview":"7 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/wrqpkb25","slide":7,"text":"Two-level parallelism","textPreview":"Two-level parallelism","textChars":21,"textLines":1,"bbox":[58,122,510,28]}
+{"kind":"shape","id":"sh/bqh8r61k","slide":7,"bbox":[58,174,155,140]}
+{"kind":"textbox","id":"sh/ap87i1kz","slide":7,"text":"MPI","textPreview":"MPI","textChars":3,"textLines":1,"bbox":[70,194,131,27]}
+{"kind":"textbox","id":"sh/9ofqpgje","slide":7,"text":"block-cyclic chunks\nacross processes","textPreview":"block-cyclic chunks | across processes","textChars":36,"textLines":2,"bbox":[70,235,131,58]}
+{"kind":"textbox","id":"sh/o36pgb29","slide":7,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[215,222,28,30]}
+{"kind":"shape","id":"sh/290bmx8z","slide":7,"bbox":[241,174,155,140]}
+{"kind":"textbox","id":"sh/nu9cv29k","slide":7,"text":"OpenMP","textPreview":"OpenMP","textChars":6,"textLines":1,"bbox":[253,194,131,27]}
+{"kind":"textbox","id":"sh/ovito7qp","slide":7,"text":"dynamic schedule(64)\ninside each process","textPreview":"dynamic schedule(64) | inside each process","textChars":40,"textLines":2,"bbox":[253,235,131,58]}
+{"kind":"textbox","id":"sh/pwbuxc7a","slide":7,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[398,222,28,30]}
+{"kind":"shape","id":"sh/e50bix8n","slide":7,"bbox":[424,174,155,140]}
+{"kind":"textbox","id":"sh/f69sr298","slide":7,"text":"Rank 0","textPreview":"Rank 0","textChars":6,"textLines":1,"bbox":[436,194,131,27]}
+{"kind":"textbox","id":"sh/07itk7qt","slide":7,"text":"k-way merge +\nbuffered output","textPreview":"k-way merge + | buffered output","textChars":29,"textLines":2,"bbox":[436,235,131,58]}
+{"kind":"shape","id":"sh/18rutcre","slide":7,"bbox":[58,348,521,210]}
+{"kind":"textbox","id":"sh/q1gbed8r","slide":7,"text":"Why dynamic scheduling remains useful","textPreview":"Why dynamic scheduling remains useful","textChars":37,"textLines":1,"bbox":[82,372,470,26]}
+{"kind":"textbox","id":"sh/r2psni9c","slide":7,"text":"Trial division has irregular per-candidate cost. MPI chunks balance rank-level work; OpenMP dynamic scheduling smooths the remaining variation between threads without changing output order.","textPreview":"Trial division has irregular per-candidate cost. MPI chunks balance rank-level work; OpenMP dynamic scheduling smooths the remaining vari...","textChars":189,"textLines":1,"bbox":[82,418,470,112]}
+{"kind":"textbox","id":"sh/v658vep4","slide":7,"text":"Representative local execution at n = 60M","textPreview":"Representative local execution at n = 60M","textChars":41,"textLines":1,"bbox":[624,126,598,28]}
+{"kind":"shape","id":"sh/h8nqxo7u","slide":7,"bbox":[624,376,282,180]}
+{"kind":"shape","id":"sh/g7e9oj6p","slide":7,"bbox":[624,376,7,180]}
+{"kind":"textbox","id":"sh/3a58zyp0","slide":7,"text":"TASK 1","textPreview":"TASK 1","textChars":6,"textLines":1,"bbox":[646,392,244,22]}
+{"kind":"textbox","id":"sh/i9wrqtof","slide":7,"text":"6.97 s","textPreview":"6.97 s","textChars":6,"textLines":1,"bbox":[646,421,244,42]}
+{"kind":"textbox","id":"sh/5c7q1876","slide":7,"text":"4 MPI processes\nexact output validation: PASS","textPreview":"4 MPI processes | exact output validation: PASS","textChars":45,"textLines":2,"bbox":[646,467,244,76]}
+{"kind":"shape","id":"sh/4be9s36l","slide":7,"bbox":[940,376,282,180]}
+{"kind":"shape","id":"sh/jel8nupw","slide":7,"bbox":[940,376,7,180]}
+{"kind":"textbox","id":"sh/yds7e9ob","slide":7,"text":"TASK 2","textPreview":"TASK 2","textChars":6,"textLines":1,"bbox":[962,392,244,22]}
+{"kind":"textbox","id":"sh/ojq5ovm9","slide":7,"text":"5.16 s","textPreview":"5.16 s","textChars":6,"textLines":1,"bbox":[962,421,244,42]}
+{"kind":"textbox","id":"sh/pkz6h0nu","slide":7,"text":"4 MPI × 2 OpenMP\nexact output validation: PASS","textPreview":"4 MPI × 2 OpenMP | exact output validation: PASS","textChars":46,"textLines":2,"bbox":[962,467,244,76]}
+{"kind":"shape","id":"sh/2h8nm543","slide":7,"bbox":[640,588,566,54]}
+{"kind":"textbox","id":"sh/nihofa5o","slide":7,"text":"Hybrid speedup over the same 4-rank Task 1 run: 1.35×","textPreview":"Hybrid speedup over the same 4-rank Task 1 run: 1.35×","textChars":53,"textLines":1,"bbox":[658,601,530,30]}
+{"kind":"table","id":"tb/9knmls3q","slide":7,"name":"","rows":3,"cols":5,"preview":"Program | Configuration | min compute | max compute | max/min","bbox":[624,172,598,166]}
+{"kind":"notes","id":"nt/vdzss0","slide":7,"text":"Source: results/local_cluster_execution.txt. This representative run records per-rank compute times, candidate-count range, total runtime, commands and exact sorted-output validation."}
+{"kind":"slide","id":"sl/m049q1","slide":8,"title":"FIT3143 • LAB 2","textShapes":4}
+{"kind":"shape","id":"sh/a58jup4j","slide":8,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/x8zip4nu","slide":8,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/w7q1wzmp","slide":8,"text":"Graphs 4 and 5 — hybrid scaling","textPreview":"Graphs 4 and 5 — hybrid scaling","textChars":31,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/nih0ja5s","slide":8,"text":"8 / 9","textPreview":"8 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/83q1sfmd","slide":8,"bbox":[140,590,1000,54]}
+{"kind":"textbox","id":"sh/re1kve5c","slide":8,"text":"Best measured hybrid point: 8.46× at 1 × 16; 32- and 64-worker configurations (4×8 and 4×16) reduce efficiency.","textPreview":"Best measured hybrid point: 8.46× at 1 × 16; 32- and 64-worker configurations (4×8 and 4×16) reduce efficiency.","textChars":111,"textLines":1,"bbox":[158,603,964,30]}
+{"kind":"chart","id":"ch/2xsbu5g3","slide":8,"name":"","chartType":"line","title":"Graph 4 • fixed 4 MPI processes","bbox":[54,122,575,440]}
+{"kind":"chart","id":"ch/p03apkfu","slide":8,"name":"","chartType":"line","title":"Graph 5 • matched total workers","bbox":[651,122,575,440]}
+{"kind":"notes","id":"nt/m049q1","slide":8,"text":"Sources: results/hybrid_scaling.csv and results/openmp_thread_scaling.csv. Hybrid points are medians of three runs at n=60,000,000. Graph 5 compares equal total worker counts."}
+{"kind":"slide","id":"sl/i8rw7v","slide":9,"title":"FIT3143 • LAB 2","textShapes":8}
+{"kind":"shape","id":"sh/f214netw","slide":9,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/03u5wjuh","slide":9,"text":"FIT3143 • LAB 2","textPreview":"FIT3143 • LAB 2","textChars":15,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/143mpob2","slide":9,"text":"Graph 7 — hybrid scaling limits","textPreview":"Graph 7 — hybrid scaling limits","textChars":31,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/qdsnq9cf","slide":9,"text":"9 / 9","textPreview":"9 / 9","textChars":5,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"shape","id":"sh/sfa5szu5","slide":9,"bbox":[746,122,476,210]}
+{"kind":"textbox","id":"sh/dgjml4bq","slide":9,"text":"Why the curves diverge","textPreview":"Why the curves diverge","textChars":22,"textLines":1,"bbox":[772,144,420,26]}
+{"kind":"textbox","id":"sh/i98nmpc3","slide":9,"text":"MPI collectives and rank-0 aggregation\nMemory and scheduler contention\nOversubscription beyond 20 logical CPUs\nAmdahl assumes a fixed, ideal serial fraction","textPreview":"MPI collectives and rank-0 aggregation | Memory and scheduler contention | Oversubscription beyond 20 logical CPUs | Amdahl assumes a fix...","textChars":156,"textLines":4,"bbox":[772,190,420,118]}
+{"kind":"shape","id":"sh/3ah4futo","slide":9,"bbox":[746,354,476,218]}
+{"kind":"textbox","id":"sh/rypsfmp4","slide":9,"text":"Limitations and future work","textPreview":"Limitations and future work","textChars":27,"textLines":1,"bbox":[772,376,420,26]}
+{"kind":"textbox","id":"sh/qdgb6h8j","slide":9,"text":"The benchmark series is single-node data, so it does not quantify network cost. A two-node CAAS functional run completed successfully. Next: multi-node CAAS measurements, segmented-sieve work units, and distributed output.","textPreview":"The benchmark series is single-node data, so it does not quantify network cost. A two-node CAAS functional run completed successfully. Ne...","textChars":222,"textLines":1,"bbox":[772,422,420,112]}
+{"kind":"textbox","id":"sh/d07ahw7a","slide":9,"text":"Q&A","textPreview":"Q&A","textChars":3,"textLines":1,"bbox":[998,610,190,34]}
+{"kind":"chart","id":"ch/3y1svut0","slide":9,"name":"","chartType":"line","title":"Hybrid empirical versus ideal","bbox":[50,120,655,455]}
+{"kind":"notes","id":"nt/i8rw7v","slide":9,"text":"Source: results/hybrid_scaling.csv. Amdahl serial fraction is measured from the one-worker hybrid run: Ts=0.411327 s, Tp=23.749574 s, fs=0.017024. CAAS evidence in Appendices 3-6 verifies setup, Task 1 configuration and execution, and Task 2 configuration; it is not graph or balance data. Main presentation ends here; appendix slides are for Q&A only."}
+{"kind":"slide","id":"sl/sqbhd8","slide":10,"title":"APPENDIX","textShapes":8}
+{"kind":"shape","id":"sh/s3udg7yp","slide":10,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/721cnmx4","slide":10,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/61svehgz","slide":10,"text":"Measured partition and Amdahl evidence","textPreview":"Measured partition and Amdahl evidence","textChars":38,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/hs3utwfm","slide":10,"text":"Appendix 1","textPreview":"Appendix 1","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/grudkry1","slide":10,"text":"Partition strategy comparison • n = 20M • median of 3 runs","textPreview":"Partition strategy comparison • n = 20M • median of 3 runs","textChars":58,"textLines":1,"bbox":[58,116,1160,26]}
+{"kind":"textbox","id":"sh/upcvihgv","slide":10,"text":"Amdahl inputs are measured, not assumed","textPreview":"Amdahl inputs are measured, not assumed","textChars":39,"textLines":1,"bbox":[58,392,540,26]}
+{"kind":"shape","id":"sh/wvat8nyh","slide":10,"bbox":[766,392,456,196]}
+{"kind":"textbox","id":"sh/qtc7ilgv","slide":10,"text":"Formula","textPreview":"Formula","textChars":7,"textLines":1,"bbox":[792,414,390,24]}
+{"kind":"textbox","id":"sh/rul8rqhg","slide":10,"text":"S(W) = (Ts + Tp) / (Ts + Tp / W)","textPreview":"S(W) = (Ts + Tp) / (Ts + Tp / W)","textChars":32,"textLines":1,"bbox":[792,458,390,38]}
+{"kind":"textbox","id":"sh/cvupkvy1","slide":10,"text":"Empirical speedup uses the Week 4 serial end-to-end baseline. Theoretical speedup uses each parallel program's measured one-worker decomposition; this difference is stated explicitly.","textPreview":"Empirical speedup uses the Week 4 serial end-to-end baseline. Theoretical speedup uses each parallel program's measured one-worker decomp...","textChars":183,"textLines":1,"bbox":[792,512,390,60]}
+{"kind":"table","id":"tb/6xovilsb","slide":10,"name":"","rows":4,"cols":5,"preview":"p | Block-cyclic ratio | Pure cyclic ratio | Block ratio | Block-cyclic total","bbox":[58,158,1164,196]}
+{"kind":"table","id":"tb/cvaxwzql","slide":10,"name":"","rows":3,"cols":4,"preview":"Program | Ts | Tp | fs = Ts / (Ts+Tp)","bbox":[58,432,670,156]}
+{"kind":"notes","id":"nt/sqbhd8","slide":10,"text":"Sources: results/partition_balance.csv, results/task1_process_scaling.csv and results/hybrid_scaling.csv."}
+{"kind":"slide","id":"sl/wln788","slide":11,"title":"APPENDIX","textShapes":5}
+{"kind":"shape","id":"sh/2toru90v","slide":11,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/pwfa5ojm","slide":11,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/ov69wji1","slide":11,"text":"Evidence and Moodle submission readiness","textPreview":"Evidence and Moodle submission readiness","textChars":40,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/byxs7y1c","slide":11,"text":"Appendix 2","textPreview":"Appendix 2","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/qxoryt07","slide":11,"text":"Verified artifacts","textPreview":"Verified artifacts","textChars":18,"textLines":1,"bbox":[58,116,1160,26]}
+{"kind":"shape","id":"sh/cz6903ix","slide":11,"bbox":[170,582,940,54]}
+{"kind":"textbox","id":"sh/z2hsby1o","slide":11,"text":"Do not submit until the red item is authentic, legible and included. This review cannot fabricate it.","textPreview":"Do not submit until the red item is authentic, legible and included. This review cannot fabricate it.","textChars":101,"textLines":1,"bbox":[188,595,904,30]}
+{"kind":"table","id":"tb/ofu5o3ul","slide":11,"name":"","rows":9,"cols":3,"preview":"Requirement | Artifact | Status","bbox":[58,156,1164,388]}
+{"kind":"notes","id":"nt/wln788","slide":11,"text":"Required Moodle files are task1.c, task2.c, and the presentation. Supporting scripts, results, CSVs, and screenshots are retained for inspection but are not listed as compulsory uploads in the assessment specification. The prompt/conversation record must still be exported authentically if AI was used."}
+{"kind":"slide","id":"sl/4km0y1","slide":12,"title":"APPENDIX","textShapes":7}
+{"kind":"shape","id":"sh/kfqpc3md","slide":12,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/jehojy5s","slide":12,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/id87at47","slide":12,"text":"CAAS evidence — access and job setup","textPreview":"CAAS evidence — access and job setup","textChars":36,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/tkj6p83u","slide":12,"text":"Appendix 3","textPreview":"Appendix 3","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/sjapg3m9","slide":12,"text":"CAAS head-node access and source upload","textPreview":"CAAS head-node access and source upload","textChars":39,"textLines":1,"bbox":[58,116,710,28]}
+{"kind":"shape","id":"sh/6hs7et4j","slide":12,"bbox":[748,166,452,346]}
+{"kind":"textbox","id":"sh/9of6donq","slide":12,"text":"What this proves","textPreview":"What this proves","textChars":16,"textLines":1,"bbox":[778,194,370,26]}
+{"kind":"textbox","id":"sh/8n654jm5","slide":12,"text":"• Authenticated CAAS head-node access\n• SLURM defq reported idle compute nodes\n• Task 1 and Task 2 sources uploaded\n• Setup evidence only; no performance claim","textPreview":"• Authenticated CAAS head-node access | • SLURM defq reported idle compute nodes | • Task 1 and Task 2 sources uploaded | • Setup evidenc...","textChars":159,"textLines":4,"bbox":[778,240,370,190]}
+{"kind":"shape","id":"sh/ehsn29kz","slide":12,"bbox":[104,636,1072,54]}
+{"kind":"textbox","id":"sh/fi14ve1k","slide":12,"text":"This capture establishes the CAAS environment before the Task 1 job configuration and functional run in Appendices 4-5.","textPreview":"This capture establishes the CAAS environment before the Task 1 job configuration and functional run in Appendices 4-5.","textChars":119,"textLines":1,"bbox":[122,649,1036,30]}
+{"kind":"image","id":"im/ap0b2p4r","slide":12,"name":"","alt":"CAAS head-node login, scheduler output, and uploaded Task 1 and Task 2 source files","bbox":[58,152,650,470]}
+{"kind":"notes","id":"nt/4km0y1","slide":12,"text":"Source: evidence/screenshots/caas_login_and_setup.jpg. Authentic CAAS setup screenshot. It documents head-node access, scheduler visibility, and uploaded source files."}
+{"kind":"slide","id":"sl/9nuds3","slide":13,"title":"APPENDIX","textShapes":7}
+{"kind":"shape","id":"sh/q18nmdo7","slide":13,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/d4j6h8ny","slide":13,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/c3a5on6d","slide":13,"text":"CAAS evidence — Task 1 job configuration","textPreview":"CAAS evidence — Task 1 job configuration","textChars":40,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/3yh4by5w","slide":13,"text":"Appendix 4","textPreview":"Appendix 4","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/ix8nitob","slide":13,"text":"SLURM script for the two-node Task 1 run","textPreview":"SLURM script for the two-node Task 1 run","textChars":40,"textLines":1,"bbox":[58,116,710,28]}
+{"kind":"shape","id":"sh/4zq5k361","slide":13,"bbox":[748,166,452,346]}
+{"kind":"textbox","id":"sh/nulon250","slide":13,"text":"What this proves","textPreview":"What this proves","textChars":16,"textLines":1,"bbox":[778,194,370,26]}
+{"kind":"textbox","id":"sh/mtsnux4f","slide":13,"text":"• 2 nodes and 8 MPI tasks requested\n• 4 MPI ranks per node, 1 CPU per rank\n• Open MPI module loaded before compilation\n• srun executes Task 1 at n = 10,000","textPreview":"• 2 nodes and 8 MPI tasks requested | • 4 MPI ranks per node, 1 CPU per rank | • Open MPI module loaded before compilation | • srun execu...","textChars":155,"textLines":4,"bbox":[778,240,370,190]}
+{"kind":"shape","id":"sh/g3q907al","slide":13,"bbox":[104,636,1072,54]}
+{"kind":"textbox","id":"sh/h4zqtcrq","slide":13,"text":"Configuration evidence for the submitted CAAS Task 1 run shown in Appendix 5.","textPreview":"Configuration evidence for the submitted CAAS Task 1 run shown in Appendix 5.","textChars":77,"textLines":1,"bbox":[122,649,1036,30]}
+{"kind":"image","id":"im/o3ut4r6l","slide":13,"name":"","alt":"CAAS Task 1 SLURM job script requesting two nodes and eight MPI tasks","bbox":[58,152,650,470]}
+{"kind":"notes","id":"nt/9nuds3","slide":13,"text":"Source: evidence/screenshots/caas_task1_job_configuration.jpg. Authentic Task 1 SLURM job configuration. It documents the requested two nodes, eight MPI tasks, four tasks per node, compilation command, and srun invocation."}
+{"kind":"slide","id":"sl/a93ekg","slide":14,"title":"APPENDIX","textShapes":7}
+{"kind":"shape","id":"sh/alobyl87","slide":14,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/xoza9gry","slide":14,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/wn6t0bqd","slide":14,"text":"CAAS evidence — two-node Task 1 run","textPreview":"CAAS evidence — two-node Task 1 run","textChars":35,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/jqhsbq9o","slide":14,"text":"Appendix 5","textPreview":"Appendix 5","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/yp8b2l83","slide":14,"text":"Two-node CAAS Task 1 functional execution","textPreview":"Two-node CAAS Task 1 functional execution","textChars":41,"textLines":1,"bbox":[58,116,710,28]}
+{"kind":"shape","id":"sh/kbqt4vq9","slide":14,"bbox":[748,166,452,346]}
+{"kind":"textbox","id":"sh/zudszm9k","slide":14,"text":"What this proves","textPreview":"What this proves","textChars":16,"textLines":1,"bbox":[778,194,370,26]}
+{"kind":"textbox","id":"sh/et4bq18z","slide":14,"text":"• Allocated nodes: student-caas-n03 and n04\n• 8 MPI ranks, 4 ranks on each node\n• Task 1 at n = 10,000 returned 1,229 primes\n• wc -l confirms 1,229 output lines","textPreview":"• Allocated nodes: student-caas-n03 and n04 | • 8 MPI ranks, 4 ranks on each node | • Task 1 at n = 10,000 returned 1,229 primes | • wc -...","textChars":160,"textLines":4,"bbox":[778,240,370,190]}
+{"kind":"shape","id":"sh/crudkr21","slide":14,"bbox":[104,636,1072,54]}
+{"kind":"textbox","id":"sh/ds3udw3m","slide":14,"text":"CAAS functional evidence. The existing graphs and balance findings remain based on the documented local measurement files.","textPreview":"CAAS functional evidence. The existing graphs and balance findings remain based on the documented local measurement files.","textChars":122,"textLines":1,"bbox":[122,649,1036,30]}
+{"kind":"image","id":"im/8jqt4b2t","slide":14,"name":"","alt":"CAAS Task 1 output showing two allocated nodes, eight MPI ranks, correct prime count, and the 1,229-line output check","bbox":[58,152,650,470]}
+{"kind":"notes","id":"nt/a93ekg","slide":14,"text":"Source: evidence/screenshots/caas_task1_two_node_execution_with_line_count.jpg. Authentic two-node CAAS Task 1 functional run at n = 10,000. It verifies allocation of student-caas-n03 and student-caas-n04, eight MPI ranks, the correct 1,229-prime result, sorted output generation, and the 1,229-line output check. It does not support the local benchmark or balance conclusions."}
+{"kind":"slide","id":"sl/k5h13g","slide":15,"title":"APPENDIX","textShapes":7}
+{"kind":"shape","id":"sh/psfqhc7a","slide":15,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/2p47mxoz","slide":15,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/3qd8f2pk","slide":15,"text":"CAAS evidence — Task 2 job configuration","textPreview":"CAAS evidence — Task 2 job configuration","textChars":40,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/gnmpk76t","slide":15,"text":"Appendix 6","textPreview":"Appendix 6","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/1ovqds7e","slide":15,"text":"SLURM script for the two-node hybrid Task 2 run","textPreview":"SLURM script for the two-node hybrid Task 2 run","textChars":47,"textLines":1,"bbox":[58,116,710,28]}
+{"kind":"shape","id":"sh/fmd8b2p8","slide":15,"bbox":[748,166,452,346]}
+{"kind":"textbox","id":"sh/0jq9wr6x","slide":15,"text":"What this proves","textPreview":"What this proves","textChars":16,"textLines":1,"bbox":[778,194,370,26]}
+{"kind":"textbox","id":"sh/lkzqpwni","slide":15,"text":"• 2 nodes and 4 MPI tasks requested\n• 2 MPI ranks per node, 4 CPUs per rank\n• OMP_NUM_THREADS derives from SLURM_CPUS_PER_TASK\n• Configuration only; no CAAS Task 2 output claim","textPreview":"• 2 nodes and 4 MPI tasks requested | • 2 MPI ranks per node, 4 CPUs per rank | • OMP_NUM_THREADS derives from SLURM_CPUS_PER_TASK | • Co...","textChars":176,"textLines":4,"bbox":[778,240,370,190]}
+{"kind":"shape","id":"sh/h8ra18ru","slide":15,"bbox":[104,636,1072,54]}
+{"kind":"textbox","id":"sh/g7y9s3q9","slide":15,"text":"Task 2 configuration evidence: the hybrid launch uses 4 MPI ranks × 4 OpenMP threads when scheduled as shown.","textPreview":"Task 2 configuration evidence: the hybrid launch uses 4 MPI ranks × 4 OpenMP threads when scheduled as shown.","textChars":109,"textLines":1,"bbox":[122,649,1036,30]}
+{"kind":"image","id":"im/fah8zi9o","slide":15,"name":"","alt":"CAAS Task 2 hybrid SLURM job script requesting two nodes, four MPI tasks, and four CPUs per task","bbox":[58,152,650,470]}
+{"kind":"notes","id":"nt/k5h13g","slide":15,"text":"Source: evidence/screenshots/caas_task2_job_configuration.jpg. Authentic Task 2 hybrid SLURM job configuration. It documents the requested two nodes, four MPI tasks, two tasks per node, four CPUs per task, OMP_NUM_THREADS export, and srun invocation. It does not demonstrate a completed CAAS Task 2 execution."}
+{"kind":"slide","id":"sl/pzhdvz","slide":16,"title":"APPENDIX","textShapes":11}
+{"kind":"shape","id":"sh/8bahsze5","slide":16,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/na1gzudk","slide":16,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/m9szq9wz","slide":16,"text":"Generative AI use declaration","textPreview":"Generative AI use declaration","textChars":29,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/l8jyx4ve","slide":16,"text":"Appendix 7","textPreview":"Appendix 7","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/07ahozet","slide":16,"text":"Included in this presentation","textPreview":"Included in this presentation","textChars":29,"textLines":1,"bbox":[58,116,620,28]}
+{"kind":"textbox","id":"sh/z6hgvud8","slide":16,"text":"Scope of assistance","textPreview":"Scope of assistance","textChars":19,"textLines":1,"bbox":[78,176,300,26]}
+{"kind":"textbox","id":"sh/y58zmpw3","slide":16,"text":"Generative AI assisted with interpreting the specification and rubric, reviewing the MPI and hybrid implementation, planning experiments, drafting charts and slides, and preparing documentation.","textPreview":"Generative AI assisted with interpreting the specification and rubric, reviewing the MPI and hybrid implementation, planning experiments,...","textChars":194,"textLines":1,"bbox":[78,215,530,108]}
+{"kind":"shape","id":"sh/d4zytkfi","slide":16,"bbox":[640,164,2,166]}
+{"kind":"textbox","id":"sh/c3qhkfex","slide":16,"text":"Team responsibility","textPreview":"Team responsibility","textChars":19,"textLines":1,"bbox":[678,176,300,26]}
+{"kind":"textbox","id":"sh/uh4zy10f","slide":16,"text":"The team reviewed the material against the supplied requirements, compiled and executed the programs locally, validated prime output independently, and accepts responsibility for every submitted claim and result.","textPreview":"The team reviewed the material against the supplied requirements, compiled and executed the programs locally, validated prime output inde...","textChars":212,"textLines":1,"bbox":[678,215,520,108]}
+{"kind":"shape","id":"sh/fidg76hk","slide":16,"bbox":[78,370,1122,2]}
+{"kind":"textbox","id":"sh/gjmh0bi5","slide":16,"text":"Presentation and Q&A","textPreview":"Presentation and Q&A","textChars":20,"textLines":1,"bbox":[78,404,360,26]}
+{"kind":"textbox","id":"sh/hkvy9gzq","slide":16,"text":"The team will explain the partitioning decision, MPI collectives, OpenMP scheduling, timing method, and performance observations without external tools.","textPreview":"The team will explain the partitioning decision, MPI collectives, OpenMP scheduling, timing method, and performance observations without ...","textChars":152,"textLines":1,"bbox":[78,444,1120,42]}
+{"kind":"shape","id":"sh/6dkzuh03","slide":16,"bbox":[104,544,1072,54]}
+{"kind":"textbox","id":"sh/7etg3mho","slide":16,"text":"This presentation records the AI-use declaration. Export the authentic prompt/conversation record from the AI service before Moodle submission.","textPreview":"This presentation records the AI-use declaration. Export the authentic prompt/conversation record from the AI service before Moodle submi...","textChars":143,"textLines":1,"bbox":[122,557,1036,30]}
+{"kind":"notes","id":"nt/pzhdvz","slide":16,"text":"This appendix declares the use of generative AI within the presentation itself. The assessment specification also requires the team to upload an authentic prompt/conversation record if AI was used. No separate AI declaration PDF is included."}
+{"kind":"slide","id":"sl/bqrchc","slide":17,"title":"APPENDIX","textShapes":7}
+{"kind":"shape","id":"sh/nepoz2d0","slide":17,"bbox":[0,0,1280,14]}
+{"kind":"textbox","id":"sh/ofi5s7ul","slide":17,"text":"APPENDIX","textPreview":"APPENDIX","textChars":8,"textLines":1,"bbox":[58,28,240,20]}
+{"kind":"textbox","id":"sh/9gr61cb6","slide":17,"text":"CAAS evidence — two-node Task 2 run","textPreview":"CAAS evidence — two-node Task 2 run","textChars":35,"textLines":1,"bbox":[58,52,1130,46]}
+{"kind":"textbox","id":"sh/ah0nuhcr","slide":17,"text":"Appendix 8","textPreview":"Appendix 8","textChars":10,"textLines":1,"bbox":[1150,676,78,20]}
+{"kind":"textbox","id":"sh/bi9o32tc","slide":17,"text":"Two-node CAAS hybrid MPI + OpenMP functional execution","textPreview":"Two-node CAAS hybrid MPI + OpenMP functional execution","textChars":54,"textLines":1,"bbox":[58,116,710,28]}
+{"kind":"shape","id":"sh/xkr65cb2","slide":17,"bbox":[748,166,452,346]}
+{"kind":"textbox","id":"sh/qlwnidc7","slide":17,"text":"What this proves","textPreview":"What this proves","textChars":16,"textLines":1,"bbox":[778,194,370,26]}
+{"kind":"textbox","id":"sh/rm54rids","slide":17,"text":"• Allocated nodes: student-caas-n03 and n04\n• 4 MPI ranks × 4 OpenMP threads = 16 workers\n• Task 2 at n = 10,000 returned 1,229 primes\n• wc -l confirms 1,229 output lines","textPreview":"• Allocated nodes: student-caas-n03 and n04 | • 4 MPI ranks × 4 OpenMP threads = 16 workers | • Task 2 at n = 10,000 returned 1,229 prime...","textChars":170,"textLines":4,"bbox":[778,240,370,190]}
+{"kind":"shape","id":"sh/v6dgredk","slide":17,"bbox":[104,636,1072,54]}
+{"kind":"textbox","id":"sh/u54zy9wz","slide":17,"text":"CAAS functional evidence only. The benchmark charts and balance findings remain based on the documented local measurement files.","textPreview":"CAAS functional evidence only. The benchmark charts and balance findings remain based on the documented local measurement files.","textChars":128,"textLines":1,"bbox":[122,649,1036,30]}
+{"kind":"image","id":"im/xof2hwb6","slide":17,"name":"","alt":"CAAS Task 2 output showing two allocated nodes, four MPI ranks, four OpenMP threads per rank, correct prime count, and the 1,229-line output check","bbox":[58,152,650,470]}
+{"kind":"notes","id":"nt/bqrchc","slide":17,"text":"Source: evidence/screenshots/caas_task2_two_node_execution.png. Authentic two-node CAAS Task 2 functional run at n = 10,000. It verifies allocation of student-caas-n03 and student-caas-n04, four MPI ranks, four OpenMP threads per process, the correct 1,229-prime result, output generation, and the 1,229-line output check. It does not support the local benchmark or balance conclusions."}

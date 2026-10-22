@@ -1,0 +1,2 @@
+n,processes,threads_per_process,total_workers,serial_seconds,mpi_seconds,compute_seconds,gather_seconds,postprocess_seconds,hybrid_seconds,empirical_speedup,vs_mpi_speedup,theoretical_speedup,efficiency
+100000,1,1,1,0.006671538,0.006656143,0.003479390,0.000025100,0.002106061,0.008806047,0.757608720,0.755860490,1.000000000,0.757608720

@@ -1,0 +1,2112 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 2: 
+Inter Process Communications in Parallel Computing
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information Technology
+© 2024 Monash University
+
+=== PAGE 2 ===
+2
+§IPC is central to many parallel applications. APIs for IPC sit beneath the middleware of such systems, and critically impacts function and performance;§Foundation knowledge: Because the behaviourand performance of IPC and its APIs determines many critical aspects of parallel system function and performance, understanding APIs is essential;§Foundation knowledge: The limitations of API can limit what a parallel application can or cannot do;§Practical skills: When coding parallel applications you will have to rely on middleware written around the underlying APIs and their limitations, or the APIs themselves;§Practical skills: The throughput performance of aAPI can become a ‘live or die” problem for a parallel application, making this an important item to understand;
+Why Study Inter Process Communications?
+
+=== PAGE 3 ===
+Processes
+
+=== PAGE 4 ===
+4
+§A program in execution§An instance of a program running on a computer§The entity that can be assigned to and executed on a processor§A unit of activity characterized by the execution of a sequence of instructions, a current state, and an associated set of system instructions§A process comprises:A.Program code (possibly shared)B.A set of dataC.A number ofattributes describing the state of the process
+Processes in Operating Systems [Stallings Ch.3 N/E]
+
+=== PAGE 5 ===
+5
+§At a minimum, a process must have the following attributes so it can be identifiedand its state known:A.IdentifierB.StateC.PriorityD.Program counterE.Memory pointersF.Context dataG.I/O status informationH.Accounting information§This data is usually kept in a Process Control Block (PCB)
+Process Identity and State Information [Stallings Ch.3 N/E]
+
+=== PAGE 6 ===
+6
+§Contains the process elements;§Created and managed by the operating system;§Allows support for multiple processes§The structure and format of a PCB is unique to an operating system type, and usually not interchangablebetween operating systems;
+Process Control Block [Stallings Ch.3 N/E]
+
+=== PAGE 7 ===
+7
+Processes in Memory [Stallings Ch.3 N/E]
+
+=== PAGE 8 ===
+8
+Processes in Main Memory [Stallings Ch.3 N/E]
+
+=== PAGE 9 ===
+9
+Process States [Stallings Ch.3 N/E]
+Spawn orFork a new process Terminate orKill a running processInter Process Communications [IPC] may or may not cause a process to block
+
+=== PAGE 10 ===
+10
+Unix Process States [Stallings Ch.3 N/E]
+
+=== PAGE 11 ===
+Networks
+
+=== PAGE 12 ===
+12
+§The most widely used protocols for carrying network traffic are TCP and UDP, developed during the 1980s;§The intent, when TCP and UDP were developed, was to support remote dumb terminal traffic, and file transfers;§The earliest applications, telnet and File Transfer Protocol, were thus used to remotely log on to other hosts, and copy files between hosts;§TCP and UDP therefore predate modern distributed computing techniques.
+Network Protocols and Their Limitations  
+
+=== PAGE 13 ===
+13
+§TCP and UDP were developed before the widespread use of Local Area Networks and end user broadband services§Voiceband modems carried traffic over analogue phone lines§TCP and UDP designed for efficient use with very expensive (and low) bandwidth and very expensive (and low) CPU performance
+Networking Environment in 1980s to 1990s (Early Internet Era)
+User-to-Host – 9,600 bits/s – 64 kilobits/s
+Host-to-Host – 0.2-2.048 Megabits/s
+ASCII SerialDumb TerminalSuper MinicomputerSuper Minicomputer
+VoicebandModem
+
+=== PAGE 14 ===
+14
+§TCP and UDP are adequate for end user broadband services but underperform in host-host links in clusters, clouds and grids§Bandwidth and CPU performance are now comparatively inexpensive, and this puts a premium on network protocol performance§Legacy TCP and UDP protocol overheads and error control increase latency in links and reduce achievable link throughput – this is a known performance problem in data centres
+Networking Environment in 2024
+Host-to-Host –10-100 Gigabits/s
+User-to-Host – 0.05-1 Gigabits/s
+DesktopNotebookMobile DeviceOptical FibreBackhaulNetwork
+
+=== PAGE 15 ===
+15
+§The OSI Reference Model§The TCP/IP (IETF/Internet) Reference Model–The Link Layer –The Internet Layer–The Transport Layer–The Application Layer§OSI model and protocols versus the IETF reference model and protocols§The model used in the Tanenbaum textbook
+OSI and Internet Reference Models
+
+=== PAGE 16 ===
+16
+§Principles for the seven layers–Layers created for different abstractions–Each layer performs well-defined function–Function of layer chosen with definition of international standard protocols in mind–Minimize information flow across interfaces between boundaries–Number of layers should be optimum§Three concepts central to the OSI model:–Services–Interfaces–Protocols
+The OSI Reference Model (1 of 2)
+
+=== PAGE 17 ===
+17
+§The OSI model has seven layers§Specific abstractions for each layer – defined functions per layer§As message flows down stack encapsulation is added§Packets flow across network§As message flows up stack encapsulation is removed
+The OSI Reference Model (2 of 2)
+Message Travelling Across Network
+
+=== PAGE 18 ===
+18
+§The Link Layer–Lowest layer in the model–Describes what links must do to meet the needs of this connectionless internet layer§The Internet Layer–Permits hosts to inject packets into any network and have them travel independently to the destination–Defines an official packet format and protocol called IP (Internet Protocol)–Defines a companion protocol called ICMP (Internet Control Message Protocol) that helps IP function
+The TCP/IP [IETF] Reference Model (1 of 4)
+
+=== PAGE 19 ===
+19
+§The Transport Layer–The layer above the internet layer in the TCP/IP model–Uses two end-to-end transport protocols§TCP (Transmission Control Protocol)§UDP (User Datagram Protocol)§The Application Layer– Contains all the higher-level protocols
+The TCP/IP [IETF] Reference Model (2 of 4)
+
+=== PAGE 20 ===
+20
+§The TCP/IP layers loosely align with the OSI model.§OSI model is more general and more finely grained§TCP/IP model specific to IETF protocol suite
+The TCP/IP [IETF] Reference Model (3 of 4)
+
+=== PAGE 21 ===
+211.The relation of IP, TCP, and UDP protocols are illustrated. We will study these.
+The TCP/IP [IETF] Reference Model (4 of 4)
+
+
+=== PAGE 22 ===
+22
+Encapsulation in Protocols [TCP/IP] - Stallings
+
+=== PAGE 23 ===
+23
+IPv4 - Stallings
+
+=== PAGE 24 ===
+24
+IPv6 - Stallings
+
+=== PAGE 25 ===
+25
+§This is a simplified model of the TCP/UDP and IP protocol stack;§Applications interface to TCP and UDP via an API, which provides access to the middleware that handles the TCP and UDP connections;
+TCP, UDP and IP Stack
+IP
+Application Application
+TCP UDP
+Coulouris, Dollimore, Kindberg and Blair,  Distributed Systems: Concepts and Design   Edn. 5 Pearson Education 2012 
+
+=== PAGE 26 ===
+26
+§High performance in carrying files and other bulk data was not a consideration when TCP and UDP were developed;§TCP was developed to provide for “reliable” data transfers, ensuring that data (in packets) always arrived, and arrived in order, regardless of performance losses in the network;§UDP was developed to provide for “unreliable” data transfers, using a simpler protocol with slightly better performance than TCP, due to lesser overheads – applications had to manage reliability and in-order transfers;§In a distributed computing environment, especially where high volumes of traffic must be carried, TCP and UDP are often too slow, as they were never optimised for high performance – problematic in data centres;
+TCP, UDP and IP Stack
+
+=== PAGE 27 ===
+Inter Process Communications
+
+=== PAGE 28 ===
+28
+§Inter-Process Communications (IPC) are all mechanisms which permit two or more processes to exchange messages;§IPC mechanisms may be restricted to communications within a host machine’s operating system, or may permit communications between processes on different host machines connected via a network;§IPC mechanisms restricted to a host operating system include:A.Shared MemoryB.Message PassingC.Unix Signals and analogues§Shared Memory imposes no structure on messages, but Signals and Message Passing typically force discrete message structures.
+Inter-Process Communications
+
+=== PAGE 29 ===
+29FIG.1 SHARED MEMORY  PAGES ARE MAPPED INTO TWO OR MORE PROCESSES
+SHARED PAGES
+PROCESS BPROCESS A
+Shared Memory IPC – Limited to Local Host
+
+=== PAGE 30 ===
+30
+§Stream Oriented IPC is especially important since it is the most commonly used scheme for IPC within operating systems and between networked hosts;§A stream connection imposes no implicit structure on the data being sent – character mode “streams” of data are handled in a FIFO manner, arriving typically at the destination in the order they were sent;§The two most widely used stream oriented IPC schemes are the BSD Socket mechanism, and the SVR4 STREAMS mechanism; Application protocols treat the stream as a transparent pipe.§Both are designed around standard software Application Programming Interfaces (API), although most recent STREAMS implementations also include an interface to emulate the BSD Socket API;
+Stream Oriented Inter-Process Communications
+
+=== PAGE 31 ===
+31
+§The channel is “reliable” when the stream connects  two processes on a single host;§The channel is “reliable” when the stream connects two processes on different hosts, using TCP protocol; The channel is “unreliable” when the stream connects two processes on different hosts, using UDP protocol;§A stream IPC connection usually delivers messages “in order” thus behaving like a FIFO or pipe;§Depending on the type of stream IPC, the API, and its configuration, the interface may be “blocking” or “non-blocking”, thus determining process behaviour during message transfers;§BSD Sockets and SVR4 STREAMs are the most common APIs in use for distributed applications;
+Stream Oriented IPC – Channel Properties
+
+=== PAGE 32 ===
+32
+SVR4 STREAMS vs BSD Sockets (Kopp, 1996) [N/E]
+PROTOCOLSTACK
+SOCKET SOCKETBUFFER (MBUF) POOL
+PROCESS A PROCESS A
+DEVICE DRIVERS
+NETWORK
+Fig 2.4 BSD Socket Transport - Conceptual Model
+PROCESS A PROCESS B
+STREAMS MODULES
+BUFFER POOL
+STREAMS MODULES
+Fig.2.2 STREAMS Transport - Conceptual Model
+DEVICE DRIVERS
+STREAM HEAD STREAM HEAD
+
+=== PAGE 33 ===
+33
+§The “middleware” provides the API interface for the user program running in a process;§The middleware interfaces to the protocol stack software, which is usually embedded in the operating system kernel;
+Stream Oriented IPC – Integration
+Coulouris, Dollimore, Kindberg and Blair,  Distributed Systems: Concepts and Design   Edn. 5,  ©  Pearson Education 2012 
+
+=== PAGE 34 ===
+34
+Example: Linux Socket Integration [Stallings Ch.17 N/E]
+
+=== PAGE 35 ===
+35
+AggregationLayer Routers
+EdgeLayer Routers
+Server Pod 0 Server Pod 1 Server Pod 2 Server Pod 3
+Core Layer Routers
+Example Data Centre Fabric [e.g. Gigabit Ethernet]
+
+=== PAGE 36 ===
+36
+Example Latency in a Data Centre Fabric [6 hops]Fabric Router
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+ReceivedPacketProcessing
+TCP Processing
+IP Processing
+UDP Processing
+Socket Level Processing
+User Application Process
+Cluster Node
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+IP Processing
+Packet Route Processing
+DelayPropagationDelayPropagationDelayPropagationDelayPropagationDelay
+Packet Route Processing
+Fabric Router
+ReceivedPacketProcessing
+TCP Processing
+IP Processing
+UDP Processing
+Socket Level Processing
+User Application Process
+Cluster Node
+PropagationDelayPropagation
+Network Interface Controller Network Interface ControllerNetwork Interface ControllerNetwork Interface Controller Network Interface ControllerNetwork Interface Controller
+Network Device DriverNetwork Device Driver
+Network Interface Controller
+Network Device Driver Network Device Driver Network Device Driver Network Device DriverNetwork Device Driver
+A.Middleware and protocol stack delays in source nodeB.Queuing delays in routers including protocol stack processing delaysC.Propagation delays through cables in fabric (and/or WAN) proportional to total length in pathD.Middleware and protocol stack delays in destination node
+
+=== PAGE 37 ===
+37
+§Performance can become a critical challenge when running parallel applications on distributed platforms like clusters and clouds§There are two aspects to performance:A.Latency [Delay] – the time delay between message transmission by sending process to receipt by receiving processB.Throughput [Bandwidth/Capacity] – volume of data sent over link per unit time (e.g. Gigabits/s or Gigabytes/s)§While both can be inter-related due to the design of the network and the IPC scheme in use, in many applications even high bandwidth networks may have large latency§Where data dependencies exist, latency becomes a major problem
+Stream Oriented IPC – Performance
+
+=== PAGE 38 ===
+BSD Socket API Programming in the C Language
+
+=== PAGE 39 ===
+39
+Berkeley Sockets (1 of 2) - Tanenbaum
+A state diagram for a simple connection management scheme. Transitions labeled in italics are caused by packet arrivals. The solid lines show the client’s state sequence. The dashed lines show the server’s state sequence.
+
+=== PAGE 40 ===
+40
+Berkeley Sockets (2 of 2) - Tanenbaum
+The socket primitives for TCP
+
+=== PAGE 41 ===
+41
+§Opening a socket connection requires the creation of the socket with a socket() system call, binding a socket address to the socket with a bind() call and initiating the connection with a connect() call. §The socket() call returns an index into the process file table, termed a file descriptor in Unix/Linux/BSD. §Once the connection is open, the programmer may use both socket specific calls or the established Unix/Linux/BSD read() and write() system calls. §The BSD Socket has become the defacto standard low level programming interface for networked IPC, although in most contemporary applications it is hidden below other protocols;§Nearly all operating systems will provide a BSD socket API, although some will use the newer POSIX standard.
+BSD Socket Application Programming Interface
+
+=== PAGE 42 ===
+42
+§int socket(int domain, int type, int protocol);§Where the domain can be IPV4, IPV6 or UNIX (local to host);§int bind(int sockfd, const struct sockaddr *my_addr, socklen_t addrlen);§Where the arguments define the interface;§int connect(int sockfd, const struct sockaddr *serv_addr, socklen_t addrlen); §Where *serv_addr is the address of the server being connected to; §Once the stream is established between two processes on two hosts, traffic can be sent or received using send(), recv(), write(), read() system calls;§The socket is shut down using a close() call.
+Socket Function Prototypes
+
+=== PAGE 43 ===
+43
+§Sockets can be used for IPC between two processes, that reside on one or two hosts, which is useful for debugging code; sockets assume the client-server model, so one process is always a server process, that responds to requests from a client process;§This requires that the server process be running before the client can access it;§There are necessary include files for the socket API, that define the API interface types:§#include <stdio.h>§#include <sys/types.h> §#include <sys/socket.h>§#include <netinet/in.h>
+Programming with the socket() API (I)
+
+=== PAGE 44 ===
+44
+§The necessary starting point is always to set up a server process, which must set up a receiving socket;§Several steps are necessary:1.Use the socket() system call to create a socket;2.The socket needs an address so the client can find it, and this is done by binding an address to the socket using the bind() system call – for the Internet a port number is used;3.To activate the socket so it listens for incoming clients, a listen() system call is required;4.An incoming client connection must be accepted using the accept() system call;§Socket programming in Java or other languages typically employs a language specific wrapper layered over the C language system calls!
+Server programming with the socket() API (II)
+
+=== PAGE 45 ===
+45
+§The next step is always to set up a client process, which must set up a sending socket;§Several steps are necessary:1.Use the socket() system call to create a socket;2.The socket needs to be connected to the server process, and this is done by connecting to the server socket using the connect() system call – for the Internet a host IP address and port number must be used;3.Once the connection has been accepted by the server, data can be sent and received using read() and write() system calls;§Socket programming in C language is the simplest means available for IPC over network connections, but also exposes all of the details of the connection;
+Server programming with the socket() API (III)
+
+=== PAGE 46 ===
+46
+§The int socket(int domain, int type, int protocol) call has three parameters (example MacOSX 10.10), domain:1.PF_LOCAL Host-internal protocols, formerly called PF_UNIX,2.PF_UNIX Host-internal protocols, deprecated, use PF_LOCAL,3.PF_INET Internet version 4 protocols,4.PF_ROUTE Internal Routing protocol,5.PF_KEY     Internal key-management function,6.PF_INET6 Internet version 6 protocols,7.PF_SYSTEM  System domain,8.PF_NDRV Rawaccessto network device§NB local host PF_LOCAL/PF_UNIX versus network host PF_INET/PF_INET6!
+Domain parameters for the socket() API
+
+=== PAGE 47 ===
+47
+§The int socket(int domain, int type, int protocol) call has some important parameters (example MacOSX 10.10);§Defines for the int type argument:1.SOCK_STREAM sequenced, reliable byte streams (TCP)2.SOCK_DGRAM connectionless, unreliable (UDP)3.SOCK_RAW internal network protocols and interfaces4.SOCK_SEQPACKET sequenced, reliable, two-way connection-based data transmission path for datagrams of fixed maximum length 5.SOCK_RDMNB not implemented§NB the int protocol  argument is usually by default set to 0, although some systems may support a range of protocols.
+Type parameters for the socket() API
+
+=== PAGE 48 ===
+48
+§The socket() API may be the simplest API for providing stream (TCP) or datagram (UDP) IPC, but it also requires that the programmer understand choices in protocols as well as the port addressing scheme;§The programmer has to manage the state of the connection, and handle all of the errors;§The API permits seamless use of socket connections local to the host (if Unix / BSD / Linux OS), or to remote hosts;§The socket appears to the programmer as an int sockfd  file descriptor, which is one layer of abstraction below the ‘file’ used by the libc stdio *nix / C language abstraction;§The fwrite() and fread() stdio calls are wrappers for the int write() and int read() *nix/POSIX system calls, and operate on a FILE struct that presents as a file;
+Caveats for the socket() API
+
+=== PAGE 49 ===
+49
+§HTTP (Hypertext Transfer Protocol) is the most widely used protocol on the W3 and is a good example of a protocol built on top of the BSD Socket API;§When a browser (client) intends to make a request of a web server (server), it opens a socket connection over the Internet to the web server; §The browser then sends a HTTP Method message to the web server, for instance:   GET /mypath/to/myfile/blogs.html HTTP/1.0§The socket connection is then closed, while the server processes the method request;§Once processing is complete, the web server opens a socket connection to the client, and responds with a message, header and MIME encoded body: HTTP/1.0 404 Not Found 
+Client-Server – HTTP over Sockets
+
+=== PAGE 50 ===
+50
+§HTTP Response: HTTP/1.0 200 OK§HTTP Header: Last-Modified: Tue, 12 Jul 2011 21:59:59 GMT§HTTP Body: Content-Type: text/htmlContent-Length: 512<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en"> <html> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta name="Author" content=“Carlo Kopp"> <meta name="GENERATOR" content="Mozilla/4.55 [en] (X11; U; Linux 2.4.2 i386) [Netscape]"> <title>Carlo Kopp's Homepage</title> </head> <body
+Client-Server – HTTP over Sockets [200 OK]
+
+=== PAGE 51 ===
+51
+… More page content …<center><!-- E N D T R A I L E R T A B L E --></center> </span><!-- M4 Macro --> </body> </html>§Once the Body is transferred, the socket connection is then closed;§HTTP is widely used to support other mechanisms used in distributed computing;§Secure HTTP (SHTTP) employs a more complex connection mechanism due to the use of TLS or SSL encryption layers;§As HTTP lacks mechanisms to handle multiple servers concurrently, it is a good example of a basic client server protocol.
+Client-Server – HTTP over Sockets 
+
+=== PAGE 52 ===
+52
+§HTTP/HTTPS will present performance challenges §The ASCII based protocol is inherently verbose and consumes bandwidth versus binary protocols§Each object being fetched from a HTTP server requires multiple transfers: TCP socket connection to be opened, if TLS a secure transfer negotiated, then the object is sent from the server to the client§With increasing link latency the repeated transfers impact performance, often severely on slow links§Performance limitations motivated newer protocol designs such as QUIC
+HTTP Client-Server – The Bandwidth Problem
+
+=== PAGE 53 ===
+Remote Procedure Calls
+
+=== PAGE 54 ===
+54
+§Stream oriented network API interfaces provide an unstructured channel for byte or message oriented data transfers, which carry data – this is the most basic abstraction possible, involving read() and write() calls;§The next level of abstraction is that of a remote procedure call in which a procedure (i.e. function call) may be executed locally on a host, or on a remote server host;§The client process will make a request upon a server process, which involves a procedure identifier (name) and some list of arguments; the server then returns the results of the call;§This is a structured API that bounds the transfers to very specific messages – calls and returns of values;§ONC RPC (RFC1831) protocol is the most widely used remote procedure call API
+Remote Procedure Call API (RPC)
+
+=== PAGE 55 ===
+55
+§Open Network Computing Remote Procedure Call  (ONC RPC RFC1831) protocol was developed by Sun Microsystems and widely used for Network File System (NFS) remote mounting of disk storage devices;§Distributed Computing Environment / Remote Procedure Calls (DCE/RPC) was developed in competition, and later used in the Microsoft DCOM and .NET Remoting;§ONC RPC is structured around the use of “stubs”, which are blocks of code that provide the RPC API interface, and are compiled into an application binary program;§When RPC transfers data, such as arguments or return values, the “endianess” of the data matters; this is managed with the XDR (eXternal Data Representation) protocol, which ensures data always has the correct “endianess”;
+Remote Procedure Call API (ONC RPC)
+
+=== PAGE 56 ===
+56
+Remote Procedure Calls [Stallings Ch.16]
+
+
+=== PAGE 57 ===
+57
+Remote Procedure Calls [Stallings Ch.16]
+
+=== PAGE 58 ===
+58
+ONC RPC Model (Kopp 1994)
+RPC REQUEST
+RPC RESPONSE
+SERVER RPC
+RPC
+SERVER RPC
+CLIENT BLOCKED
+CLIENT RPC
+CLIENT RPC
+FIG.1 REMOTE PROCEDURE CALLS  THREAD OF EXECUTION
+CLIENT PROCESS SERVER PROCESS
+RPC PROTOCOL
+TRANSACTION ID
+SEND DIRECTION (1/0)
+RPC PROTOCOL VERSION
+PROGRAM NUMBER
+VERSION NUMBER
+PROCEDURE NUMBER
+AUTHORISATION INFORMATION
+AUTHORISATION VERIFICATION
+PROCEDURE CALL PARAMETERS
+FIG.2 REMOTE PROCEDURE CALL PROTOCOL HEADER
+
+=== PAGE 59 ===
+59
+ONC RPC Model (Kopp 1994)
+CLIENT PROCESS SERVER PROCESS
+FIG.3 BINARY EXECUTABLE MODULES
+STUB STUB
+RPC LIBRARYRPC LIBRARY
+CLIENTBINARY SERVERBINARY
+RPC PROTOCOL
+RUN INTERFACE COMPILER
+LINK STUB WITH CLIENT PROGRAM
+SERVER SKELETON & STUB
+LINK STUB WITH SERVER
+MERGE SKELETON WITH SERVER
+INSTALL AND RUN SERVER
+EXECUTE CLIENT
+FIG.3 PROGRAM GENERATION
+DEFINE PROCEDURE INTERFACE
+CLIENT STUB MODULE
+
+=== PAGE 60 ===
+Summary
+
+=== PAGE 61 ===
+61
+§Processes§Networks§Inter Process Communications§BSD Socket API Programming in the C Language§Remote Procedure Calls
+Summary
+
+=== PAGE 62 ===
+Reading Materials
+
+=== PAGE 63 ===
+63
+§Ch.1; Ch.3; Ch.4; Coulouris, Dollimore, Kindberg and Blair, Distributed Systems: Concepts and Design, Edition 5, © Addison-Wesley, 2012.1.Tanenbaum, Feamster, Wetherall, Computer Networking, 6th Edition, Pearson Education, Chapter 12.Stallings, Data and Computer Communications, International Edition, 10th edition, Chapter 1§https://users.monash.edu/~ckopp/SYSTEMS/IPC-Introduction-0595.htm §https://users.monash.edu/~ckopp/SYSTEMS/RPC-Intro-0796.htm §https://users.monash.edu/~ckopp/WALNUT/msc.thesis.ck.pdf §http://www.cs.utexas.edu/~wcook/Drafts/2006/WSvsDO.pdf §http://www.eg.bucknell.edu/~cs379/DistributedSystems/rmi_tut.html §https://users.monash.edu/~ckopp/SYSTEMS/Cluster-Practical-1299.html 
+Reading and References
+
+=== PAGE 64 ===
+www.infotech.monash.edu
+Topic 2 [Not Examinable]: 
+Reading Materials: Inter Process Communications and 
+Remote Procedure Call Mechanisms
+Dr Asad I Khan
+Faculty of Information Technology
+© 2011-2024 Monash University
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2024
+
+=== PAGE 65 ===
+www.infotech.monash.edu
+2
+Inter-process Communication (IPC)
+• IPC basically requires information 
+sharing among two or more processes. 
+Two basic methods-
+– Original sharing (Shared data approach)
+– Copy Sharing (Message passing approach)
+P1 P2
+Shared 
+Common 
+Memory Area
+P1 P2
+Shared data approach Message passing approach
+
+=== PAGE 66 ===
+www.infotech.monash.edu
+3
+Message Passing System
+• A message-passing system is a sub-system of a distributed 
+system that provides a set of message-based IPC protocols and 
+does so by shielding the details of complex network protocols 
+and multiple heterogeneous platforms from programmers.
+• It enables processes to communicate by exchanging messages 
+• Allows programs to be written by using simple communication 
+primitives, such as send and receive.
+• Serves as a suitable infrastructure for building other higher 
+level IPC systems, such as RPC (Remote Procedure Call) and 
+DSM (Distributed Shared Memory).
+
+=== PAGE 67 ===
+www.infotech.monash.edu
+4
+Desirable features of a good message 
+passing system
+• Simplicity
+• Uniform semantics
+– Same primitives for local and remote communication
+• Efficiency
+– Reduce the number of message as far as possible
+– Some optimization normally adopted for efficiency include-
+> Avoiding the cost of establishing and terminating 
+connections between the same pair of processes for each 
+and every message exchange between them
+> Minimizing cost of maintaining connections
+> Piggybacking of acknowledgment of previous message with 
+the next message.
+09/02/2026Distributed Systems 
+Lecture 2
+4
+
+=== PAGE 68 ===
+www.infotech.monash.edu
+5
+Desirable features of a good message 
+passing system
+• Reliability
+– Lost and duplicate message handling
+• Correctness
+– Atomicity
+– Ordered delivery
+– Survivability
+• Flexibility
+– Can drop one or more correctness properties
+
+=== PAGE 69 ===
+www.infotech.monash.edu
+6
+Desirable features of a good message 
+passing system
+• Security
+– Authentication of sender and receiver
+– Encryption of messages
+• Portability
+– Message passing system should itself be portable
+– The application  written by using primitives of the IPC protocol 
+should be portable.
+
+=== PAGE 70 ===
+www.infotech.monash.edu
+7
+Issues in IPC by message passing
+• A typical message structure
+– Header
+ Addresses
+ Sender address
+ Receiver address
+ Sequence number
+ Structural information
+ Type
+ Number of bytes
+– Message
+
+=== PAGE 71 ===
+www.infotech.monash.edu
+8
+In the Design an IPC protocol
+• Some of the main issues will be:
+• Identity related
+– Who is the sender?
+– Who is the receiver?
+• Network Topology related
+– 1 receiver or many?
+• Flow control related
+– Guaranteed by the receiver?
+– Sender should wait for reply?
+• Error control and channel management
+– Node crash……what to do?
+– Receiver not ready….what to do?
+– Several outstanding messages for the receiver
+
+=== PAGE 72 ===
+www.infotech.monash.edu
+9
+Synchronization in IPC
+• Send primitive
+– Blocking
+– Non blocking
+• Receive primitive
+– Blocking
+– Non Blocking
+ Polling
+ interrupt
+IPC Synchronization 
+Semantics
+Blocking Non Blocking
+
+=== PAGE 73 ===
+www.infotech.monash.edu
+10
+Synchronous & Asynchronous Communication
+• When both the send and receive primitives of a 
+communication between two processes use blocking 
+semantics, the communication is said to be Synchronous; 
+otherwise it is asynchronous.
+Sender Receiver 
+Receive (message)
+Execution suspended
+Execution resumed
+Message
+AcknowledgmentExecution resumed
+Synchronous mode with blocking send and receive primitives
+
+=== PAGE 74 ===
+www.infotech.monash.edu
+11
+Synchronous VS Asynchronous Communication
+• Synchronous
+– Simple and easy to implement
+– Contributes to reliability
+– No backward error recovery needed
+• Asynchronous
+– High concurrency
+– More flexible than synchronous
+– Lower deadlock risk than in synchronous communication ( but 
+beware)
+
+=== PAGE 75 ===
+www.infotech.monash.edu
+12
+Buffering
+• Synchronous systems
+– Null buffer
+– Single message buffer
+• Asynchronous systems
+– Unbounded capacity buffer
+– Finite message (multiple message buffer)
+
+=== PAGE 76 ===
+www.infotech.monash.edu
+13
+Buffering
+Synchronous System Asynchronous System
+
+=== PAGE 77 ===
+www.infotech.monash.edu
+14
+Multi-datagram Messages
+• Almost all networks have an upper bound on the 
+size of data that can be transmitted at a time. This 
+is known as MTU (maximum transfer unit).
+• Thus a message whose size is greater than MTU 
+has to be fragmented - each fragment is sent in a 
+packet. These packets are known as datagram.
+• Thus messages may be single-datagram messages 
+or multi-datagram messages
+• Assembling and dissembling is the responsibility 
+of message passing system.
+
+=== PAGE 78 ===
+www.infotech.monash.edu
+15
+Using Bitmap for Multidatagrams
+
+
+=== PAGE 79 ===
+www.infotech.monash.edu
+16
+Encoding Decoding
+Encoding/Decoding is needed if
+• Sender and receiver have different 
+architecture
+Even for Homogeneous Encoding/Decoding 
+is needed for 
+ Using an absolute pointer
+ To know which object is stored in where 
+and how much storage it requires
+
+=== PAGE 80 ===
+www.infotech.monash.edu
+17
+Process Addressing
+• Explicit Addressing
+– Send(process_ID, message)
+– Receive(process_ID, message)
+• Implicit Addressing
+– Send_any(service_ID, message)
+– Receive_any(process_ID, message)
+
+=== PAGE 81 ===
+www.infotech.monash.edu
+18
+Failure Handling
+• Failure classification
+1. Loss of request message
+2. Loss of response message
+3. Unsuccessful execution of the request
+crash
+sendersender receiverreceiver
+Request 
+sender receiver
+Request 
+Lost
+Request 
+Lost
+respons
+e
+
+=== PAGE 82 ===
+www.infotech.monash.edu
+19
+4-message reliable IPC protocol
+
+
+=== PAGE 83 ===
+www.infotech.monash.edu
+20
+3-message Reliable IPC protocol
+
+
+=== PAGE 84 ===
+www.infotech.monash.edu
+21
+2-message Reliable IPC protocol
+
+
+=== PAGE 85 ===
+www.infotech.monash.edu
+22
+An Example of Fault Tolerant System
+
+
+=== PAGE 86 ===
+www.infotech.monash.edu
+23
+Idempotency
+What is the difference between the 
+following two functions?
+• getSqrt(n)
+{ return sqrt(n)
+}
+• Debit (amount)
+{ if (balance>amount)
+balance= balance-amount
+return (“success”, balance)
+  else return (“failure”, balance)
+}
+09/02/2026Distributed Systems 
+Lecture 2
+23
+
+=== PAGE 87 ===
+www.infotech.monash.edu
+24
+A Non-Idempotent Routine
+09/02/2026Distributed Systems 
+Lecture 2
+
+
+=== PAGE 88 ===
+www.infotech.monash.edu
+25
+Implementation of Idempotency
+• How to implement Idempotency?
+– Adding sequence number with the request message
+– Introduction of ‘Reply cache’
+09/02/2026Distributed Systems 
+Lecture 2
+25
+
+=== PAGE 89 ===
+www.infotech.monash.edu
+2609/02/2026Distributed Systems 
+Lecture 2
+
+
+=== PAGE 90 ===
+www.infotech.monash.edu
+27
+Group Communication
+• Group communication may be
+– One to many
+– Many to one
+– Many to many
+• One to many
+– Group management
+– Group addressing
+– Buffered and unbuffered multicast
+– Send-to-all and Bulletin-Board semantics
+– Flexible reliability in multicast communication
+– Atomic multicast 
+
+=== PAGE 91 ===
+www.infotech.monash.edu
+28
+Many to Many communication
+• The issues related to one-to-many and many-to-
+one communications also applies here
+• In addition, ordered message delivery is an 
+important issue. This is trivial in one-to-many or 
+many-to-one communications.
+• For example, two server processes are 
+maintaining a single salary database. Two client 
+processes send updates for a salary record. What 
+happen if they reach in different order? (will 
+sequencing of messages help in this case?)
+
+=== PAGE 92 ===
+www.infotech.monash.edu
+29
+Semantics for ordered delivery in many-to-
+many communications
+• No-ordering
+No ordering constraint
+2
+
+=== PAGE 93 ===
+www.infotech.monash.edu
+30
+Semantics for ordered delivery in many-to-
+many communications
+• Absolute ordering
+– All messages are delivered to all receiver processes in the exact 
+order in which they were sent.
+– Using global timestamp as message identifiers with sliding window 
+protocol
+Absolute ordering semantic
+
+=== PAGE 94 ===
+www.infotech.monash.edu
+31
+Semantics for ordered delivery in many-to-
+many communications
+• Consistent ordering
+– All messages are delivered to all receivers in the same order. 
+However, this order may be different from the order in which 
+messages were sent.
+Implementation
+– Make the communication appear as a combination of many-to-
+one and one-to-many communication [Chang and Maxemchuk]
+– Kernels of sending machines send messages to a single 
+receiver (known as sequencer) that assigns a sequence number 
+to each message and then multicast it.
+– Subject to single point of failure and hence has poor reliability.
+– A distributed algorithm - ABCAST in ISIS system [Birman and 
+Renesse] (self study)
+
+=== PAGE 95 ===
+www.infotech.monash.edu
+32
+Semantics for ordered delivery in many-to-
+many comm.
+Consistent ordering semantic
+
+=== PAGE 96 ===
+www.infotech.monash.edu
+33
+Semantics for ordered delivery in many-to-
+many comm.
+• Causal ordering
+– If the event of sending one message is causally related to the event of 
+sending another message, the two messages are delivered to all 
+receivers in correct order.
+– Two message sending events are said to be causally related if they are 
+corelated by the happened-before relation.
+[ The expression a→b is read “a happens before b" and means that all processes agree that 
+first event a occurs, then afterward, event b occurs. The happens-before relation can be 
+observed directly in two situations:
+1. If a and b are events in the same process, and a occurs before b, then a→b 
+is true.
+2. If a is the event of a message being sent by one process, and b is the event 
+of the     message being received by another process, then a→b  is also true.
+Happens-before is a transitive relation, so if a→b  and b→c, then a→c.  ]
+
+=== PAGE 97 ===
+www.infotech.monash.edu
+34
+Semantics for ordered delivery in many-to-
+many comm.
+• One example of implementing Causal consistency 
+is CBCAST in ISIS system [Birman et al].
+Causal ordering semantic
+2nd round 
+m2 is 
+held back
+
+=== PAGE 98 ===
+www.infotech.monash.edu
+35
+Remote Procedure Call (RPC)
+• The IPC part of a distributed application can be 
+adequately and efficiently handled by using an IPC 
+protocol based on message passing system.
+• However, an independently developed IPC 
+protocol is tailored specifically to one application 
+and does not provide a foundation on which to 
+build a variety of distributed applications.
+• Therefore, a need was felt for a general IPC 
+protocol that can be used for designing several 
+distributed applications.
+• The RPC facility emerged out of this need.
+
+=== PAGE 99 ===
+www.infotech.monash.edu
+36
+Remote Procedure Call
+• While the RPC is not the universal panacea for all 
+types of distributed applications but for a fairly 
+large number of distributed applications.
+• The RPC has become a widely accepted IPC 
+mechanism in DS. Its features –
+– Simple call syntax.
+– Familiar semantics.
+– Specification of a well defined interface.
+– Ease of use.
+– Generality. “In single-machine computations procedure calls are 
+often the most important mechanism for communication between the 
+parts of the algorithm” [Birrell and Nelson].
+– Its efficiency
+
+=== PAGE 100 ===
+www.infotech.monash.edu
+37
+RPC model
+• RPC model is similar to “Procedure call” model.
+• Procedure call is same as function call or subroutine call
+• Local Procedure Call - The caller and the callee are within a 
+single process on a given host. 
+• Remote Procedure Call (RPC) - A process on the local 
+system invokes a procedure on a remote system. The 
+reason we call this a “procedure call” is because the intent 
+is to make it appear to the programmer that a local 
+procedure call is taking place.
+
+=== PAGE 101 ===
+www.infotech.monash.edu
+38
+Local and Remote Procedure Call
+Local Procedure Call Remote Procedure Call
+
+=== PAGE 102 ===
+www.infotech.monash.edu
+39
+A Typical Model of RPC
+
+
+=== PAGE 103 ===
+www.infotech.monash.edu
+40
+Implementing RPC mechanism
+• To achieve the goal of semantic transparency , the 
+implementation of an RPC mechanism is based on the 
+concept of stubs
+• Stubs provide a perfectly normal (local) procedure call 
+abstraction 
+• To hide the distance and functional details of underlying 
+network, an RPC communication package (known as 
+RPCRuntime) is used.
+• Thus RPC implementation involves five elements-
+– The client
+– The client stub
+– The RPCRuntime
+– The server stub
+– The server
+
+=== PAGE 104 ===
+www.infotech.monash.edu
+41
+RPC in Detail
+
+
+=== PAGE 105 ===
+www.infotech.monash.edu
+42
+Stubs
+• Client and server stubs are generated 
+from interface definition of server 
+routines by development tools.
+• Interface definition is similar to class 
+definition in C++ and Java.
+
+=== PAGE 106 ===
+www.infotech.monash.edu
+43
+Parameter Passing Mechanisms
+• When a procedure is called, parameters 
+are passed to the procedure as the 
+arguments. There are three methods to 
+pass the parameters.
+◦call-by-value
+◦call-by-reference
+◦call-by-copy/restore
+
+=== PAGE 107 ===
+www.infotech.monash.edu
+44
+Call by value
+• The values of the arguments are copied to 
+the stack and passed to the procedure.
+• The called procedure may modify these, 
+but the modifications do not affect the 
+original value at the calling side.
+
+
+=== PAGE 108 ===
+www.infotech.monash.edu
+45
+Call-by-Reference
+• The memory addresses of the variables 
+corresponding to the arguments are put into the 
+stack and passed to the procedure.
+• Since these are memory addresses, the original 
+values at the calling side are changed if modified 
+by the called procedure.
+
+
+=== PAGE 109 ===
+www.infotech.monash.edu
+46
+Call-by-Copy/Restore
+• The values of the arguments are copied to the 
+stack and passed to the procedure.
+• When the processing of the procedure completes, 
+the values are copied back to the original values at 
+the calling side.
+• If parameter values are changed in the 
+subprogram, the values in the calling program are 
+also affected.
+
+
+=== PAGE 110 ===
+www.infotech.monash.edu
+47
+Parameter Passing in RPC 
+• Which parameter passing mechanisms are 
+possible?
+◦It is possible to implement all of the three mechanisms if you wish. 
+Usually call-by-value and call-by-copy/restore are used.
+◦Call-by-reference is difficult to implement. All data which may be 
+referenced must be copied to the remote host and the reference to 
+the copied data is used. 
+• Do we need to convert the values of the 
+arguments into a standard format to 
+transmit over the network?
+
+=== PAGE 111 ===
+www.infotech.monash.edu
+48
+Parameter Passing in RPC
+• Reasons to convert the values of the 
+arguments into a standard format to 
+transmit over the network
+◦Different machines use different character codes. E.g., IBM main 
+frames use EBCDIC, while PCs use ASCII.
+◦Representation of numbers may differ from machine to machine.
+◦Big endian and little endian
+
+
+=== PAGE 112 ===
+www.infotech.monash.edu
+49
+Parameter Passing in RPC
+• If a standard format is not used, two 
+message conversions are necessary.
+◦If format information is attached to the message, only one 
+conversion at the receiver will suffice.
+◦However, the receiver must be able to handle many different 
+formats.
+
+
+=== PAGE 113 ===
+www.infotech.monash.edu
+50
+RPC Messages
+• Generally two types of messages
+– Call messages
+– Reply messages
+A typical RPC Call message format
+A typical RPC Reply message format
+(successful and unsuccessful)
+
+=== PAGE 114 ===
+www.infotech.monash.edu
+51
+Variations of RPC 
+Asynchronous RPC
+– RPC  (When a client requests a remote procedure, the client 
+wait until a reply comes back in RPC.
+– If no result is to be returned, unnecessary wait time overhead.
+– In asynchronous RPC, the server immediately sends accept 
+message when it receives a request.
+
+
+=== PAGE 115 ===
+www.infotech.monash.edu
+52
+Call-Back RPC
+One-way RPC
+• In one-way RPC, the client immediately 
+continues after sending the request to 
+the server.
+
+
+=== PAGE 116 ===
+www.infotech.monash.edu
+53
+Some special types of RPC
+• Callback RPC
+• Broadcast RPC
+• Batch-mode RPC
+• Lightweight RPC
+
+=== PAGE 117 ===
+www.infotech.monash.edu
+54
+Optimizations for better Performance
+• In Six Different Ways
+– Concurrent access to multiple servers
+– Serving multiple requests simultaneously
+– Reducing per-call workload of servers
+– Reply caching of idempotent remote procedures
+– Proper selection of timeout values
+– Proper design of RPC protocol specification
+
+=== PAGE 118 ===
+www.infotech.monash.edu
+55
+Concurrent Access to Multiple Server
+• One of the following three may be adopted:
+– Threads
+> Use of Threads in the implementation of a client process where each 
+thread can independently make remote procedure calls to different 
+servers.
+> Addressing in underlying protocol should be rich enough to provide 
+correct routing of responses.
+– Early reply approach [Wilbur and Bacarisse]
+> A call is split into two separate RPC calls- one passing parameters and 
+other requesting the result
+> Server must hold the result causing congestion or unnecessary 
+overhead.
+– Call buffering approach [Gimson]
+> Clients and servers do not interact directly but via a call buffer server
+> A variant of this approach was implemented in MIT (Mercury 
+Communication System)
+
+=== PAGE 119 ===
+www.infotech.monash.edu
+56
+Early Reply Approach
+
+
+=== PAGE 120 ===
+www.infotech.monash.edu
+57
+Call Buffering Approach
+
+
+=== PAGE 121 ===
+www.infotech.monash.edu
+58
+Serving Multiple Requests Simultaneously
+• Following types of delays are common-
+– A server, during the course of a call execution,  may wait for a 
+shared resource
+– A server calls a remote function that involves computation or 
+transmission delays
+• So the server may accept and process 
+other requests while waiting to complete a 
+request.
+• Multiple-threaded server may be a solution.
+
+=== PAGE 122 ===
+www.infotech.monash.edu
+59
+Summation (1)
+• What is the purpose of IPC?
+– information sharing among two or more processes
+• Differences between Synchronous and 
+Asynchronous Communications?
+– When both the send and receive primitives of a 
+communication between two processes use 
+blocking semantics, the communication is said to 
+be Synchronous; otherwise it is asynchronous
+• List the Types of Failure in IPC
+Loss of request message, Loss of response 
+message, Unsuccessful execution of the request
+
+=== PAGE 123 ===
+www.infotech.monash.edu
+60
+Summation (2)
+• How to implement Idempotency?
+– Adding sequence number with the request 
+message and Introduction of ‘Reply cache’
+• Three main types of Group Communications?
+– One to many, Many to one, Many to many
+• One of the greatest challenges in Many to Many?
+> Ordered Delivery
+• Name an all propose IPC protocol?
+– Remote Procedure Call (RPC)
+
+=== PAGE 124 ===
+www.infotech.monash.edu
+61
+Summation (3)
+• Name a few ways to optimise RPC?
+– Concurrent Access to Multiple Servers, Serving 
+Muliple Requests Concurrently, Reducing Call 
+Workload per Server
+  
+• Three different techniques for implementing 
+Concurrent Access to Multiple Servers?
+– Threads, Early Reply, Call Buffering
+
+=== PAGE 125 ===
+www.infotech.monash.edu
+62
+References
+1. Birman, K. P. and Renesse, R. V. Reliable Distributed 
+Computing with the ISIS Toolkit. IEEE Computer Society 
+Press, 1994.
+2. Birrell, A. D. and Nelson, B. J. Implementing remote 
+procedure calls. ACM Trans. Comput. Syst. 2(1), 39-59, 
+1984.
+3. Wilbur, S. and Bacarisse, B. Building distributed systems 
+with remote call, Software Engineering Journal, 2(5), 148-
+159, 1987. 
+4. R. Gimson. Call buffering service. Technical Report 19, 
+Programming Research Group, Oxford University, Oxford 
+University, Oxford, England, 1985.
+
+=== PAGE 126 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Week 2: 
+Workshop 02
+Dr Terrence Mak
+Faculty of Information Technology
+© 2026 Monash University
+
+=== PAGE 127 ===
+2
+Reminder on Future Applied and Lab Sessions (Week 4 to 12) 
+• Week 4, 6, 8, 10, and 12 are assessed
+• You should try to form a group/team of 2 for your future lab/applied assessments on/before Week 3
+• Group selection link has been posted on Moodle (Week 1 page)
+• For assessed classes:
+• You must submit the required submission files (e.g., slide deck/report/code) before your 
+allocated interview/presentation session(s)
+• At least 1 week before class: 
+• Start reading the assessment specification and marking rubric
+• Start working on solutions and submit solutions as instructed
+• During the presentation/interview session (approx. 7 to 10 minutes): 
+• Presentation & demonstration tasks
+• Q&A session 
+• For students with special consideration approved by Central
+• Alternate assessments – read specific instructions in the specification document
+
+=== PAGE 128 ===
+3
+▪ Workshop (Week 2) 
+– Computer networks
+– Inter-Process Communication (IPC)
+▪ Lab/Applied (Week 2)
+– Crash course on C programming
+– Shared Memory Parallelism: Introduction to POSIX Threads
+Agenda
+
+=== PAGE 129 ===
+Workshop 2
+
+=== PAGE 130 ===
+Applied Practical Solving Task #1
+SIMD revision
+
+=== PAGE 131 ===
+6
+Q1
+Which of the following statements are true for array addition on a Single Instruction Multiple Data (SIMD) machine?
+ 
+Suppose we want to perform element-wise addition of two arrays B and C, and store the result in array A. Let D be the 
+dimensions (sizes) of the three arrays.
+1. If there are 32 processing elements and the array dimension is 33, more than loop (one execution cycle) is required to 
+process the element-wise addition task.
+2. If there are 320 processing elements and the array dimension is 640, a minimum of 3 loops are required to process the 
+element-wise addition task.
+3. If there are 32 processing elements and the array dimension is 1, more than one loop must be required to process the 
+element-wise addition task.
+4. If there are 32 processing elements, a total of 2 loops on the processing elements are sufficient to handle D up to 128.
+5. If there are 256 processing elements, a total of 2 loops on the processing elements are sufficient to handle D up to 512.
+
+=== PAGE 132 ===
+Applied Practical Solving Task #2
+Networks
+
+=== PAGE 133 ===
+8
+▪ IPC is central to many parallel applications. APIs for IPC sit beneath the 
+middleware of such systems, and critically impacts function and performance;
+▪ Foundation knowledge: Because the behaviour and performance of IPC and its 
+APIs determines many critical aspects of parallel system function and 
+performance, understanding APIs is essential;
+▪ Foundation knowledge: The limitations of API can limit what a parallel 
+application can or cannot do;
+▪ Practical skills: When coding parallel applications you will have to rely on 
+middleware written around the underlying APIs and their limitations, or the APIs 
+themselves;
+▪ Practical skills: The throughput performance of a API can become a ‘live or die” 
+problem for a parallel application, making this an important item to understand;
+Why Study Inter Process Communications?
+
+=== PAGE 134 ===
+9
+▪The most widely used protocols for carrying network traffic 
+are TCP and UDP, developed during the 1980s;
+▪The intent, when TCP and UDP were developed, was to 
+support remote dumb terminal traffic, and file transfers;
+▪The earliest applications, telnet and File Transfer Protocol, 
+were thus used to remotely log on to other hosts, and copy 
+files between hosts;
+▪TCP and UDP therefore predate modern distributed 
+computing techniques.
+Network Protocols and Their Limitations  
+
+=== PAGE 135 ===
+10
+FTP Public Service  
+[tmak@m3-login1 ~]$ ftp
+ftp> open ftp.bom.gov.au
+Connected to ftp.bom.gov.au (134.178.253.145).
+220-Welcome to the Bureau of Meteorology FTP service.
+220-
+220-                              Disclaimer
+220-
+220-You accept all risks and responsibility for losses, damages, costs and
+220-other consequences resulting directly or indirectly from using this site and
+220-any information or material available from it.
+220-
+220-To the maximum permitted by law, the Bureau of Meteorology excludes all
+220-liability to any person arising directly or indirectly from using this
+220-site and any information or material available from it.
+220-
+220-Always Check the Information
+220-
+220-Information at this site:
+220-
+220-. is general information provided as part of the Bureau of Meteorology's
+220-  statutory role in the dissemination of information relating to
+220-  meteorology.
+220-. is subject to the uncertainties of scientific and technical research
+220-. may not be accurate, current or complete
+220-. is subject to change without notice
+220-. is not a substitute for independent professional advice and users
+220-  should obtain any appropriate professional advice relevant to their
+220-  particular circumstances
+220-. the material on this web site may include the views or recommendations
+220-  of third parties, which do not necessarily reflect the views of the
+220-  Bureau of Meteorology or indicate its commitment to a particular course of
+220-  action.
+220 
+
+=== PAGE 136 ===
+11
+▪The OSI Reference Model
+▪The TCP/IP (IETF/Internet) Reference Model
+– The Link Layer 
+– The Internet Layer
+– The Transport Layer
+– The Application Layer
+▪OSI model and protocols versus the IETF reference model 
+and protocols
+▪The model used in the Tanenbaum textbook
+OSI and Internet Reference Models
+
+=== PAGE 137 ===
+12
+OSI and Internet Reference Models
+https://www.geeksforgeeks.org/computer-networks/difference-between-osi-
+model-and-tcp-ip-model/
+
+=== PAGE 138 ===
+13
+▪ Principles for the seven layers
+– Layers created for different abstractions
+– Each layer performs well-defined function
+– Function of layer chosen with definition of international standard protocols in 
+mind
+– Minimize information flow across interfaces between boundaries
+– Number of layers should be optimum
+▪ Three concepts central to the OSI model:
+– Services
+– Interfaces
+– Protocols
+The OSI Reference Model (1 of 2)
+
+=== PAGE 139 ===
+14
+▪ The OSI model has seven 
+layers
+▪ Specific abstractions for each 
+layer – defined functions per 
+layer
+▪ As message flows down stack 
+encapsulation is added
+▪ Packets flow across network
+▪ As message flows up stack 
+encapsulation is removed
+The OSI Reference Model (2 of 2)
+Message 
+Travelling Down 
+Protocol Stack
+Message Travelling 
+Up Protocol Stack
+Message Travelling Across Network
+
+=== PAGE 140 ===
+15
+▪ The Link Layer
+– Lowest layer in the model
+– Describes what links must do to meet the needs of this connectionless 
+internet layer
+▪ The Internet Layer
+– Permits hosts to inject packets into any network and have them travel 
+independently to the destination
+– Defines an official packet format and protocol called IP (Internet Protocol)
+– Defines a companion protocol called ICMP (Internet Control Message 
+Protocol) that helps IP function
+The TCP/IP [IETF] Reference Model (1 of 4)
+
+=== PAGE 141 ===
+16
+▪The Transport Layer
+– The layer above the internet layer in the TCP/IP model
+– Uses two end-to-end transport protocols
+▪TCP (Transmission Control Protocol)
+▪UDP (User Datagram Protocol)
+▪The Application Layer
+–  Contains all the higher-level protocols
+The TCP/IP [IETF] Reference Model (2 of 4)
+
+=== PAGE 142 ===
+17
+▪ The TCP/IP 
+layers loosely 
+align with the 
+OSI model.
+▪ OSI model is 
+more general 
+and more finely 
+grained
+▪ TCP/IP model 
+specific to IETF 
+protocol suite
+The TCP/IP [IETF] Reference Model (3 of 4)
+
+=== PAGE 143 ===
+18
+1. The relation of IP, TCP, and UDP protocols are illustrated. We will study these.
+The TCP/IP [IETF] Reference Model (4 of 4)
+
+
+=== PAGE 144 ===
+19
+Encapsulation in Protocols [TCP/IP] - Stallings
+
+=== PAGE 145 ===
+20
+IPv4 - Stallings
+
+=== PAGE 146 ===
+21
+IPv6 - Stallings
+
+=== PAGE 147 ===
+22
+▪ This is a simplified model of the TCP/UDP and IP protocol stack;
+▪ Applications interface to TCP and UDP via an API, which provides 
+access to the middleware that handles the TCP and UDP connections;
+TCP, UDP and IP Stack
+Coulouris, Dollimore, Kindberg and Blair,  Distributed Systems: Concepts and Design   Edn. 5 Pearson Education 2012 
+
+=== PAGE 148 ===
+23
+▪ High performance in carrying files and other bulk data was not a 
+consideration when TCP and UDP were developed;
+▪ TCP was developed to provide for “reliable” data transfers, ensuring that 
+data (in packets) always arrived, and arrived in order, regardless of 
+performance losses in the network;
+▪ UDP was developed to provide for “unreliable” data transfers, using a 
+simpler protocol with slightly better performance than TCP, due to lesser 
+overheads – applications had to manage reliability and in-order 
+transfers;
+▪ In a distributed computing environment, especially where high volumes 
+of traffic must be carried, TCP and UDP are often too slow, as they were 
+never optimised for high performance – problematic in data centres;
+TCP, UDP and IP Stack
+
+=== PAGE 149 ===
+24
+▪ A multimedia streaming service uses both TCP and UDP for different 
+components of its network communication. 
+▪ The architecture is designed to optimize the streaming of video data, 
+control signals, user data, and real-time gaming commands.
+▪ Task:
+Calculate the total amount of data (in bytes) transmitted, per second, 
+across all the protocols.
+Q2
+
+=== PAGE 150 ===
+25
+Transmission Details:
+• UDP is used for real-time gaming commands, with UDP commands transmitted 
+every second. Each UDP datagram has a payload of 200 bytes and a header of 8 
+bytes.
+• TCP is employed for sending control signals with a transmission rate of TCP 
+signals per second. Each TCP segment signal contains a payload of 500 bytes 
+and a header of 20 bytes.
+• TCP is chosen for transmitting user data, with TCP messages sent per second. 
+Each message is divided into 3 chunks, with each chunk containing a payload of 
+800 bytes and a 20-byte header.
+• UDP is used for video data, sending UDP video frames per second. Each UDP 
+packet holds a payload of 900 bytes and a header of 8 bytes.
+Q2
+
+=== PAGE 151 ===
+Applied Practical Solving Task #3
+IPC
+
+=== PAGE 152 ===
+27
+▪ Inter-Process Communications (IPC) are all mechanisms which permit two or 
+more processes to exchange messages;
+▪ IPC mechanisms may be restricted to communications within a host machine’s 
+operating system, or may permit communications between processes on 
+different host machines connected via a network;
+▪ IPC mechanisms restricted to a host operating system include:
+A. Shared Memory
+B. Message Passing
+C. Unix Signals and analogues
+▪ Shared Memory imposes no structure on messages, but Signals and Message 
+Passing typically force discrete message structures.
+Inter-Process Communications
+
+=== PAGE 153 ===
+28
+Shared Memory IPC – Limited to Local Host
+
+=== PAGE 154 ===
+29
+▪ Stream Oriented IPC is especially important since it is the most commonly 
+used scheme for IPC within operating systems and between networked 
+hosts;
+▪ A stream connection imposes no implicit structure on the data being sent – 
+character mode “streams” of data are handled in a FIFO manner, arriving 
+typically at the destination in the order they were sent;
+▪ The two most widely used stream oriented IPC schemes are the BSD 
+Socket mechanism, and the SVR4 STREAMS mechanism; Application 
+protocols treat the stream as a transparent pipe.
+▪ Both are designed around standard software Application Programming 
+Interfaces (API), although most recent STREAMS implementations also 
+include an interface to emulate the BSD Socket API;
+Stream Oriented Inter-Process Communications
+
+=== PAGE 155 ===
+30
+▪ The channel is “reliable” when the stream connects  two processes on a single 
+host;
+▪ The channel is “reliable” when the stream connects two processes on different 
+hosts, using TCP protocol; The channel is “unreliable” when the stream 
+connects two processes on different hosts, using UDP protocol;
+▪ A stream IPC connection usually delivers messages “in order” thus behaving like 
+a FIFO or pipe;
+▪ Depending on the type of stream IPC, the API, and its configuration, the 
+interface may be “blocking” or “non-blocking”, thus determining process 
+behaviour during message transfers;
+▪ BSD Sockets and SVR4 STREAMs are the most common APIs in use for 
+distributed applications;
+Stream Oriented IPC – Channel Properties
+
+=== PAGE 156 ===
+31
+SVR4 STREAMS vs BSD Sockets (Kopp, 1996) [N/E]
+
+
+=== PAGE 157 ===
+32
+▪ The “middleware” provides the API interface for the user program running in a process;
+▪ The middleware interfaces to the protocol stack software, which is usually embedded in 
+the operating system kernel;
+Stream Oriented IPC – Integration
+Coulouris, Dollimore, Kindberg and Blair,  Distributed Systems: Concepts and Design   Edn. 5,  ©  Pearson Education 2012 
+
+=== PAGE 158 ===
+33
+Example: Linux Socket Integration [Stallings Ch.17 N/E]
+
+=== PAGE 159 ===
+34
+Example Data Centre Fabric [e.g. Gigabit Ethernet]
+
+=== PAGE 160 ===
+35
+Example Latency in a Data Centre Fabric [6 hops]
+A. Middleware and protocol stack delays in source node
+B. Queuing delays in routers including protocol stack processing delays
+C. Propagation delays through cables in fabric (and/or WAN) proportional to total length in path
+D. Middleware and protocol stack delays in destination node
+
+=== PAGE 161 ===
+36
+▪ Performance can become a critical challenge when running parallel 
+applications on distributed platforms like clusters and clouds
+▪ There are two aspects to performance:
+A. Latency [Delay] – the time delay between message transmission by 
+sending process to receipt by receiving process
+B. Throughput [Bandwidth/Capacity] – volume of data sent over link per 
+unit time (e.g. Gigabits/s or Gigabytes/s)
+▪ While both can be inter-related due to the design of the network and the 
+IPC scheme in use, in many applications even high bandwidth networks 
+may have large latency
+▪ Where data dependencies exist, latency becomes a major problem
+Stream Oriented IPC – Performance
+
+=== PAGE 162 ===
+37
+▪ Bob has implemented an image processing program in a Linux machine 
+with 16 processing cores. 
+▪ The program will create 16 processes, communicated through shared 
+memory Inter Process Communications (IPC). 
+▪ For each second, all the processes will send individual messages to all 
+other processes (excluding itself). 
+▪ Assume all the messages are read from and written to shared memory.   
+  
+▪ Which of the following statement are correct about Inter Process 
+Communications (IPC) in parallel systems?
+Q3
+
+=== PAGE 163 ===
+38
+1. If each of the messages is 3 kilobyte long, the total memory needed for the program 
+will be 3 kilobytes.
+2. If each of the messages is 3 kilobyte long, the total memory needed for the program 
+will not exceed 720 kilobytes.
+3. If each of the messages is 3 kilobyte long, there will be at least 720 kilobytes of 
+network data being sent through the internet.
+4. If each of the messages is 3 kilobyte long and all the processes are tasked to consume 
+all their messages from the memory for every second, the total memory needed in the 
+worst case is 3 kilobyte.
+5. None of the above statements are correct.
+Q3
+
+=== PAGE 164 ===
+Summary
+
+=== PAGE 165 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Applied Week 2
+
+=== PAGE 166 ===
+2
+1. Introduction to C Programming [45 min]
+2. Parallel computing on shared memory [1 hour]
+– Single address space: Any memory location can be accessible by 
+any of the processors or cores within a processor.
+– The basic concept of threads
+– POSIX Threads: Thread creation, Thread synchronization using mutex
+Overview
+
+=== PAGE 167 ===
+Introduction to C Programming
+
+=== PAGE 168 ===
+4
+Instructions
+1. Please download the C working exercises document
+2. Download and prepare a C (or universal) program editor on your laptop
+– If infeasible, you can use an online editor/compiler for this class (e.g., https://www.pr
+ogramiz.com/c-programming/online-compiler/)
+– However, you will need one for your machine in later classes
+3. Start working according to the instructions in the exercise document
+– Note: This is a set of scaffolding exercises for students without C background. 
+– If you are an advanced/experienced C programmer, feel free to help your other 
+classmates!
+
+=== PAGE 169 ===
+Parallel Computing on Shared Memory
+
+=== PAGE 170 ===
+6
+▪ Any memory location can be accessible by any of the processors or cores within 
+a processor.
+▪ A single address space exists, meaning that each memory location is given a 
+unique address within a single range of addresses. 
+Shared Memory Architecture
+
+
+=== PAGE 171 ===
+7
+▪ A process is an instance of a computer program that 
+is being executed.
+▪ A process can execute another FORK to spawn 
+further sub-processes, creating a cascade of 
+concurrent tasks.
+▪ Each FORK branch eventually converges at a paired 
+JOIN statement to terminate that branch safely.
+▪ The JOIN construct relies on a process counter, 
+decrementing as each process finishes, to ensure 
+sequential execution only resumes when the counter 
+hits zero.
+Creating concurrent processes
+
+
+=== PAGE 172 ===
+8
+An instruction pointer holds address of the next instruction to be executed. A stack 
+is present for procedure calls, and a heap, system routines and files. 
+Constructs for specifying parallelism 
+
+
+=== PAGE 173 ===
+9
+Constructs for specifying parallelism 
+
+
+=== PAGE 174 ===
+10
+▪ Creating threads is faster than spawning processes, and threads directly 
+access shared global variables within the same process.
+▪ Thread synchronization incurs significantly lower overhead compared to inter-
+process synchronization.
+▪ When a thread blocks (e.g., waiting for I/O or message passing), the CPU can 
+quickly switch to another thread to keep execution pipeline busy.
+▪ POSIX Threads (Pthreads, IEEE 1003.1c) is the widely adopted standard, 
+supported across modern OS environments (e.g., Linux, macOS, and Windows 
+via translation layers).
+Why Use Threads? 
+
+=== PAGE 175 ===
+11
+In shared-address architectures, processors communicate implicitly simply by 
+reading and writing to the same shared memory space. Because communication is 
+automatic, programming for these systems focuses on managing concurrency, 
+synchronization (such as locks), and minimizing memory-access overheads.
+Threads
+
+
+=== PAGE 176 ===
+12
+Multiplying two n x n matrices requires n2 dot-product operation
+// Sequential Execution (Single Thread) 
+for(row = 0; row < n; row++) 
+for(column = 0; column < n; column++) 
+c[row][column] = dot_product(get_row(a,row), get_col(b,col)); 
+Because all n2 iterations are completely independent, each dot product can run as its own thread 
+across multiple CPU/GPU cores simultaneously.
+// Parallel Execution (n2 Concurrent Threads) 
+for(row = 0; row < n; row++) 
+for(column = 0; column < n; column++) 
+c[row][column] = create_thread(dot_product(get_row(a,row), 
+get_col(b,col))); 
+Threads
+
+=== PAGE 177 ===
+13
+▪ On a single processor, multithreading generally occurs by time division 
+multiplexing (as in multitasking): the processor switches between different 
+threads. 
+▪ This context switching generally happens frequently enough that the user 
+perceives the threads or tasks as running at the same time. 
+▪ On a multiprocessor or multi-core system, the threads or tasks will 
+generally run at the same time, with each processor or core running a 
+particular thread or task. 
+Thread Basics
+
+=== PAGE 178 ===
+14
+▪ Software portability : Threaded applications can be developed on serial 
+machines and on parallel machines without changes (migrating programs 
+between diverse architectural platforms).
+▪ Latency hiding: One of the major overheads in programs is the access 
+latency for memory access, I/O and communication. Multiple threads are 
+executing on the same processor, thus hiding this latency. While one thread is 
+waiting for a communication operation, other threads can utilize the CPU, thus 
+masking associated overhead.
+Advantages and Disadvantages of Threads
+
+=== PAGE 179 ===
+15
+▪ Scheduling and load balancing: A programmer must express concurrency in a way that 
+minimizes overheads of remote interaction and idling. In many structured applications, 
+the task of allocating equal work to processors is easily accomplished. In unstructured 
+and dynamic applications (e.g. game playing and discrete optimization) this task is more 
+difficult. Threaded APIs allow the programmer to specify a large number of concurrent 
+tasks and support system-level dynamic mapping of tasks to processor with a view to 
+minimizing idling overheads, thus there is no need for explicit scheduling and load 
+balancing.
+▪ Ease of programming, widespread use : Threaded programs are easier to write than 
+programs using message passing APIs. With widespread acceptance of POSIX thread 
+API, development tools for POSIX are more widely available and stable.
+Advantages and Disadvantages of Threads
+
+=== PAGE 180 ===
+POSIX* Thread  or  Pthread
+Thread Creation & Synchronization
+
+=== PAGE 181 ===
+17
+What are Pthreads?
+▪ POSIX.1c standard 
+▪ C language interface 
+▪ Threads exist within same process 
+▪ All threads are peers 
+– No explicit parent-child model 
+– Exception: “main thread” holds process information 
+POSIX Threads
+
+=== PAGE 182 ===
+18
+pthread_create
+● Spawn a thread running the function
+● Thread handle returned via pthread_t structure
+○ Specify NULL to use default attributes
+● Single argument sent to function
+○ If no arguments to function, specify NULL
+● Check error codes!
+int pthread_create(tid, attr, function, arg);
+pthread_t *tid
+  handle of created thread
+const pthread_attr_t *attr
+  attributes of thread to be created
+void *(*function)(void *)
+  function to be mapped to thread
+void *arg
+  single argument to function
+
+=== PAGE 183 ===
+19
+#include <stdio.h>
+#include <pthread.h>
+void *hello (void * arg) { 
+printf(“Hello Thread\n”); 
+return NULL; 
+} 
+main() { 
+pthread_t tid; 
+pthread_create(&tid, NULL, hello, NULL); 
+} 
+Thread Creation - Example I
+Possible outcomes:
+● Message “Hello Thread” is 
+printed on screen
+● Nothing printed on screen. 
+Why?
+
+=== PAGE 184 ===
+20
+#include <stdio.h>
+#include <pthread.h>
+#define NUM_THREADS 4 
+void *hello (void *arg) { 
+printf(“Hello Thread\n”); 
+} 
+main() { 
+int i = 0;
+pthread_t tid[NUM_THREADS]; 
+for (i = 0; i < NUM_THREADS; i++) 
+pthread_create(&tid[i], NULL, hello, NULL); 
+for (i = 0; i < NUM_THREADS; i++) 
+pthread_join(tid[i], NULL); 
+} 
+Thread Creation - Example II
+● There must be one call for each 
+thread needed to be “joined” 
+after termination. 
+● The joins are done in the order 
+of the thread’s creation. Thus, if 
+the last thread created is the first 
+to finish, it will not be joined until 
+the previous threads have 
+finished. 
+
+=== PAGE 185 ===
+21
+void *threadFunc(void *pArg) { 
+int* p = (int*)pArg; 
+int myNum = *p; 
+printf( “Thread number %d\n”, myNum); 
+} 
+. . . 
+// from main(): 
+for (i = 0; i < numThreads; i++) { 
+pthread_create(&tid[i], 
+NULL, threadFunc, &i); 
+} 
+Example III
+What’s wrong with 
+the code?
+
+=== PAGE 186 ===
+22
+void *threadFunc(void *pArg) { 
+int* p = (int*)pArg; 
+int myNum = *p; 
+printf( “Thread number %d\n”, myNum); 
+} 
+. . . 
+// from main(): 
+for (i = 0; i < numThreads; i++) { 
+pthread_create(&tid[i], 
+NULL, threadFunc, &i); 
+} 
+Example III
+Problem is passing *address* of “i”; 
+value of “i” is changing and will likely 
+be different when thread is allowed to 
+run than when pthread_create was 
+called. 
+Time      thread0        thread1        thread2  index 
+  0:    created  
+   0
+  1:            created  
+   1 
+  2:    get *arg  
+   2       // value of *arg is 2
+ Etc. 
+
+=== PAGE 187 ===
+23
+void *threadFunc(void *pArg) 
+{ 
+int myNum = *((int*)pArg); 
+printf( “Thread number %d\n”, myNum); 
+} 
+. . . 
+// from main(): 
+for (i = 0; i < numThreads; i++) { 
+tNum[i] = i; 
+pthread_create(&tid[i], NULL, threadFunc, &tNum[i]); 
+} 
+Example III - Solution
+Solve the problem of passing 
+*address* of “i” by saving 
+current value of “i” in 
+location that will not change. 
+Be sure each thread gets 
+pointer to unique element of 
+tNum array. 
+
+=== PAGE 188 ===
+24
+▪ Simple, flexible, and efficient
+▪ Enables correct programming structures for avoiding race conditions
+▪ New data types to declare objects
+– pthread_mutex_t
+▪ the mutex variable
+– pthread_mutexattr_t
+▪ mutex attributes
+▪ Mutex must first be initialized before it can be used.
+Pthreads Mutex Variables
+Mutex can only be “held” by one thread at a time. 
+Mutexes can be shared between processes, but only if the 
+Pthreads system supports the functionality.
+
+=== PAGE 189 ===
+25
+pthread_mutex_init
+int pthread_mutex_init( mutex, attr );
+pthread_mutex_t *mutex
+  mutex to be initialized
+const pthread_mutexattr_t *attr
+  attributes to be given to mutex
+ENOMEM - insufficient memory for mutex
+EAGAIN - insufficient resources (other than memory)
+EPERM  - no privilege to perform operation
+Can also use the static, default initializer: PTHREAD_MUTEX_INITIALIZER
+pthread_mutex_t mtx1 = PTHREAD_MUTEX_INITIALIZER;
+which uses default attributes
+
+=== PAGE 190 ===
+26
+int pthread_mutex_lock( mutex );
+pthread_mutex_t *mutex
+mutex to attempt to lock
+pthread_mutex_lock
+● Attempts to lock mutex
+○ If mutex is locked by another 
+thread, calling thread is blocked
+● Mutex is held by calling thread until 
+unlocked
+○ Mutex lock/unlock must be paired 
+or deadlock occurs
+EINV AL  - mutex is invalid
+EDEADLK - calling thread already owns mutex
+
+=== PAGE 191 ===
+27
+pthread_mutex_unlock
+int pthread_mutex_unlock( mutex );
+pthread_mutex_t *mutex
+  mutex to be unlocked
+EINV AL - mutex is invalid
+EPERM  - calling thread does not own mutex
+
+=== PAGE 192 ===
+28
+#define NUMTHREADS 4 
+// why does this have to be global? 
+pthread_mutex_t gMutex; 
+int g_sum = 0; 
+void *threadFunc(void *arg) { 
+int mySum = bigComputation(); 
+pthread_mutex_lock( &gMutex ); 
+// threads access one at a time
+g_sum += mySum; 
+pthread_mutex_unlock( &gMutex ); 
+} 
+Example IV - Use of mutex
+int main() { 
+pthread_t hThread[NUMTHREADS];
+pthread_mutex_init( &gMutex, NULL ); 
+for (int i = 0; i < NUMTHREADS; i++)
+pthread_create(&hThread[i],NULL,
+threadFunc,NULL); 
+for (int i = 0; i < NUMTHREADS; i++) 
+pthread_join(hThread[i]); 
+printf (“Global sum = %f\n”, g_sum);
+} 
+Why not just put 
+bigComputation() into 
+critical region? 
+
+=== PAGE 193 ===
+29
+Download and run the following files:
+▪ PThreadBasic.c
+▪ PThread_Cond.c (Preliminary exploration of condition variables)
+Execute the code and review its implementation to understand the workflow.
+Additional reading list:
+▪ POSIX Threads Programming
+▪ Linux manual pages for the POSIX thread APIs
+Task 1
+
+=== PAGE 194 ===
+  
+   C PRIMER OBJECTIVES  ● The purpose of this class is to introduce you to C Programming Language in Week 2 MARKS ● Applied #1 (Week 1 and Week 2) is NOT assessed, and worth 0 of the unit final mark. 
+INSTRUCTIONS  1. Before class: Try to work out solutions and answers to all the tasks. 2. During class:  . You will participate in one of the working groups to discuss, learn from your peers, and refine your answers and solutions. Ask your teaching staff and your peers if you have any questions!  3. You do not need to submit any of the codes and/or answers to Moodle for Week 2. 4. For future assessed tasks, marks will not be awarded if you skip the in-class assessments or make no/empty submission to Moodle. There are also late penalties if you submit after the deadline. If you are sick, you must apply for special considerations (handled by Central). 5. You are allowed to use search engines or AI tools to search for information and resources for this class. However, please note that search engines and AI tools are typically not allowed during in-class and video presentations, demonstrations, and oral interviews in your future assessed tasks. 6. For future assessments, students will be required to form a team/group of 2. We encourage students to start finding their partners early.   
+FIT3143 Applied #1 (Week 2) 
+
+=== PAGE 195 ===
+  
+ACTIVITIES   Task 0 – Preparation [for students missing Week 1]  a. Read the Linux Environment Setup Guidelines b. Download and set up the Linux environment (with Docker if needed) c. Get familiar with the Linux environment d. Confirm gcc and Open MPI are available within your docker environment (for future labs/applied sessions)    
+
+=== PAGE 196 ===
+  
+Task 1 – C Basic - Hello World in C   Type the following program with your preferred text editor.   #include <stdio.h>  int main() { printf("\nHello World\n");  return (0); }  Save the code in the file hello.c, then compile it by typing: gcc hello.c  This creates an executable file a.out. You can then execute simply by typing its name (assume you are in the same folder of a.out).   ./a.out  The result is that the characters “Hello World” are printed out, preceded by an empty line. A C program contains functions and variables. The functions specify the tasks to be performed by the program. The “main” function establishes the overall logic of the code. It is normally kept short and calls different functions to perform the necessary sub-tasks. All C codes must have a “main” function. Our hello.c code calls printf, an output function from the I/O (input/output) library (defined in the file stdio.h). These functions are performed by standard libraries, which are part of ANSI C. The K & R textbook lists the content of these and other standard libraries in an appendix.  The printf line prints the message “Hello World” on “stdout” (the output stream corresponding to the Terminal window in which you run the code); “\n” prints a “new line” character, which brings the cursor onto the next line. By construction, printf never inserts this character on its own. Try leaving out the “\n” lines and see what happens. The first statement “#include <stdio.h>” includes a specification of the C I/O library. All variables in C must be explicitly defined before use: the “.h” files are by convention “header files” which contain definitions of variables and functions necessary for the functioning of a program, whether it be in a user-written section of code, or as part of the standard C libaries. The directive “#include” tells the C compiler to insert the contents of the specified file at that point in the code. The “< ...>“ notation instructs the compiler to look for the file in certain “standard” system directories.  The int preceding “main” indicates that main is of “int” type--that is, it has integer type associated with it, meaning that it will return a result of an integer type (‘0’ in the above example) on execution. Typing $? Immediately after executing this code will display the return value of ‘0’. 
+
+=== PAGE 197 ===
+  
+The “;” denotes the end of a statement. Blocks of statements are put in braces {...}, as in the definition of functions. All C statements are defined in free format, i.e., with no specified layout or column assignment. Whitespace (tabs or spaces) is never significant, except inside quotes as part of a character string. The following program would produce exactly the same result as our earlier example:  #include < stdio.h> void main(){printf("\nHello World\n");}  The reason for arranging your programs in lines and indenting is to show structure.     
+
+=== PAGE 198 ===
+  
+Task 2 – C Basic - Sine Function Computations  The following program, sine.c, computes a table of the sine function for angles between 0 and 360 degrees.  /************************/ /*   Table of          */ /*   Sine Function      */ /************************/ /* Michel Vallieres */ /* Written: Winter 1995 */  #include <stdio.h>  #include <math.h>  int main() { int angle_degree; double angle_radian, pi, value;  /* Print a header */ printf("\nCompute a table of the sine function\n\n");  /* obtain pi once for all */   /* or just use pi = M_PI, where M_PI is defined in math.h */ pi = 4.0 * atan(1.0); printf(" Value of PI = %f \n\n", pi);  
+printf(" angle Sine \n"); 
+angle_degree = 0; /* initial angle value */ /* scan over angle */  while (angle_degree <= 360) /* loop until angle_degree > 360 */ { angle_radian = pi * angle_degree / 180.0;  value = sin(angle_radian); printf(" %3d %f \n ", angle_degree, value);  
+
+=== PAGE 199 ===
+  
+angle_degree = angle_degree + 10; /* increment the loop index */ } return (0); } The code starts with a series of comments indicating its purpose, as well as its author. Comments can be written anywhere in the code: any characters between /* and */ are ignored by the compiler and can be used to make the code easier to understand. The use of variable names that are meaningful within the context of the problem is also a good idea. The #include statements now also include the header file for the standard mathematics library math.h. This statement is needed to define the calls to the trigonometric functions atan and sin. Note that the compilation should include the mathematics library explicitly by typing gcc sine.c –lm  Variable names are arbitrary (with some compiler-defined maximum length, typically 32 characters). C uses the following standard variable types: int  -> integer variable  short   -> short integer  long -> long integer float   -> single precision real (floating point) variable  double  -> double precision real (floating point) variable  char -> character variable (single byte)   The compiler checks for consistency in the types of all variables used in any code. This feature is intended to prevent mistakes, in particular in mistyping variable names. Calculations done in the math library routines are usually done in double precision arithmetic (64 bits on most workstations). The actual number of bytes used in the internal storage of these data types depends on the machine being used.  The printf function can be instructed to print integers, floats and strings properly.  The general syntax is printf( "format", variables );  where "format" specifies the conversion specification and variables is a list of quantities to print. Some useful formats are %.nd  integer (optional n = number of columns; if 0, pad with zeros) % m.nf  float or double (optional m = number of columns, n = number of decimal places) %ns string (optional n = number of columns) %c  character \n \t  to introduce new line or tab 
+
+=== PAGE 200 ===
+  
+\g  ring the bell (“beep”) on the terminal 
+
+=== PAGE 201 ===
+  
+Task 3 – C Basic - Loops  Most real programs contain some construct that loops within the program, performing repetitive actions on a stream of data or a region of memory. There are several ways to loop in C. Two of the most common are the while loop: while (expression) { ...block of statements to execute... }  and the for loop: for (expression_1; expression_2; expression_3) { ...block of statements to execute... } The while loop continues to loop until the conditional expression becomes false. The condition is tested upon entering the loop. Any logical construction (see below for a list) can be used in this context.  The for loop is a special case, and is equivalent to the following while loop:  expression_1; while (expression_2) { ...block of statements...  expression_3; }  For instance, the following structure is often encountered: i = initial_i;  while (i <= i_max) { ...block of statements...  i = i + i_increment; }  This structure may be rewritten in the easier syntax of the for loop as: for (i = initial_i; i <= i_max; i = i + i_increment) { ...block of statements... }  
+
+=== PAGE 202 ===
+  
+Infinite loops are possible (e.g. for(;;)). C permits you to write an infinite loop, and provides the break statement to “breakout “ of the loop. For example, consider the following (admittedly not-so-clean) re-write of the previous loop: angle_degree = 0;  for ( ; ; ) { ...block of statements...  angle_degree = angle_degree + 10;  if (angle_degree == 360) break; }  The conditional if simply asks whether angle_degree is equal to 360 or not; if yes, the loop is stopped.  Exercise: Write your own C codes containing two different types of loops.      
+
+=== PAGE 203 ===
+  
+Task 4 – C Basic - Symbolic Constants  You can define constants of any type by using the #define compiler directive. Its syntax is simple--for instance  #define ANGLE_MIN 0 #define ANGLE_MAX 360  would define ANGLE_MIN and ANGLE_MAX to the values 0 and 360, respectively. C distinguishes between lowercase and uppercase letters in variable names. It is customary to use capital letters in defining global constants.   
+
+=== PAGE 204 ===
+  
+Task 5 – C Basic - Conditionals   Conditionals are used within the if and while constructs:  if (conditional_1) { ...block of statements executed if conditional_1 is true... } else if (conditional_2) { ...block of statements executed if conditional_2 is true... } else { ...block of statements executed otherwise... } and any variant that derives from it, either by omitting branches or by including nested conditionals. Conditionals are logical operations involving comparison of quantities (of the same type) using the conditional operators: < smaller than <= smaller than or equal to == equal to != not equal to   >= greater than or equal to > greater than and the boolean operators && and || or ! not Another conditional use is in the switch construct: switch (expression) { case const_expression_1: { ...block of statements...  break; } 
+
+=== PAGE 205 ===
+  
+case const_expression_2: { ...block of statements...  break; } default: { ...block of statements.. } } The appropriate block of statements is executed according to the value of the expression, compared with the constant expressions in the case statement. The break statements insure that the statements in the cases following the chosen one will not be executed. If you would want to execute these statements, then you would leave out the break statements. This construct is particularly useful in handling input variables.     
+
+=== PAGE 206 ===
+  
+Task 6 – C Basic – Character Arrays   A string constant, such as  "I am a string"  is an array of characters. It is represented internally in C by the ASCII characters in the string, i.e., “I”, blank, “a”, “m”,... for the above string, and terminated by the special null character “\0” so programs can find the end of the string. String constants are often used in making the output of code intelligible using printf ; printf("Hello, world\n"); printf("The value of a is: %f\n", a);  String constants can be associated with variables. C provides the char type variable, which can contain one character--1 byte--at a time. A character string is stored in an array of character type, one ASCII character per location. Never forget that, since strings are conventionally terminated by the null character “\0”, we require one extra storage location in the array! C does not provide any operator, which manipulate entire strings at once. Strings are manipulated either via pointers or via special routines available from the standard string library string.h. Using character pointers is relatively easy since the name of an array is just a pointer to its first element. Consider the following code:  #include <stdio.h>  int main() { char text_1[100], text_2[100], text_3[100];  char *ta, *tb; int i; /* set message to be an array */ /* of characters; initialize it */ /* to the constant string "..." */ /* let the compiler decide on */ /* its size by using [] */  char message[] = "Hello, I am a string; what are you?"; 
+printf("Original message: %s\n", message); 
+/* copy the message to text_1 */ /* the hard way */ i=0; while ( (text_1[i] = message[i]) != '\0' )  
+
+=== PAGE 207 ===
+  
+i++; printf("Text_1: %s\n", text_1);   /* use explicit pointer arithmetic */  ta=message; tb=text_2; while ( ( *tb++ = *ta++ ) != '\0' ) ; printf("Text_2: %s\n", text_2);  return(0); }  The standard “string” library contains many useful functions to manipulate strings; a description of this library can be found in an appendix of the K & R textbook. Some of the most useful functions are: char *strcpy(s,ct) -> copy ct into s, including “\0”; return s char *strncpy(s,ct,n)  -> copy ncharcater of ct into s, return s char *strncat(s,ct) -> concatenate ct to end of s; return s char *strncat(s,ct,n)       -> concatenate n character of ct to end of s, terminate with “\0”; return s int strcmp(cs,ct) -> compare cs and ct; return 0 if cs=ct, <0 if cs0 if cs>ct char *strchr(cs,c) -> return pointer to first occurrence of c in cs or NULL if not encountered size_t strlen(cs) -> return length of cs (s and t are char*, cs and ct are const char*, c is a char converted to type int, and n is an int.)  Consider the following code, which uses some of these functions: #include <stdio.h>  #include <string.h>  int main() { char line[100], *sub_text; /* initialize string */ strcpy(line,"hello, I am a string;");  printf("Line: %s\n", line); /* add to end of string */  strcat(line," what are you?");   
+
+=== PAGE 208 ===
+  
+printf("Line: %s\n", line); /* find length of string */ /* strlen brings back */ /* length as type size_t */  
+printf("Length of line: %d\n", (int)strlen(line)); 
+/* find occurrence of substrings */  if ( (sub_text = strchr ( line, 'W' ) )!= NULL ) printf("String starting with \"W\" ->%s\n", sub_text);  if ( ( sub_text = strchr ( line, 'w' ) )!= NULL ) printf("String starting with \"w\" ->%s\n", sub_text);  if ( ( sub_text = strchr ( sub_text, 'u' ) )!= NULL ) printf("String starting with \"w\" ->%s\n", sub_text); return(0); }    
+
+=== PAGE 209 ===
+  
+Task 7 – C Input/Output – Character I/O C provides (through its libraries) a variety of I/O routines. At the character level, getchar() reads one character at a time from stdin, while putchar() writes one character at a time to stdout. For example, consider  #include <stdio.h>   int main() { int i, nc;  nc = 0; i = getchar();  while (i != EOF) { nc = nc + 1;   i = getchar(); } printf("Number of characters in file = %d\n", nc);  return(0); }  This program counts the number of characters in the input stream (e.g. in a file piped into it at execution time). The code reads characters (whatever they may be) from stdin (the keyboard), uses stdout (the terminal you run from) for output, and writes error messages to stderr (usually also your terminal). These streams are always defined at run time. EOF is a special return value, defined in stdio.h, returned by getchar() when it encounters an end- of-file marker when reading. Its value is computer dependent, but the C compiler hides this fact from the user by defining the variable EOF. Thus the program reads characters from stdin and keeps adding to the counter nc, until it encounters the “end of file”.  An experienced C programmer would probably code this example as:  #include <stdio.h>   int main() { int c, nc = 0;  while ( (c = getchar()) != EOF ) nc++;   printf("Number of characters in file = %d\n", nc); return(0); 
+
+=== PAGE 210 ===
+  
+}  C allows great brevity of expression, usually at the expense of readability! The () in the statement (c = getchar()) says to execute the call to getchar() and assign the result to c before comparing it to EOF; the brackets are necessary here. Recall that nc++ (and, in fact, also ++nc) is another way of writing nc = nc + 1. (The difference between the prefix and postfix notation is that in ++nc, nc is incremented before it is used, while in nc++, nc is used before it is incremented. In this particular example, either would do.) This notation is more compact (not always an advantage, mind you), and it is often more efficiently coded by the compiler. The UNIX command wc counts the characters, words and lines in a file. The program above can be considered as your own wc. Let's_ add a counter for the lines.  #include <stdio.h>    int main() { int c, nc = 0, nl = 0;  while ( (c = getchar()) != EOF ) { nc++; if (c == '\n') nl++; }  printf("Number of characters = %d, number of lines = %d\n", nc, nl); return(0); }  Note: CTRL-D will act as EOF character.  Exercise: Can you think of a way to count the number of words in a text file?   
+
+=== PAGE 211 ===
+  
+Task 8 – C Input/Output – Higher-level I/O   We have already seen that printf handles formatted output to stdout. The counterpart statement for reading from stdin is scanf. The syntax scanf("format string", variables); resembles that of printf. The format string may contain blanks or tabs (ignored), ordinary ASCII characters, which must match those in stdin, and conversion specifications as in printf. Equivalent statements exist to read from or write to character strings. They are: sprintf(string, "format string", variables); scanf(string, "format string", variables); The “string” argument is the name of (i.e. a pointer to) the character array into which you want to write the information.  
+
+=== PAGE 212 ===
+  
+Task 9 – C Input/Output – File I/O  Similar statements also exist for handling I/O to and from files. The statements are   #include <stdio.h>  FILE *fp; fp = fopen(name, mode); fscanf(fp, "format string", variable list);  fprintf(fp, "format string", variable list);  fclose(fp );  The logic here is that the code must define a local “pointer” of type FILE (note that the uppercase is necessary here), which is defined in < stdio.h> “open” the file and associate it with the local pointer via fopen perform the I/O operations using fscanf and fprintf disconnect the file from the task with fclose The “mode” argument in the fopen specifies the purpose/positioning in opening the file: “r” for reading, “w” for writing, and “a” for appending to the file. Try the following:  #include <stdio.h>   int main() { FILE *fp;  int i;  fp = fopen("foo.dat", "w"); /* open foo.dat for writing */  fprintf(fp, "\nSample Code\n\n"); /* write some info */  for (i = 1; i <= 10 ; i++) fprintf(fp, "i = %d\n", i);  fclose(fp); /* close the file */  return(0); }  Compile and run this code; then use any editor or “cat” to read the file foo.dat.   
+
+=== PAGE 213 ===
+  
+Task 10 – C Functions - Calling a function   Functions are easy to use; they allow complicated programs to be parcelled up into small blocks, each of which is easier to write, read, and maintain. We have already encountered the function main and made use of I/O and mathematical routines from the standard libraries. Now let's look at some other library functions, and how to write and use our own.   The call to a function in C simply entails referencing its name with the appropriate arguments. The C compiler checks for compatibility between the arguments in the calling sequence and the definition of the function.  Library functions are generally not available to us in source form. Argument type checking is accomplished through the use of header files (like stdio.h), which contain all the necessary information. For example, as we saw earlier, in order to use the standard mathematical library you must include math.h via the statement  #include <math.h> at the top of the file containing your code. The most commonly used header files are:  <stdio.h>  -> defining I/O routines <ctype.h>  -> defining character manipulation routines <string.h> -> defining string manipulation routines <math.h> -> defining mathematical routines <stdlib.h> -> defining number conversion, storage allocation and similar tasks                <stdarg.h> -> defining libraries to handle routines with variable numbers of arguments <time.h> -> defining time-manipulation routines  In addition, the following header files exist: <assert.h> -> defining diagnostic routines <setjmp.h> -> defining non-local function calls <signal.h> -> defining signal handlers <limits.h> -> defining constants of the int type   <float.h> -> defining constants of the float type  Appendix B in the K & R book describes these libraries in great detail.    
+
+=== PAGE 214 ===
+  
+Task 11 – C Functions - Writing a function   A function has the following layout: return-type function-name ( argument-list-if-necessary ) { ...local-declarations...  ...statements...  return return-value; }  If return-type is omitted, C defaults to int. The return-value must be of the declared type. A function may simply perform a task without returning any value, in which case it has the following layout:  void function-name ( argument-list-if-necessary ) { ...local-declarations...  ...statements... }  As an example of function calls, consider the following code: /* include headers of library */ /* defined for all routines */ /* in the file */ #include <stdio.h>  #include <string.h> /* prototyping of functions */ /* to allow type checks by */ /* the compiler */  int main() { int n; char string[50]; /* strcpy(a,b) copies string b into a */ 
+
+=== PAGE 215 ===
+  
+/* defined via the stdio.h header */ strcpy(string, "Hello World");  /* call own function */  n = n_char(string); printf("Length of string = %d\n", n);  return(0); }  /* definition of local function n_char */  int n_char(char string[]) {    /* local variable in this function */  int n;    /* strlen(a) returns the length of */   /* string a */   /* defined via the string.h header */  n = strlen(string);  if (n > 50) printf("String is longer than 50 characters\n");  /* return the value of integer n */ return n; }  Arguments are always passed by value in C function calls. This means that local “copies” of the values of the arguments are passed to the routines. Any changes made to the arguments internally in the function are made only to the local copies of the arguments. In order to change (or define) an argument in the argument list, this argument must be passed as an address, thereby forcing C to change the “real” argument in the calling routine.      As an example, consider exchanging two numbers between variables. First let's illustrate what happen if the variables are passed by value:  #include <stdio.h>  void exchange(int a, int b);  
+
+=== PAGE 216 ===
+  
+ int main() { /* WRONG CODE */ int a, b;  a = 5; b = 7; printf("From main: a = %d, b = %d\n", a, b);  exchange(a, b);  printf("Back in main: "); printf("a = %d, b = %d\n", a, b);  return(0); }  void exchange(int a, int b) { int temp;  temp = a; a = b; b = temp; printf(" From function exchange: ");  printf("a = %d, b = %d\n", a, b); }  Run this code and observe that a and b are NOT exchanged! Only the copies of the arguments are exchanged. The RIGHT way to do this is of course to use pointers:   #include <stdio.h> void exchange ( int *a, int *b );  int main() { /* RIGHT CODE */ int a, b;  a = 5; b = 7; printf("From main: a = %d, b = %d\n", a, b);  exchange(&a, &b);  
+
+=== PAGE 217 ===
+  
+printf("Back in main: "); printf("a = %d, b = %d\n", a, b);  return(0); }  void exchange ( int *a, int *b ) { int temp;  temp = *a; *a = *b; *b = temp; printf(" From function exchange: ");  printf("a = %d, b = %d\n", *a, *b); }  The rule of thumb here is that You use regular variables if the function does not change the values of those arguments You MUST use pointers if the function changes the values of those arguments  Exercise: Write your own C codes defining at least two functions that use pointers as arguments.      
+
+=== PAGE 218 ===
+  
+Task 12 – Command Line Arguments   The full statement of the first line of the C program is  main(int argc, char** argv)   The syntax char** argv declares argv to be a pointer to a pointer to a character, that is, a pointer to a character array (a character string) – in other words, an array of character strings. You could also write this as char* argv[].  When you run a program, the array argv contains, in order, all the information on the command line when you entered the command (strings are delineated by whitespace), including the command itself. The integer argc gives the total number of strings, and is therefore equal to equal to the number of arguments plus one. For example, if you typed  a.out -i 2 -g -x 3 4  
+the program would receive 
+argc = 7 argv[0] = "a.out" argv[1] = "-i" argv[2] = "2" argv[3] = "-g" argv[4] = "-x" argv[5] = "3" argv[6] = "4"  Note that the arguments, even the numeric ones, are all strings at this point. It is the programmer's job to decode them and decide what to do with them.  The following program simply prints out its own name and arguments:  #include <stdio.h>  int main(int argc, char** argv) { int i; printf("argc = %d\n", argc);   for (i = 0; i < argc; i++) 
+
+=== PAGE 219 ===
+  
+printf("argv[%d] = \"%s\"\n", i, argv[i]);  return(0); }    UNIX programmers have certain conventions about how to interpret the argument list. They are by no means mandatory, but it will make your program easier for others to use and understand if you stick to them. First, switches and key terms are always preceded by a “-” character. This makes them easy to recognize as you loop through the argument list. Then, depending on the switch, the next arguments may contain information to be interpreted as integers, floats, or just kept as character strings. With these conventions, the most common way to “parse” the argument list is with a for loop and a switch statement.  #include <stdio.h>  #include <stdlib.h>  /* sample usage a.out –a 100 */  int main(int argc, char** argv) { /* Set defaults for all parameters: */  int a_value = 0;  float b_value = 0.0;  char* c_value = NULL; int d1_value = 0, d2_value = 0;  
+int i; 
+/* Start at i = 1 to skip the command name. */  for (i = 1; i < argc; i++) { /* Check for a switch (leading "-"). */  if (argv[i][0] == '-') { /* Use the next character to decide what to do. */  switch (argv[i][1]) { case 'a': a_value = atoi(argv[++i]);  break; case 'b': b_value = atof(argv[++i]);  break; case 'c': c_value = argv[++i]; break; case 'd': d1_value = atoi(argv[++i]);  
+
+=== PAGE 220 ===
+  
+   d2_value = atoi(argv[++i]);  break; } }  } printf("a = %d\n", a_value);  printf("b = %f\n", b_value); if (c_value != NULL) printf("c = \"%s\"\n", c_value); printf("d1 = %d, d2 = %d\n", d1_value, d2_value); return(0); }     
+
+=== PAGE 221 ===
+  
+Task 13 – Practice C Pointers    C and C++ provide an added feature for accessing the memory location in the computer directly by using pointers. The pointers as their name suggest point to either the address of a variable or the value stored at the address of the variable. The pointers are implemented by the reference and dereference operators. Reference Operator (&) is used to find the address of a variable. Dereference Operator (*) is used to find the value stored at the address of the variable. The following C code demonstrates the use of these operators. You may cut and paste this code in a text editor, compile and execute to see the outputs:  gcc filename.c - o filename.extension  #include <stdio.h>   int main() { int AValue, * BValue; /* See what is stored in AValue at present*/  printf("AValue=%d \n", AValue); /* Set the Value of AValue to what we want */  AValue = 101;  /* Print the memory address where AValue is stored and the value*/ /* by using the "&" Reference operator*/ printf("Address of AValue %p AValue= %d \n", & AValue, AValue); /* Save the address of AValue at a separate location*/  BValue = & AValue; /* Print the BValue , which is the address of AValue */ /* Dereference BValue with "*" operator and print actual Value*/ printf("Address of BValue %p BValue= %d \n", BValue, * BValue); /* Note output will show BValue=101 (it was never explicitly set to 101) */ }  Sample output: AValue = 0 Address of AValue 0x7fff5fbff6bc AValue = 101  Address of BValue 0x7fff5fbff6bc BValue = 101  Questions: Why would ‘*BValue’ returns ‘101’, without being set to this value explicitly anywhere within the sample code?  

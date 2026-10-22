@@ -1,0 +1,911 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 1: 
+Introduction to Parallel Computing 
+Dr Carlo Kopp, MACM, SMIEEE, 
+AFAIAA
+Sima, Fountain and 
+Kacsuk
+, 
+Advanced Computer Architectures 
+-
+a Design Space Approach
+, Chapter 1
+Faculty of Information Technology
+© 2024 Monash University
+
+=== PAGE 2 ===
+2
+§Parallel computing hardware is now pervasive –smartphones, tablets, notebooks, desktops, servers, clusters, clouds all employ parallel hardware in various forms. Very few systems today use single core CPUs§Designing, developing and implementing code to run well on parallel hardware requires a robust understanding of parallelism and how it impacts code design and system performance §Theory: Parallelism arises in different forms that impact performance and code design in different ways that require different approaches to system and code§Theory: Without a sound theory background good solutions are impossible§Practice: The ability to analysea parallel computing problem and match it to available hardware §Practice: The ability to code parallel applications on real world hardware
+Why Study Parallel Computing?
+
+=== PAGE 3 ===
+Parallelism Concepts and Context
+
+=== PAGE 4 ===
+4
+§The basic reason why parallel systems are built is to improve computational performance –in the simplest of terms to “make applications run much faster”§Since the 1950s parallelism has been used in various ways to extract more performance out of hardware that is limited in how fast it can execute machine instructions§Parallelism has been used to improve the performance of individual CPUs using techniques like pipelining, superscalar processing, and vector processing§Parallelism has been used to improve the performance of systems by aggregating multiple CPUs or processing elements (in GPUs, NPUs)
+Why Parallelism?
+
+=== PAGE 5 ===
+5
+§In  the most basic senseall parallelism involves the exploitation of concurrency in executing instructions or code with many instructions§If you have a CPU with an arithmetic unit that can execute one machine instruction e.g.a multiplication in say 1 nanosecond, the ability to execute ten such instructions simultaneously provides a tenfold speedup –10 multiplies§Parallelism always incurs costs in hardware –for instance, a CPU that can execute ten machine instructions concurrently will be more costly, just as a multicore CPU chip with ten cores will also be more costly than a single core CPU, and a server with ten multicore CPU chips will be at least ten times as expensive as a single multicore CPU chip machine, all else being equal§While hardware imposes many limits on parallelism, algorithms often present a much bigger challenge to achieving high concurrency in a parallel system
+What is Parallelism?
+
+=== PAGE 6 ===
+6
+§Parallel computing involves programming for concurrency on many processors, rather than sequential execution on a single processor§Parallel computing requires learning a different approach to programming to by-pass the limits of sequential processing;§Programmers need to understand parallel architectures and as needed re-design applications for parallel platforms;§In considering performance a programmer working in a “traditional” sequential system thinks in terms of linear timescales;§In a parallel environment, concurrency and synchronisationmust also be considered.
+What is Parallel Computing?
+
+=== PAGE 7 ===
+7
+§The most common application of parallel computing techniques is today in commodity computing products§Multicore CPU chips are used in portable devices like smartphones and tablets, portable equipment like notebooks, and all types of desktops and small servers –gaming desktops now use up to 24 core CPUs, and servers up to 60 core CPUs§Cloud systems used in data centresuse many thousands of multicore CPUs networked by a fabric, and are typical parallel/distributed systems§Supercomputers in the Exascale performance class arrived in 2022 –these are massively parallel / distributed systems with performance in the class of 1018IEEE 754 Double Precision (64-bit) operations per second and are typically used to solve huge scientific computing problems
+Where is Parallel Computing Used?
+
+=== PAGE 8 ===
+8
+Intel Sapphire Rapids 2023 (Up to 60 cores)
+
+
+=== PAGE 9 ===
+9
+§606208 cores in 9,472 AMD EPYC 7713 Trento64 core 2 GHz CPUs §8,335,360 GPU cores in 37,888 AMD Instinct MI250X GPUs§Fabric: HPE Slingshot 64-port switch using 200 Gbps QSPF Terabit Ethernet §Developed by HPE Cray and AMD for the US Oak Ridge National Laboratoryand U.S. Department of Energy
+Hewlett Packard Enterprise / Cray Frontier / OLCF-5 (2022)
+https://www.flickr.com/photos/olcf/52117623843/ 
+
+=== PAGE 10 ===
+10
+§Science–Global climate modelling–Biology: genomics; protein folding; drug design–Astrophysical modelling–Computational Chemistry–Computational Material Sciences and Nanosciences§Engineering–Semiconductor design–Earthquake and structural modelling, remote sensing–Computation fluid dynamics (airplane design) & Combustion (engine design)–Simulation–Deep learning–Game design–Telecommunications (e.g. Network monitoring & optimization)–Autonomous systems§Business–Financial derivatives and economic modelling–Transaction processing, web services and search engines–Analytics
+Large Scale Computational Problems (Sankar, 2008)
+
+=== PAGE 11 ===
+Parallel versus Distributed Computing
+
+=== PAGE 12 ===
+12
+§Parallel and Distributed Computing are frequently confused by novices, because many applications are both parallel and distributed at the same time;§Parallel Computing is mostly focused on problems where the same computing task is divided up to execute concurrently on many processing cores or components, regardless of whether these are on the same chip, in the same computer, or distributed across a fabric or network connecting many computers;§Distributed Computing is mostly focused on problems where the same or different computing tasks are concurrently executed on multiple cores distributed across a fabric or network connecting many computers;§This overlap results in a need to understand a number of important distributed computing concepts to solve many parallel programming problems
+Parallel versus Distributed Computing
+
+=== PAGE 13 ===
+13
+Parallel versus Distributed ComputingScalabilityLatencyBandwidthSynchronisationReliability
+Systems that areBoth distributed and parallel include clusters and clouds
+
+=== PAGE 14 ===
+14
+Conventional versus Parallel Processing
+Conventional i.e. “Sequential” Computing
+Parallel Computing
+Adapted from https://computing.llnl.gov/tutorials/parallel_comp/
+
+=== PAGE 15 ===
+15
+The Diversity Problem – How to Classify Parallel Processors?§Until the 1990s most computers in use in desktop and portable applications were single CPU (core) machines §Large mainframes and servers were mainly machines with multiple single CPU (core) processors sharing a main memory§A small minority of supercomputers were vector processing machines§Increasing chip density during the 1990s led to many changes:a)Multicore CPU chips starting with dual and quad core devicesb)Networking of multicore CPU machines into clustersc)Multimedia coprocessors to process streaming data and vectors§Density now permits single chip solutions for arbitrary parallel models
+
+=== PAGE 16 ===
+16
+The Taxonomy Problem§A taxonomy of parallel architectures can be built based on three relationships:1.Relationship between PE and the instruction sequence executed2.Relationship between PE and the memory3.Relationship between PE and the interconnection network§Where a PE (PU) is a Processing Element (Processing Unit) e.g. a CPU or Execution Unit§Please note that different textbooks and papers often use different labels even if the definitions are fundamentally the same§The most widely used taxonomy is Flynn’s 1966 model
+
+=== PAGE 17 ===
+Flynn’s Taxonomy
+
+=== PAGE 18 ===
+18
+Flynn’s Taxonomy
+§Michael Flynn (1966) developed a taxonomy of parallel systems  based on the number of independent instruction and data streams.A.SISD: Single Instruction Stream- Single Data Stream (sequential Von Neumann machine)B.MISD: Multiple Instruction Stream- Single Data StreamC.SIMD: Single Instruction Stream- Multiple Data StreamD.MIMD: Multiple Instruction Stream- Multiple Data Stream
+
+=== PAGE 19 ===
+19
+OneMany
+Instructions
+Data
+ManyOne
+SISD MISD
+MIMDSIMD
+Defined by: Prof Michael J Flynn at Stanford University§Single Instruction Single Data§Multiple Instruction Single Data§Single Instruction Multiple Data§Multiple Instruction Multiple Data
+Flynn’s Taxonomy
+
+
+=== PAGE 20 ===
+20
+Flynn’s Taxonomy
+
+=== PAGE 21 ===
+21
+§A serial (non-parallel) computer §Single instruction: only one instruction stream is being acted on by the CPU during any one clock cycle §Single data: only one data stream is being used as input during any one clock cycle §Deterministic execution §This is the oldest and until recently, the most prevalent form of computer §Examples: most single core CPU notebooks, desktops, workstations and servers)
+Single Instruction Single Data (Von Neumann Model)
+
+
+=== PAGE 22 ===
+22
+§Consists of a processor executing a program stored in a (main) memory.§Each main memory location located by its address. Addresses start at 0 and extend to 2n -1 when there are n bits (binary digits) in the address. 
+Single Instruction Single Data (Von Neumann Model)
+
+
+=== PAGE 23 ===
+23
+§A type of parallel computer §Single instruction: All processing units execute the same instruction at any given clock cycle §Multiple data: Each processing unit can operate on a different data element §This type of machine typically has an instruction dispatcher, a very high-bandwidth internal interconnect, and a very large array of very small-capacity instruction (execution) units. §Best suited for specialized problems characterized by a high degree of regularity, such as image processing. §Synchronous (lockstep) and deterministic execution §Two varieties: Processor Arrays and Vector Pipelines
+Single Instruction Multiple Data System
+Processor Arrays: Connection Machine CM-2, Maspar MP-1, MP-2 Vector Pipelines: IBM 9000, Cray C90, Fujitsu VP , NEC SX-2, Hitachi S820 
+
+=== PAGE 24 ===
+24
+Single Instruction Multiple Data SystemProcessor array
+Data interface
+Data in/outMass storage
+Array control
+Host computer
+
+=== PAGE 25 ===
+25
+§A single data stream is fed into multiple processing units. §Each processing unit operates on data independently via independent instruction streams. §Few actual examples of this class of parallel computer have ever existed. One is the experimental Carnegie-Mellon computer§Many textbooks class systolic arrays as MISD architectures but this is disputed – systolic arrays are used in some AI NPUs§Some conceivable uses might be: a)multiple frequency filters operating on a single signal stream b)multiple cryptography algorithms attempting to crack a single coded message. 
+Multiple Instruction Single Data
+
+=== PAGE 26 ===
+26
+§Currently, the most common type of parallel computer. Most modern computers fall into this category. §Multiple Instruction: every processor may be executing a different instruction stream §Multiple Data: every processor may be working with a different data stream §Execution can be synchronous or asynchronous, deterministic or non-deterministic §Examples: most current supercomputers, networked parallel computer "grids" and multi-processor SMP computers, and anything with a multi-core CPU chip
+Multiple Instruction Multiple Data
+
+=== PAGE 27 ===
+27
+Multiple Instruction Multiple Data – Distributed and Shared MemoryProcessor 1
+Processor p
+InterconnectionNetwork
+Memory
+Memory
+Processor 1Processor 2
+Processor p
+InterconnectionNetwork
+MemoryModule1MemoryModule2
+MemoryModulem
+
+=== PAGE 28 ===
+Memory Architectures
+
+=== PAGE 29 ===
+29
+§There are multiple ways in which a parallel system might access memory§The memory architecture in use can impact the behaviour of the system in multiple ways:a)Performance: bandwidth available to read and write data from and to memoryb)Reliability: maintaining consistency of data for different processing elements in the systemc)Security: control of access permissions to data in memory
+Why Do Memory Architectures Matter
+
+=== PAGE 30 ===
+30
+§Broadly divided into three categories:A.Shared Memory Architecture: multiple processing elements access memory via a common local bus or switch using a common address space B.Distributed Memory Architecture: multiple processing elements access memory over a fabric (network, bus, switch) not always using a common address space C.Hybrid Memory Architecture: Combines (A) and (B)
+Parallel Computer Memory Architectures 
+
+=== PAGE 31 ===
+31
+§Shared memory parallel computers vary widely, but generally have in common the ability for all processors to access all memory as a global address space. §Multiple processors can operate independently but share the same memory resources. §Changes in a memory location effected by one processor are visible to all other processors. §Shared memory machines can be divided into two main classes based upon memory access times: UMA and NUMA (discussed later). 
+Shared Memory Architecture
+
+=== PAGE 32 ===
+32
+§Distributed memory systems require a communication network to connect inter-processor memory. §Processors have their own local memory. There is no concept of global address space across all processors. §Because each processor has its own local memory, it operates independently. Changes it makes to its local memory have no effect on the memory of other processors. Hence, the concept of cache coherency does not apply. §When a processor needs access to data in another processor, it is usually the task of the programmer to explicitly define how and when data is communicated. Synchronization between tasks is likewise the programmer's responsibility. The network “fabric” used for data transfer varies widely, though it can be as simple as Ethernet.
+Distributed Memory Architecture
+
+
+=== PAGE 33 ===
+33
+§Clusters, clouds and supercomputers today employ both shared and distributed memory architectures.   §The shared memory component is usually a cache coherent SMP (Symmetrical Multi-Processing) machine. Processors on a given SMP can address that machine's memory as global. §The distributed memory component is the networking of multiple SMPs. SMPs know only about their own memory - not the memory on another SMP. Therefore, network communications are required to move data from one SMP to another. §Current trends seem to indicate that this type of memory architecture will continue to prevail and increase at the high end of computing for the foreseeable future. 
+Hybrid Memory Architecture
+
+
+=== PAGE 34 ===
+Parallel Programming Models 
+
+=== PAGE 35 ===
+35
+§There are several parallel programming models in common use: A.Shared Memory B.Threads C.Message Passing D.Data Parallel E.Hybrid §Parallel programming models exist as an abstraction above the hardware and memory architectures. §Although it might not seem apparent, these models are NOT specific to a particular type of machine or memory architecture. In fact, any of these models can (theoretically) be implemented on any underlying hardware
+Parallel Programming Models Overview
+
+=== PAGE 36 ===
+36
+§Another programming structure we may use is the Single Program Multiple Data (SPMD) structure.§In this structure, a single source program is written and each processor will execute its personal copy of this program,  although independently, and not in synchrony.§This source program can be constructed so that parts of the program are executed by certain computers and not others depending on the identity of the computer.§For a master-slave structure, the programs could have parts for the master and parts for slaves.
+Single Program Multiple Data (SPMD) Structure
+
+=== PAGE 37 ===
+37
+§Within the MIMD classification, each processor will have its own program to execute. This could be described as MPMD.§In this case, some of the programs to be executed could be copies of the same program.§Typically, only two source programs are written, one for the designated master processor, and one for the remaining processors, which are called slave processors.
+Multiple Program Multiple Data (MPMD) Structure
+
+=== PAGE 38 ===
+Summary
+
+=== PAGE 39 ===
+39
+§Parallelism Concepts and Context§Parallel versus Distributed Computing§Flynn’s Taxonomy§Memory Architectures§Parallel Programming Models 
+Summary
+
+=== PAGE 40 ===
+Reading Materials
+
+=== PAGE 41 ===
+41
+§M. J. Flynn, “Very high-speed computing systems,” inProceedings of the IEEE, vol. 54, no. 12, pp. 1901-1909, Dec. 1966, doi: 10.1109/PROC.1966.5273, URI: https://ieeexplore.ieee.org/document/1447203 §Sima, Dezsö, Terry J. Fountain and Péter Kacsuk. “Advanced computer architectures - a design space approach,” Chapter 1, International computer science series, Addison-Wesley, Reading, MA (1997) 
+Reading and References
+
+=== PAGE 42 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Week 1: 
+Workshop 01
+Dr Terrence Mak
+Faculty of Information Technology
+© 2025 Monash University
+
+=== PAGE 43 ===
+2
+▪ Assessment
+– Q & A
+▪ Workshop 1 
+– Flynn’s Taxonomy
+▪SISD
+▪SIMD
+▪MISD
+▪MIMD
+– Speed up and computation time 
+▪SIMD
+– Memory Architectures
+▪Distributed Memory
+Agenda
+
+=== PAGE 44 ===
+Assessment
+
+=== PAGE 45 ===
+4
+▪ Applied Problem Solving Tasks (x 3) – Total: 50%
+ Format: Moodle quizzes
+ Date/Time: In-class @ Workshops [Week 4, Week 8, Week 12]
+ Quiz Duration: Approx 1 hour
+▪ Laboratories (x 3) – Total: 30%
+ Format: Coding exercises with in-class activities
+ Date/Time: In-class @ Labs [Week 4, Week 8, and Week 12]
+ Assessment: In person presentation, code/report submission
+▪ Applied Sessions (x 2) – Total: 20%
+ Format: Written exercises with in-class activities
+ Date/Time: In-class @ Applied session [Week 6 & 10]
+ Assessment: In person presentation, code/report/homework submission
+Assessment
+
+=== PAGE 46 ===
+5
+Lab & Applied Session (Preliminary Schedule)
+
+
+=== PAGE 47 ===
+6
+Any questions?
+Questions?
+
+=== PAGE 48 ===
+Workshop 1
+
+=== PAGE 49 ===
+8
+▪ The basic reason why parallel systems are built is to improve 
+computational performance – in the simplest of terms to “make 
+applications run much faster”
+▪ Since the 1950s parallelism has been used in various ways to extract 
+more performance out of hardware that is limited in how fast it can 
+execute machine instructions
+▪ Parallelism has been used to improve the performance of individual 
+CPUs using techniques like pipelining, superscalar processing, and 
+vector processing
+▪ Parallelism has been used to improve the performance of systems by 
+aggregating multiple CPUs or processing elements (in GPUs, NPUs)
+Why Parallelism?
+
+=== PAGE 50 ===
+9
+▪ In  the most basic sense all parallelism involves the exploitation of concurrency 
+in executing instructions or code with many instructions
+▪ If you have a CPU with an arithmetic unit that can execute one machine 
+instruction e.g. a multiplication in say 1 nanosecond, the ability to execute ten 
+such instructions simultaneously provides a tenfold speedup – 10 multiplies
+▪ Parallelism always incurs costs in hardware – for instance, a CPU that can 
+execute ten machine instructions concurrently will be more costly, just as a 
+multicore CPU chip with ten cores will also be more costly than a single core 
+CPU, and a server with ten multicore CPU chips will be at least ten times as 
+expensive as a single multicore CPU chip machine, all else being equal
+▪ While hardware imposes many limits on parallelism, algorithms often present a 
+much bigger challenge to achieving high concurrency in a parallel system
+What is Parallelism?
+
+=== PAGE 51 ===
+10
+▪ Parallel computing involves programming for concurrency on many 
+processors, rather than sequential execution on a single processor
+▪ Parallel computing requires learning a different approach to 
+programming to by-pass the limits of sequential processing;
+▪ Programmers need to understand parallel architectures and as needed 
+re-design applications for parallel platforms;
+▪ In considering performance a programmer working in a “traditional” 
+sequential system thinks in terms of linear timescales;
+▪ In a parallel environment, concurrency and synchronisation must also 
+be considered.
+What is Parallel Computing?
+
+=== PAGE 52 ===
+Applied Practical Solving Task #1
+Flynn’s Taxonomy
+
+=== PAGE 53 ===
+12
+Flynn’s Taxonomy
+▪ Michael Flynn (1966) developed a taxonomy of parallel 
+systems  based on the number of independent 
+instruction and data streams.
+A. SISD: Single Instruction Stream- Single Data Stream 
+(sequential Von Neumann machine)
+B. MISD: Multiple Instruction Stream- Single Data Stream
+C. SIMD: Single Instruction Stream- Multiple Data Stream
+D. MIMD: Multiple Instruction Stream- Multiple Data 
+Stream
+
+=== PAGE 54 ===
+13
+Flynn’s Taxonomy
+
+
+=== PAGE 55 ===
+14
+▪ A serial (non-parallel) computer 
+▪ Single instruction: only one instruction stream is being acted 
+on by the CPU during any one clock cycle 
+▪ Single data: only one data stream is being used as input 
+during any one clock cycle 
+▪ Deterministic execution 
+▪ This is the oldest and until recently, the most prevalent form 
+of computer 
+▪ Examples: most single core CPU notebooks, desktops, 
+workstations and servers)
+Single Instruction Single Data (Von Neumann Model)
+
+
+=== PAGE 56 ===
+15
+▪ A type of parallel computer 
+▪ Single instruction: All processing units execute the same 
+instruction at any given clock cycle 
+▪ Multiple data: Each processing unit can operate on a different 
+data element 
+▪ This type of machine typically has an instruction dispatcher, a 
+very high-bandwidth internal interconnect, and a very large 
+array of very small-capacity instruction (execution) units. 
+▪ Best suited for specialized problems characterized by a high 
+degree of regularity, such as image processing. 
+▪ Synchronous (lockstep) and deterministic execution 
+▪ Two varieties: Processor Arrays and Vector Pipelines
+Single Instruction Multiple Data System
+Processor Arrays: 
+Connection Machine 
+CM-2, Maspar MP-1, 
+MP-2 
+Vector Pipelines: IBM 
+9000, Cray C90, Fujitsu VP , 
+NEC SX-2, Hitachi S820 
+
+=== PAGE 57 ===
+16
+▪ A single data stream is fed into multiple processing units. 
+▪ Each processing unit operates on data independently via independent 
+instruction streams. 
+▪ Few actual examples of this class of parallel computer have ever existed. One 
+is the experimental Carnegie-Mellon computer
+▪ Many textbooks class systolic arrays as MISD architectures but this is 
+disputed – systolic arrays are used in some AI NPUs
+▪ Some conceivable uses might be: 
+a) multiple frequency filters operating on a single signal stream 
+b) multiple cryptography algorithms attempting to crack a single coded 
+message. 
+Multiple Instruction Single Data
+
+=== PAGE 58 ===
+17
+▪ Currently, the most common type of parallel computer. 
+Most modern computers fall into this category. 
+▪ Multiple Instruction: every processor may be executing a 
+different instruction stream 
+▪ Multiple Data: every processor may be working with a 
+different data stream 
+▪ Execution can be synchronous or asynchronous, 
+deterministic or non-deterministic 
+▪ Examples: most current supercomputers, networked 
+parallel computer "grids" and multi-processor SMP 
+computers, and anything with a multi-core CPU chip
+Multiple Instruction Multiple Data
+
+=== PAGE 59 ===
+18
+Multiple Instruction Multiple Data – Distributed and Shared Memory
+Processor 1
+Processor p
+Interconnection
+Network
+Memory
+Memory
+Processor 1
+Processor 2
+Processor p
+Interconnection
+Network
+Memory
+Module
+1
+Memory
+Module
+2
+Memory
+Module
+m
+
+=== PAGE 60 ===
+19
+▪ Bob has a computationally intensive task involving matrix multiplications 
+on two large matrices A and B. 
+▪ Select the option that would yield the largest speedup for the task. 
+▪ You can assume:
+– The memory for each machine is sufficiently large to store A and B
+– The processing units have the same computational efficiency / 
+speed for all the options
+Q1
+
+=== PAGE 61 ===
+20
+1. Five independent Single Instruction, Single Data (SISD) architecture machines each with 1 
+processing unit but without network connections. 
+2. One Single Instruction, Multiple Data (SIMD) architecture machine with 5 processing units.
+3. One Multiple Instruction, Single Data (MISD) architecture machine with 5 processing units.
+4. One Multiple Instruction, Multiple Data (MIMD) architecture machine with 3 processing units. 
+5. Two Multiple Instruction, Multiple Data (MIMD) architecture machines, each with 2 processing 
+units and connected via LAN at 10Mbps speed. 
+Q1 Flynn Taxonomy
+
+=== PAGE 62 ===
+Applied Practical Solving Task #2
+SIMD
+
+=== PAGE 63 ===
+22
+▪ Which of the following statements are true for array addition on a Single 
+Instruction Multiple Data (SIMD) machine? 
+▪ Let A, B, and C are three floating point arrays.
+▪ Suppose we want to perform element-wise subtraction: B - C, and store 
+the result in array A. 
+Q2
+
+=== PAGE 64 ===
+23
+▪ Assume the machine has 32 execution units, and each unit takes 2 
+nanoseconds to compute a subtraction instruction and store the result. 
+▪ If the arrays A, B, and C all contain 300 elements (i.e., size of A, B, and 
+C is 300), what is the minimum computation time for the task in 
+nanoseconds?
+A. 2 nanoseconds
+B. 20 nanoseconds
+C. 32 nanoseconds
+D. 300 nanoseconds
+E. 600 nanoseconds
+Q2
+
+=== PAGE 65 ===
+Applied Practical Solving Task #3
+Memory
+
+=== PAGE 66 ===
+25
+▪There are multiple ways in which a parallel system might 
+access memory
+▪The memory architecture in use can impact the behaviour 
+of the system in multiple ways:
+a) Performance: bandwidth available to read and write data 
+from and to memory
+b) Reliability: maintaining consistency of data for different 
+processing elements in the system
+c) Security: control of access permissions to data in memory
+Why Do Memory Architectures Matter
+
+=== PAGE 67 ===
+26
+▪Broadly divided into three categories:
+A. Shared Memory Architecture: multiple processing 
+elements access memory via a common local bus or switch 
+using a common address space 
+B. Distributed Memory Architecture: multiple processing 
+elements access memory over a fabric (network, bus, 
+switch) not always using a common address space 
+C. Hybrid Memory Architecture: Combines (A) and (B)
+Parallel Computer Memory Architectures 
+
+=== PAGE 68 ===
+27
+▪ Shared memory parallel computers vary widely, 
+but generally have in common the ability for all 
+processors to access all memory as a global 
+address space. 
+▪ Multiple processors can operate independently 
+but share the same memory resources. 
+▪ Changes in a memory location effected by one 
+processor are visible to all other processors. 
+▪ Shared memory machines can be divided into 
+two main classes based upon memory access 
+times: UMA and NUMA (discussed later). 
+Shared Memory Architecture
+
+=== PAGE 69 ===
+28
+▪ Distributed memory systems require a communication 
+network to connect inter-processor memory. 
+▪ Processors have their own local memory. There is no concept 
+of global address space across all processors. 
+▪ Because each processor has its own local memory, it 
+operates independently. Changes it makes to its local 
+memory have no effect on the memory of other processors. 
+Hence, the concept of cache coherency does not apply. 
+▪ When a processor needs access to data in another 
+processor, it is usually the task of the programmer to explicitly 
+define how and when data is communicated. Synchronization 
+between tasks is likewise the programmer's responsibility. 
+The network “fabric” used for data transfer varies widely, 
+though it can be as simple as Ethernet.
+Distributed Memory Architecture
+
+
+=== PAGE 70 ===
+29
+▪ Bob, a software developer, implements a program that will run with 4 
+processes, with each process consuming 3GBs of memory. 
+▪ After running the program for 10 seconds, the program will create one 
+more process for monitoring purposes, consuming 0.5 GBs of memory. 
+▪ Alice from the deployment team now takes Bob’s program and 
+dispatches (run) the program on 80 machines across the company’s 
+network. 
+Q3
+
+=== PAGE 71 ===
+30
+Which of the following statements are true?
+1. The number of processes throughout the company’s network stays at 
+320 for all the time. 
+2. If 10 machines are down, the number of processes will drop from 400 
+to 320 eventually.
+3. The total amount of memory consumed throughout the network will 
+always be smaller than or equals to 240GBs.
+4. If Alice deploys the program to 20 more machines, the total amount of 
+memory consumed throughout the network will be less than 1200GBs.
+5. None of the above statements are true.
+Q3
+
+=== PAGE 72 ===
+Summary
+
+=== PAGE 73 ===
+32
+▪ Assessment
+▪ Parallel computing 
+– Flynn’s Taxonomy
+▪SISD
+▪SIMD
+▪MISD
+▪MIMD
+– Speed up and computation time 
+▪SIMD
+– Memory Architectures
+▪Distributed Memory
+Topics covered
+
+=== PAGE 74 ===
+UNIX/LINUX REFERENCE CARD
+Basic File and Directory Manipulation
+ls ............................. List directory contents
+cp .......................................... Copy ﬁles
+mv.................................. Move/rename ﬁles
+rm ....................................... Remove ﬁles
+shred ............................ Destroy data in ﬁles
+ln........................................... Link ﬁles
+cd ................................... Change directory
+pwd ................... Print present working directory
+mkdir ................................. Make directory
+rmdir ............................... Remove directory
+File Viewing
+cat .............. Concatenate ﬁles and print to stdout
+more ............................... Page through ﬁles
+less ............................... Page through ﬁles
+nl ............................... Number lines of ﬁles
+od ............... Prints ﬁle in octal and other formats
+File Text Manipulation
+grep ................ Search text for matching patterns
+cut............. Remove sections from each line of ﬁles
+paste .............................. Merge lines of ﬁles
+tr ...................... Translate or delete characters
+join .............. Join lines of ﬁles on a common ﬁeld
+split ............................. Split ﬁle into pieces
+csplit ......... Split ﬁle into sections by context lines
+sort ........................................ Sort lines
+uniq ........... Remove duplicate lines from sorted ﬁle
+fmt ..................... Simple optimal text formatter
+File Properties
+stat................................ Display ﬁle status
+wc ........................... Count bytes/words/lines
+du ................................ Estimate disk usage
+file ........................ Manipulate ﬁle attributes
+touch ......................... Change ﬁle timestamps
+chown .............................. Change ﬁle owner
+chgrp ............................... Change ﬁle group
+chmod ......................... Change ﬁle protections
+File and Commands Location and Help
+find ...................................... Locate ﬁles
+locate .......................... Locate ﬁles via index
+which .............................. Locate commands
+apropos......... Locate commands by keyword lookup
+man ................. Find and display online help page
+whereis ... Locate bin, src and man ﬁles for command
+File Compression
+gzip ............... Compress/decompress ﬁles (LZ77)
+bzip2 .............. Compress/decompress ﬁles (BWT)
+[un]zip ..... (De-)Compress ﬁles (PKZIP compatible)
+File Comparison and Patching
+diff ........................ Compare ﬁles line by line
+patch ................... Apply changes from a diﬀ ﬁle
+comm ............................. Compare sorted ﬁles
+cmp ........................ Compare ﬁles byte by byte
+md5sum....... Compute and check MD5 message digest
+Disks and Filesystems
+df ............................... Show free disk space
+mount .......................... Make a disk accessible
+fcsk ........................... Check a disk for errors
+sync .......... Synchronizes ﬁlesystem buﬀers and disk
+quota ............... Check disk quota for current user
+Backups and Remote Storage
+mt................................ Control a tape drive
+dump................................... Back up a disk
+restore .............................. Restore a dump
+tar ............ Read/write (compressed) tape archives
+rsync ............................. Mirror a set of ﬁles
+dar .................................... Archive a disk
+Environment
+env ..................... Display environment variables
+echo .................................... Print variable
+export ............ Write environment variables (Bash)
+set .... Write environment variables with more options
+unset .................... Unset environment variables
+Scheduling Jobs
+sleep ......................... Delay for speciﬁed time
+watch ................... Run programs at set intervals
+at ..................................... Schedule a job
+cron ................................... Clock daemon
+crontab ............... Schedule repeated jobs for cron
+expect.... Automates tasks using interactive programs
+Printing
+lpr ......................................... Print ﬁles
+lpq ................................. View print queue
+lprm ............................... Remove print jobs
+Processes
+ps ................................... List all processes
+w ................................. List users’ processes
+uptime ........................... View system uptime
+top ................................. Monitor processes
+xload ............................ Monitor system load
+kill ............................. Terminate processes
+nice ............... Run process with modiﬁed priority
+renice ................. Alter running process’ priority
+Hosts
+uname ....................... Print system information
+hostname ................ Print the system’s hostname
+ifconfig............. Set/display network information
+host .................................... Look up DNS
+whois ..................... Look up domain registrants
+ping ... Check reachability and response time of a host
+traceroute .............. View network path to a host
+File Editing
+vim ....................................... Text editor
+gvim ...................... Forks a GUI version of ViM
+emacs ..................................... Text editor
+sed ........................... GNU stream text editor
+Spelling Operations
+ispell .................... Check spelling interactively
+look ................................. Look up spelling
+
+=== PAGE 75 ===
+Networking
+ssh ..................... Securely log into remote hosts
+scp .................. Securely copy ﬁles between hosts
+sftp ................. Securely copy ﬁles between hosts
+wget ............................ Retrieve a url to disk
+curl ............................ Retrieve a url to disk
+gaim................................ Instant messaging
+talk ................................ Linux/Unix Chat
+write .................... Send messages to a terminal
+mesg ....................... Enable/prohibit talk/write
+finger ............... Display information about users
+who............................. Show who is logged in
+last ............ Displays login and logout information
+Email, News and Web Browsing
+pine ......... Terminal-based email and news program
+mutt ................... Terminal-based email program
+mail .............................. Minimal mail client
+links .......................... Text-only web browser
+firefox ............................ GUI web browser
+Text Processors and Viewers
+latex ................... Compiles LaTeX → TeX DVI
+pdflatex .................... Compiles LaTeX → PDF
+bibtex ......................... Compiles BiBTeX ﬁles
+gv .......................... View Postscript/PDF ﬁles
+xdvi .............................. View TeX DVI ﬁles
+dvips................... Prints/converts TeX DVI ﬁles
+ps2pdf ................... Converts Postscript → PDF
+antiword................ Converts MS Word → ASCII
+Image Manipulation/Display
+xv ................................. Image viewer for X
+qiv ................ Fast gdk/imlib image viewer for X
+feh .................... Fast imlib2 image viewer for X
+display .................. ImageMagick: display image
+convert ................. ImageMagick: convert image
+identify ........ ImageMagick: display ﬁle image info
+import.... ImageMagick: save screen/window as image
+compare ............... ImageMagick: compare images
+xfig .......................... Tool for drawing ﬁgures
+transfig ....... Converts ﬁg → portable LaTeX ﬁgure
+gimp ............... GNU image manipulation program
+Development
+cscope ............ Interactively examine a C program
+gcc........................ Compiles C and C++ code
+gdb ......................... Debugger for C and C++
+javac ............................. Compiles Java code
+jdb ................................ Debugger for Java
+awk ......... Pattern scanning and processing language
+perl ...................... Perl programming language
+python ................ Python programming language
+ruby ..................... Ruby programming language
+matlab ................. Technical computing language
+mathematica ....... Mathematical computing language
+R .............................. Data analysis language
+Encryption
+pgp .................... Public key encryption program
+gpg .............. GnuPG: an encryption tool like PGP
+Terminal Emulators
+xterm ............... Standard terminal emulator for X
+rxvt ............. Lightweight terminal emulator for X
+mrxvt ............... Multi-tab enabled version of rxvt
+Miscellaneous
+alias ........ Create shorthand for a series commands
+su ........... Allows you to run a shell as another user
+sudo ..... Lets you execute a command as another user
+nohup ............ Lets a program run after you log out
+This card may be freely distributed under the terms of the GNU
+general public licence — This document was compiled by Thiam
+H Lee on ￿2006-12-06￿ — v0.6 — The author assumes no re-
+sponsibility for any errors on this card. The latest version can
+be found at http://www.columbia.edu/~thl2102/. This reference
+card was adapted from Laurent Gr´ egoire’s ViM Quick Reference
+Card, found at http://tnerual.eriogerg.free.fr/vim.html .
+
+=== PAGE 76 ===
+Vi Reference Card
+Modes
+Vi has two modes: insertion mode, and command mode.
+The editor begins in command mode, where cursor move-
+ment and text deletion and pasting occur. Insertion mode
+begins upon entering an insertion or change command.
+[ESC] returns the editor to command mode (where you can
+quit, for example by typing:q!). Most commands execute
+as soon as you type them except for “colon” commands
+which execute when you press the return key.
+Quitting
+exit, saving changes :x
+quit (unless changes) :q
+quit (force, even if unsaved) :q!
+Inserting text
+insert before cursor, before line i,I
+append after cursor, after line a,A
+open new line after, line before o,O
+replace one char, many chars r,R
+Motion
+left, down, up, right h,j,k,l
+next word, blank delimited word w,W
+beginning of word, of blank delimited word b,B
+end of word, of blank delimited word e,E
+sentence back, forward (,)
+paragraph back, forward {,}
+beginning, end of line 0,$
+beginning, end of ﬁle 1G , G
+linenn Gor:n
+forward, back to charc fc,Fc
+forward, back to before charc tc,Tc
+top, middle, bottom of screen H,M,L
+Deleting text
+Almost all deletion commands are performed by typing d
+followed by amotion. For exampledwdeletes a word. A
+few other deletions are:
+character to right, left x,X
+to end of line D
+line dd
+line :d
+Yanking text
+Like deletion, almost all yank commands are performed by
+typingyfollowed by amotion. For exampley$yanks to
+the end of line. Two other yank commands are:
+line yy
+line :y
+Changing text
+The change command is a deletion command that leaves
+the editor in insert mode. It is performed by typing cfol-
+lowed by amotion. For examplecwchanges a word. A few
+other change commands are:
+to end of line C
+line cc
+Putting text
+put after position or after line p
+put before position or before line P
+Registers
+Named registers may be speciﬁed before any deletion,
+change, yank, or put command. The general preﬁx has
+the form"cwherecmay be any lower case letter. For
+example,"adwdeletes a word into registera. It may there-
+after be put back into the text with an appropriate put
+command, for example"ap.
+Markers
+Named markers may be set on any line of a ﬁle. Any lower
+case letter may be a marker name. Markers may also be
+used as the limits for ranges.
+set markercon this line mc
+goto markerc ‘c
+goto markercﬁrst non-blank ’c
+Search for strings
+search forward /string
+search backward ?string
+repeat search in same, reverse direction n,N
+Replace
+The search and replace function is accomplished with the
+:scommand. It is commonly used in combination with
+ranges or the:gcommand (below).
+replace pattern with string :s/pattern/string/flags
+ﬂags: all on each line, conﬁrm each g,c
+repeat last :s command &
+Regular expressions
+any single character except newline .(dot)
+zero or more repeats *
+any character in set [...]
+any character not in set [^ ...]
+beginning, end of line ^,$
+beginning, end of word \<,\>
+grouping \(...\)
+contents ofnth grouping \n
+Counts
+Nearly every command may be preceded by a number that
+speciﬁes how many times it is to be performed. For exam-
+ple5dwwill delete 5 words and 3fewill move the cursor
+forward to the 3rd occurance of the letter e. Even inser-
+tions may be repeated conveniently with this method, say
+to insert the same line 100 times.
+Ranges
+Ranges may precede most “colon” commands and cause
+them to be executed on a line or lines. For example :3,7d
+would delete lines 3−7. Ranges are commonly combined
+with the:scommand to perform a replacement on several
+lines, as with:.,$s/pattern/string/gto make a replace-
+ment from the current line to the end of the ﬁle.
+linesn-m :n,m
+current line :.
+last line :$
+markerc :’c
+all lines :%
+all matching lines :g/pattern/
+Files
+write ﬁle (current ﬁle if no name given) :wfile
+append ﬁle (current ﬁle if no name given) :w >>file
+read ﬁle after line :rfile
+read program output :r !program
+next ﬁle :n
+previous ﬁle :p
+edit new ﬁle :efile
+replace line with program output :.!program
+Other
+toggle upper/lower case ~
+join lines J
+repeat last text-changing command .
+undo last change, all changes on line u,U
+c￿2002 Donald J. Bindner – licensed under the terms of the GNU Free Documentation License version 1.1 or later.

@@ -1,0 +1,118 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 7C: 
+Parallel Application Performance Modelling 
+–
+Part C
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information Technology
+© 2024 Monash University
+
+=== PAGE 2 ===
+Parallel System Performance Models
+
+=== PAGE 3 ===
+3
+§Amdahl’s Law is one of a number of models used for predicting the performance of parallel architectures.§Amdahl’s Law is useful for explaining the behaviourof a parallel system and the impact of data dependencies and fabric/network delays, but it is often difficult to use since determining the serial component a priori is not always easy.§Numerous alternative models to Amdahl exist and have been used to analyseperformance of parallel applications.§Examples include Gustafson, Erlang, harmonic speedup, LogPand MRM.
+GeneralisingParallel System Performance Models
+
+=== PAGE 4 ===
+4
+§The most general model available is the MRM (Machine Repairman Model), a mathematical queueing model developed initially for modelling industrial production lines, and used in Operations Research.𝑋𝑃=!"!#$§X-mean throughput; P –number of processors; R –interconnect latency including waiting times; Z –mean execution time in processor.§Amdahl’s Law can be directly remapped into the MRM model (Gunther -http://www.perfdynamics.com/Papers/pdcs05.pdf)
+MRM Model
+
+=== PAGE 5 ===
+5
+§The model proposed by Gustafson is a variant of the Amdahl model§Gustafson needed a model suitable for large physics problems that frequently have very small serial components𝑆=𝑠+𝑛𝑃§Frequently promoted as a replacement for Amdahl’s Law, “Gustafson’s Law” is useful for problems with small serial components with near linear speedup§Gustafson’s model, like Amdahl’s model, can be remapped into a queuing model like MRM (https://doi.org/10.1145/42411.42415)
+Gustafson’s Model
+
+=== PAGE 6 ===
+6
+§The LogPmodel is a latency model for multiprocessor systems that can be used for performance estimatiom§L= the latency of the fabric§o= messaging overhead§g= time gap between two messages, often the inverse of fabric bandwidth§P= number of CPUs/cores§Culler’s LogPmodel, like the Amdahl and Gustafson models, can be remapped into a queuing model like MRM (https://doi.org/10.1145/173284.155333)
+LogPModel
+
+=== PAGE 7 ===
+Parallel Application Behaviourand Partitioning
+
+=== PAGE 8 ===
+8
+§The starting point in designing any distributed application is to understand the behaviourof the algorithm and its data dependencies, as these determine what the networking needs of the application might be.§The most difficult applications are those with significant data dependencies§Applications that involve 2D and 3D modelling, that arise in engineering, science and graphics problems can be a major challenge§This is because a single problem has tobe partitioned across many CPUs/cores
+Modelling Parallel Application Behaviour
+
+=== PAGE 9 ===
+9
+§The most difficult applications are those with significant data dependencies, good examples being 2D or 3D mesh computations.§In a mesh computation, dependencies exist between  individual cells in the mesh.§The result is that the partitioning of the mesh for a distributed application  will impact efficiency and parallel speedup.§A smaller number of processors each doing more work might perform better than a larger number of processors each doing less work individually.
+Parallel Application Behaviour–Meshes (1)
+
+=== PAGE 10 ===
+10
+§A very common approach for mesh problems is to initially generate a mesh that is fine enough to solve the problem with acceptable accuracy§This mesh is then divided into a set of submesheseach of which contains some number of vertices and arcs connecting them –each submeshis to be computed on a single core or multi-core CPU§The time to compute each submeshand the messaging load between cores and neighboursmust must be assessed or benchmarked§Smaller submeshescompute faster but generate more traffic between cores –this is a trade-off!
+Parallel Application BehaviourMeshes (2)
+
+=== PAGE 11 ===
+11
+§Finite element model with variable mesh density (Comsol)Example Parallel Application Behaviour
+
+=== PAGE 12 ===
+12
+§Finite element model with variable mesh density (Comsol)Example Parallel Application Behaviour
+
+=== PAGE 13 ===
+13
+§Mesh model with fixed mesh density (Pelosi & Kopp, 2011)Example Parallel Application Behaviour
+
+=== PAGE 14 ===
+14
+§Mesh model with fixed mesh density (Pelosi & Kopp, 2011)Example Parallel Application Behaviour
+
+
+=== PAGE 15 ===
+15
+§In general, there does not appear to be any single algorithm which can produce an optimal partitioning for all possible problems. §This is because of the diversity in the different problems to be solved, which result in different patterns of communication between processors.§Many existing classes of applications have good partitioning algorithms available as much research has been done; others do not.§The first step in designing a distributed application, or migrating an application to a distributed system, must be the analysis of how to partition the problem.
+Parallelisation/Partitioning of Problems (1)
+
+=== PAGE 16 ===
+16
+§Step 1: Is there an existing partitioning algorithm or software tool for the problem/application to be run on a distributed system? If yes, use this method, else:§Step 2: What class/category/type does the problem / application belong to, and are there similar problems for which good partitioning algorithms exist? If yes, locate the method/software and use it, else:§Step 3: Analysethe behaviourof problem / application to be run on a parallel system, and find the best partitioning strategy, if it exists.
+Parallelisation/Partitioning of Problems (2)
+
+=== PAGE 17 ===
+17
+§It is possible that good strategies do not exist for a particular problem in which case the approach to computing the problem must be rethought§In practice, most problems tend to be variants of known problems, this is especially true in scientific, engineering and graphics modelling§In some instances, the runtime software may impose limits on partitioning –an example are simulators written in Java where a single Java Virtual Machine becomes a bottleneck§Instance is a simulation in Netlogo(Kopp, Korb, Mills 2018) that was limited to 8 concurrent runs
+Parallelisation/Partitioning of Problems (3)
+
+=== PAGE 18 ===
+18
+§Netlogosimulation with 8 x JVM limit (Kopp, Korb, Mills 2018)Example Parallel Application Behaviour
+ 0
+ 0.2
+ 0.4
+ 0.6
+ 0.8
+ 1
+ 500  1000  1500  2000  2500  3000  3500  4000  4500  5000
+Fraction of agents utilising each IPD strategy
+Time (steps)Tit for TatTit for 2 Tats PavlovAlways Cooperate Always DefectRandom Probabilistic
+
+=== PAGE 19 ===
+Summary
+
+=== PAGE 20 ===
+20
+§Models for parallel and distributed system performance estimation§Amdahl, Gustafson, LogPand MRM models§Problem partitioning§Mesh problem examples
+Summary
+
+=== PAGE 21 ===
+Reading Materials
+
+=== PAGE 22 ===
+22
+§C. Kopp, Primer on Network Congestion, Monash Lens 2020: https://lens.monash.edu/@carlo-kopp/2020/04/03/1379973/a-road-more-travelled-network-congestion-a-consequence-of-working-from-home§Amdahl, G.M. Validity of the single-processor approach to achieving large scale computing capabilities. In AFIPS Conference Proceedings vol. 30, Atlantic City, N.J., Apr. 18-20. AFIPS Press, Reston, Va., 1967, pp. 483-485 https://dl.acm.org/doi/10.1145/1465482.1465560§John L. Gustafson. 1988. Reevaluating Amdahl's law.   Commun. ACM 31, 5 (May 1988), 532–533. https://doi.org/10.1145/42411.42415
+Reading and References
+
+=== PAGE 23 ===
+23
+§David Culler, Richard Karp, David Patterson, Abhijit Sahay, Klaus Erik Schauser, Eunice Santos, Ramesh Subramonian, and Thorsten von Eicken. 1993. LogP: towards a realistic model of parallel computation. SIGPLAN Not. 28, 7 (July 1993), 1–12. https://doi.org/10.1145/173284.155333§Neil J. Gunther, Unification Of Amdahl’s Law, LogPAnd Other Performance Models For Message-passing architectures, URL: http://www.perfdynamics.com/Papers/pdcs05.pdf§Neil J. Gunther, Performance Ponderings (52 papers as of 2024), URL: http://www.perfdynamics.com/papers.html
+Reading and References

@@ -1,0 +1,3228 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 5: 
+Multiple Instruction Multiple Data and Distributed Memory 
+Architectures
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Sima, Fountain and Kacsuk, Advanced Computer Architectures - a Design Space Approach, Chapter 15,17
+Faculty of Information Technology
+© 2024 Monash University, © 1997 Addison-Wesley
+
+=== PAGE 2 ===
+2
+1. Theory: The most common CPU chips and SoCs now in use in 
+desktop, notebook, tablet and smartphone applications employ multi-
+core processors that are instances of MIMD architectures
+2. Theory: Common clusters, clouds and High Performance Computing 
+(HPC) systems in wide use are also instances of MIMD architectures
+3. Practice: Performance of applications and partitioning of code in MIMD 
+architectures demands a good understanding of their basic 
+architectures and associated properties
+4. Practice: Whether you are purchasing hardware or developing 
+multiprocessing apps, understanding MIMD is essential
+Why Study Multiple Instruction Multiple Data Architectures?
+
+=== PAGE 3 ===
+Multiple Instruction Multiple Data  (MIMD) Architectures
+
+=== PAGE 4 ===
+4
+▪ Multiple Instruction Multiple Data
+▪ Widely used now in multicore 
+CPUs, clusters, clouds and HPC
+Flynn’s Taxonomy
+
+
+=== PAGE 5 ===
+5
+▪ Distributed Memory MIMD
+– Replicate the processor/memory pairs
+– Connect them via an interconnection fabric, e.g. network
+▪ Shared Memory MIMD
+– Replicate the processors
+– Replicate the memories
+– Connect them via an interconnection network, e.g. bus or switch
+▪ Hybrid MIMD
+– Combines Distributed and Shared Models
+Architectural Concepts
+
+=== PAGE 6 ===
+6
+▪ Access to local memory module is much 
+faster than remote
+▪ Hardware remote accesses via
+– Load/Store primitive
+– Message passing layer
+▪ Cache memory for local memory traffic
+▪ Message
+– Memory-memory
+– Cache-cache
+Distributed Memory Machine
+Processor 1
+Processor p
+Interconnection
+Network
+Memory
+Memory
+
+=== PAGE 7 ===
+7
+▪ Local memory traffic less contention than in shared memory
+▪ Highly scalable
+▪ Don’t need sophisticated synchronization features like 
+monitors, semaphores. Message passing serves dual 
+purpose
+– To send the data
+– Provide synchronization
+Advantages of Distributed Memory
+
+=== PAGE 8 ===
+8
+▪ Load balancing
+▪ Message passing can lead to synchronization failures, 
+including deadlock
+– BlockingSend -> BlockingReceive
+– BlockingReceive -> BlockingSend
+▪ Intensive data copying of whole structures
+▪ Small message overheads are high
+Problems in Distributed Memory Model
+
+=== PAGE 9 ===
+9
+▪ All processors have equal 
+access to shared memory 
+modules
+▪ Local Caches reduce
+– Memory traffic
+– Network traffic
+– Memory access time
+▪ IP Synchronisation 
+– Indivisible load/store
+Shared Memory Architecture
+Processor 1
+Processor 2
+Processor p
+Interconnection
+Network
+Memor
+y
+Module
+1
+Memor
+y
+Module
+2
+Memor
+y
+Module
+m
+
+=== PAGE 10 ===
+10
+▪ Sapphire Rapids / Golden Cove
+▪ 56x Xeon Cores
+▪ 56x 32 KB L1 Instruction Cache 
+▪ 56x 48 KB L1 Data Cache 
+▪ 56x 2 MB L2 Cache 
+▪ 1x 105 MB L3 Cache 
+Example: 56 Cores – Intel Sapphire Rapids Xeon Platinum 8480+ (2022)
+
+
+=== PAGE 11 ===
+11
+▪ No need to partition code or data
+– Occurs on the fly
+▪ No need to move data explicitly
+▪ Don’t need new programming languages or compilers.
+Advantages of Shared Memory
+
+=== PAGE 12 ===
+12
+▪ Synchronization is difficult
+▪ Lack of scalability 
+– IPC becomes bottleneck
+▪ Scalability can be addressed by
+– High throughput, low latency network
+– Cache Memories
+▪ Causes coherence problem
+– Distributed shared memory architecture
+Disadvantages of Shared Memory
+
+=== PAGE 13 ===
+13
+▪ Three design choices
+▪ Non-uniform memory access (NUMA)
+– Like Cray T3D
+▪ Cache coherent non-uniform memory access (CC-NUMA)
+– Convex SPP, Stanford DASH
+▪ Cache-only memory access (COMA)
+– Like KSR-1
+Distributed Shared Memory
+
+=== PAGE 14 ===
+14
+Non-Uniform Memory Access (NUMA)
+P0
+M0
+PE0 P1
+M1
+PE1 Pn
+Mn
+PEn
+Interconnection Network
+
+=== PAGE 15 ===
+15
+Cache Coherent Non-Uniform Memory Access (CC-NUMA)
+Interconnection Network
+P0
+M0
+PE0
+C0
+P1
+M1
+PE1
+C1
+Pn
+Mn
+PEn
+Cn
+Cache
+coherence
+IPC
+C0 and C1 contain memory from the same address location 
+
+=== PAGE 16 ===
+16
+Cache-Only Memory Access (COMA)
+Interconnection Network
+P0
+PE0
+C0
+P1
+PE1
+C1
+Pn
+PEn
+Cn
+
+=== PAGE 17 ===
+17
+Classification of MIMD Computers
+MIMD 
+Computer
+s
+Process-level
+architectures
+Thread Level 
+architectures
+Single Address Space
+shared Memory
+Multiple Address 
+Space distributed 
+Memory
+Single address space 
+shared memory
+Physical
+Shared memory 
+(UMA)
+Virtual 
+Distributed 
+Shared Memory
+NUMA
+CC-
+NUMA
+COMA
+Physical Shared 
+Memory (UMA)
+Virtual 
+Distributed 
+Shared Memory
+NUMA
+CC-
+NUMA
+
+=== PAGE 18 ===
+18
+▪ Tolerate and hide the latency of remote loads
+– Worse if output of one computation relies on another to 
+complete (Data Dependency)
+▪ Tolerate and hide idling due to synchronization among 
+processors
+Problems of Scalable Computers
+
+=== PAGE 19 ===
+19
+Tolerating Remote Loads
+P0 PE0
+Interconnection Network
+M0
+rA
+rBResu
+lt
+P1 PE1
+M1
+A
+Pn PEn
+Mn
+B
+Load A
+rA rA AA
+Load B
+rB rBBB
+
+=== PAGE 20 ===
+20
+▪ Cache memory
+– Simply lowers the cost of remote access
+– Introduces cache coherence problem
+▪ Prefetching
+– Already present, so cost is low
+– Increases network load
+▪ Threads + fast context switching
+– Accept that it will take a long time and cover the overhead
+▪ These solutions don’t solve synchronization issues
+– Latency tolerant algorithms
+Tolerating Latency
+
+=== PAGE 21 ===
+21
+▪ Processor Design
+– Pipelining, parallel instruction issue
+– Atomic data access, prefetching, cache memory, message passing …
+▪ Interconnection network design
+– Scalable, high bandwidth, low latency
+▪ Memory design
+– Shared memory design
+– Cache coherence
+▪ I/O Subsystem
+– Parallel I/O
+Design Issues In Scalable MIMD
+
+=== PAGE 22 ===
+Distributed Memory MIMD Architectures
+
+=== PAGE 23 ===
+23
+▪ Process level instead of threads
+– Large grain threads
+▪ Messages passed between processes
+▪ Synchronization
+– Data movement
+▪ Important questions
+– How to partition the parallel program
+– How to map processes onto 
+processors to minimise IPC
+What is Distributed Memory MIMD?
+Processor 1
+Processor p
+Interconnectio
+n
+Network
+Memor
+y
+Memor
+y
+
+=== PAGE 24 ===
+24
+▪ 606208 cores in 9,472 AMD 
+EPYC 7713 Trento 64 core 2 
+GHz CPUs 
+▪ 8,335,360 GPU cores in 37,888 
+AMD Instinct MI250X GPUs
+▪ Fabric: HPE Slingshot 64-port 
+switch using 200 Gbps QSPF 
+Terabit Ethernet 
+▪ Developed by HPE Cray and 
+AMD for the US Oak Ridge 
+National Laboratory and U.S. 
+Department of Energy
+Example: Hewlett Packard Enterprise / Cray Frontier / OLCF-5 (2022)
+https://www.flickr.com/photos/olcf/52117623843/
+
+=== PAGE 25 ===
+25
+▪ Reduce time and frequency of thread switches
+– Higher in MIMD machines than multithreaded architectures
+– Frequency of computation
+– Processor time spent on communication
+▪ Design focus
+– Organisation of communications subsystem
+– Network
+– Hardware support for message passing
+– Often dependent on algorithms & software
+Design Space
+
+=== PAGE 26 ===
+26
+▪ Communication over links or channels
+▪ Communication graph mapped onto the underlying network
+▪ Nodes consist of
+– Computation processor + private memory
+– Communication processor
+– Router (or switch unit).
+Design Space
+
+=== PAGE 27 ===
+27
+▪ How the interconnection network is organised
+– Topology:
+▪ Switching technique
+▪ Routing Protocols
+▪ How the three components of the nodes are composed and integrated
+– First generation - No communications processor
+– Second generation – separate comms switching units
+– Third generation – separate processors
+Multiprocessor Classification (1)
+
+=== PAGE 28 ===
+28
+▪ The message passing computational model supported by the 
+multicomputer
+– Library calls (MPI, PVM, etc)
+– CSP support
+– Push, pull or active messages
+▪ The optimal grain of computation
+– Coarse Grain – traditional languages
+– Medium Grain – CSP
+– Fine grain - Dataflow
+Multiprocessor Classification (2)
+
+=== PAGE 29 ===
+29
+Design Space
+Multicomputers
+Interconnectio
+n
+networks
+Node 
+Organisation
+Computational 
+Model Granularity
+Topology Switching 
+Technique
+Routing
+Protocol
+Computation
+Processor
+Communication
+processor
+Router
+(Switch)
+Processor
+Type
+Scalar/Vector
+Processing
+
+=== PAGE 30 ===
+30
+Node Organization – First Generation
+P+M
+CP
+S
+P+M
+CP
+S
+P+M
+CP
+S
+P+M
+CP
+S
+P Processor
+M Memory
+CP Communication 
+processor
+S Switch
+First generation Multicomputer
+e.g. Transputer (INMOS)
+ Photo: http://www.ac.cs.musashi-tech.ac.jp/~shida/museum/section-cpu.html
+
+=== PAGE 31 ===
+31
+Node Organization – Second Generation
+P Processor
+M Memory
+CP Communication 
+processor
+S Switch
+Second generation Multicomputer
+e.g. iPSC/2
+P+M
+CP
+S
+P+M
+CP
+S
+Photo: http://www.futurebots.com/cpu.htm
+
+=== PAGE 32 ===
+32
+Node Organization – Second Generation
+P Processor
+M Memory
+CP Communication 
+processor
+S Switch
+Second generation Multicomputer
+e.g. Parsys Supernode Photo: http://www.futurebots.com/cpu.htm
+P+M
+CP
+P+M
+CP
+P+M
+CP
+Switching Network
+
+=== PAGE 33 ===
+33
+Node Organization – Third Generation
+P Processor
+M Memory
+CP
+Communica
+tion 
+processor
+S Switch
+Third generation Multicomputer
+e.g. IBM SP2
+S S
+Photo: www.csm.ornl.gov/ IBM/RO-216cab.gif
+C
+P
+M
+P C
+P
+M
+P
+RO-216cab-T
+
+
+=== PAGE 34 ===
+34
+▪ Critical to performance of MIMD machines
+▪ Bandwidth and latency are both critical parameters
+Network (Fabric) Performance
+send (….) receive(….)
+: :
+: :
+broadcast(….) receive(….) receive(….)
+receive(….)
+latency & bandwidth
+Efficiency of broadcast?
+
+=== PAGE 35 ===
+35
+Characterised by:
+▪ Network Size (N) - Number of nodes in the network
+▪ Node degree  (d) - Number of I/O links per node
+▪ Network diameter (D) - Maximum number of hops to get from any node 
+to any other
+▪ Bisection Width (B) - Related to wiring density & overall bandwidth. 
+Minimum number of links broken to break network in 2 equal halves
+▪ Arc connectivity - Minimum number of arcs removed to break into two 
+disconnected networks, a measure of fault tolerance and contention 
+▪ Cost - Number of communication links in the network
+Interconnection Networks (Fabrics)
+
+=== PAGE 36 ===
+36
+Summary Of Static Network (Fabric) Parameters
+Topology Node degree Diameter Bisection 
+width
+Arc connectivity Cost
+Linear array 1 or 2 N – 1 1 1 N - 1
+Ring 2 N/2 2 2 N
+Star 1 or N – 1 2 1 1 N - 1
+Binary tree 1, 2 or 3 2log((N+1)/2) 1 1 N – 1
+2-D mesh 2, 3 or 4 2(N1/2-1) N1/2 2 2(N-N1/2)
+2-D wraparound 4 N1/2 2N1/2 4 2N
+3-D cube 3, 4, 5 or 6 3(N1/3-1) N2/3 3 3(N-N2/3)
+Hypercube logN logN N/2 logN (NlogN)/2
+Completely 
+connected
+N - 1 1 N2/4 N – 1 N(N-1)/2
+
+=== PAGE 37 ===
+37
+Interconnection Topologies
+Static 
+Inteconnection 
+Topologies
+1 dimensional 2 dimensional 3 dimensional Hypercubes
+Linear 
+Array ring
+star
+tree
+2-d 
+mesh
+3-d 
+cube
+3-d 
+Connected
+cycles
+Completel
+y 
+connected
+2-d
+3-d
+N-d
+
+=== PAGE 38 ===
+38
+Example Networks
+Complete Star
+Linear Ring Source
+Destination
+
+=== PAGE 39 ===
+39
+Mesh, Torus
+Source
+Destination
+
+=== PAGE 40 ===
+40
+Torus (1-D, 2-D, 3-D)
+https://commons.wikimedia.org/wiki/Category:Flat_torus_representations
+
+=== PAGE 41 ===
+41
+Tree Topologies
+Binary
+Fat 
+TreeIf higher levels become a bottleneck, can use 
+higher bandwidth or multiple connections
+at higher levels in the fat tree Source
+Destinatio
+n
+
+=== PAGE 42 ===
+42
+▪ If a system has 2N elements, each 
+element has N connections to other 
+elements.   
+▪ Each element is connected to its 
+‘boolean’ neighbor (Node number 
+differs by only one bit). 
+▪ Longest # of hops between nodes = N.
+▪ Hard to build scalable fabric.
+▪ Has good nearest neighbor 
+connectivity.
+HyperCube
+000 001
+010
+100
+011
+111
+101
+110
+Source
+Destination
+
+=== PAGE 43 ===
+43
+▪ These networks are hybrid of cross-bar and buses. They 
+can provide contention free access (excluding multiple 
+requests on same module), although contention does occur 
+at certain traffic levels.
+▪ Unlike buses they are scalable.
+▪ There are many different interconnection networks and 
+topologies of the same network.
+▪ The simplest is the shuffle exchange network
+MultiStage Interconnection Networks
+
+=== PAGE 44 ===
+44
+MultiStage Interconnection Networks (1)
+In non-redundant 
+networks the depth 
+of the network is 
+O(log(n))
+
+=== PAGE 45 ===
+45
+Summary Of Static Network (Fabric) Parameters
+Topology Node degree Diameter Bisection 
+width
+Arc connectivity Cost
+Linear array 1 or 2 N – 1 1 1 N - 1
+Ring 2 N/2 2 2 N
+Star 1 or N – 1 2 1 1 N - 1
+Binary tree 1, 2 or 3 2log((N+1)/2) 1 1 N – 1
+2-D mesh 2, 3 or 4 2(N1/2-1) N1/2 4 2(N-N1/2)
+2-D wraparound 4 N1/2 2N1/2 4 2N
+3-D cube 3, 4, 5 or 6 3(N1/3-1) N2/3 3 2(N-N2/3)
+Hypercube logN logN N/2 logN (NlogN)/2
+Completely 
+connected
+N - 1 1 N2/4 N – 1 N(N-1)/2
+
+=== PAGE 46 ===
+46
+▪ Network structure defines pathways for the data
+▪ Switching techniques defines how to move data through the network
+– Remove message from the input buffer
+– Place in the output buffer
+Switching Techniques
+Switching techniques
+Packet switching
+(store-and-forward) Circuit Virtual cut-through Wormhole routing
+
+=== PAGE 47 ===
+47
+▪ Data divided into packets
+– Header, body, tail
+– Whole packet stored at each node before being set on
+▪ Latency = (Packet length * Distance)/Channel Bandwidth
+Switching Techniques
+P1
+(processo
+r)
+P2 P3 P4
+R1 R2 R3 R4
+(router
+) messa
+ge packet buffer
+
+=== PAGE 48 ===
+48
+▪ Path between source and destination built up
+– Circuit establishment phase - Send probe through the network –
+opens the path
+– Transmission Phase - Assumes routing path already set up
+– Termination Phase - Circuit is ripped up
+▪ Latency = (Probe Length * Distance) / Channel Bandwidth + 
+(Message Length/ Channel Bandwidth)
+▪ Advantages - Don’t need to build packets, no buffering required, routing 
+done once per message
+Circuit Switching
+
+=== PAGE 49 ===
+49
+Routing Protocols (1)
+Routing 
+protocols
+Deterministic Adaptive
+Source routing Distributed 
+routing
+Minimal Minimal
+Distributed 
+routing
+Minimal
+Non-minimal
+Route depends 
+only upon 
+source/destination 
+pair
+Route determined 
+at run time
+
+=== PAGE 50 ===
+50
+Routing Protocols (2)
+Routing 
+protocols
+Deterministic Adaptive
+Source routing Distributed routing
+Minimal Minimal
+Distributed routing
+Minimal
+Non-minimal
+Source path selects 
+route
+Route computed by 
+intermediate nodes
+
+=== PAGE 51 ===
+51
+Routing Protocols (3)
+Routing 
+protocols
+Deterministic Adaptive
+Source routing Distributed 
+routing
+Minimal Minimal
+Distributed 
+routing
+Minimal
+Non-minimal
+Shortest Path Not shortest path
+
+=== PAGE 52 ===
+Summary
+
+=== PAGE 53 ===
+53
+▪ MIMD model in Flynn’s taxonomy
+▪ Distributed Memory Models
+▪ Shared Memory Models
+▪ Distributed Memory MIMD
+▪ Interconnect Topologies
+▪ Interconnect Switching and Routing
+Summary
+
+=== PAGE 54 ===
+References and Reading Materials
+
+=== PAGE 55 ===
+55
+▪ M. J. Flynn, “Very high-speed computing systems,” in Proceedings of 
+the IEEE, vol. 54, no. 12, pp. 1901-1909, Dec. 1966, doi: 
+10.1109/PROC.1966.5273, URI: 
+https://ieeexplore.ieee.org/document/1447203
+▪ Sima, Dezsö, Terry J. Fountain and Péter Kacsuk. “Advanced computer 
+architectures - a design space approach,” Chapter 15, 17, International 
+computer science series, Addison-Wesley, Reading, MA (1997)
+References and Reading Materials
+
+=== PAGE 56 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Week 5: 
+Workshop 05
+Dr Terrence Mak
+Faculty of Information Technology
+© 2026 Monash University
+
+=== PAGE 57 ===
+2
+▪ Workshop 5
+– SIMD (Refresh)
+– Vector Processing
+– Network topology: Latency & Bandwidth
+Agenda
+
+=== PAGE 58 ===
+3
+▪Examine the design principles of parallel computing 
+architectures.
+▪Analyse the design principles of distributed parallel 
+computing systems.
+▪Compare the fundamental principles of parallel hardware 
+using vector processing.
+This Week’s Workshop Learning Outcomes
+
+=== PAGE 59 ===
+SIMD
+
+=== PAGE 60 ===
+5
+▪ 
+Array Addition on a SIMD
+
+=== PAGE 61 ===
+6
+▪We can illustrate the 
+SIMD architecture using 
+the  ILLIAC IV computer. 
+▪ ILLIAC IV has only one 
+control unit and 64 
+processing elements. 
+▪Each processing element 
+has a 2K word memory 
+attached.
+Example of SIMD Computation
+
+=== PAGE 62 ===
+7
+▪Each processing element performs the same operation, but 
+they may be active  or inactive.
+▪If they are inactive then they ignore the instruction. In this 
+way the instruction may be applied to certain data elements 
+and not others. 
+▪For example, there is an instruction which disables all PE's 
+active status if their accumulator is greater than 0.
+▪Each processing element can transfer data to 4 other 
+processing elements using a routing network.
+SIMD Instruction Execution
+
+=== PAGE 63 ===
+8
+▪ Instruction stream is :
+Load from location 2,
+Add to location 1,
+Store in location 0.
+▪ Speedup is 64 times.
+▪ if N is less than 64 then 
+Some of the PEs must be deactivated.
+▪ If N is greater than 64 then
+Must loop 
+Array Addition on SIMD
+
+=== PAGE 64 ===
+9
+Array Addition on SIMD
+
+=== PAGE 65 ===
+10
+Bob, an image processing expert, wants to down sample a square matrix A (256x256) to a 
+smaller square matrix B (128x128). He uses a simple bilinear sampling approach. 
+For every element B[i][j] in the resulting matrix B:
+B[i][j] = (A[2*i][2*j] + A[2*i+1][2*j] + A[2*i][2*j+1] + A[2*i+1][2*j+1]) / 4.
+Suppose a SIMD machine has 64 execution units, and each unit takes 5 nanoseconds to fetch 
+the data, compute the bilinear computation, and store the result.
+What is the minimum computation time for the task in nanoseconds?
+A) 5 nanoseconds B) 5120 nanoseconds C) 1280 nanoseconds
+D) 327680 nanoseconds E) 81920 nanoseconds
+Q1
+
+=== PAGE 66 ===
+Vector Processing
+
+=== PAGE 67 ===
+12
+▪Many scientific and engineering computational problems 
+involve the use of vectors.
+▪A vector is represented as an array of numbers, real or 
+integer.
+▪Common uses for vector formats are 3 dimensional 
+geometry, in which a point can be represented by a vector 
+with 3 elements, [x, y, z], or matrix algebra with NxM arrays.
+▪Vectors can have an arbitrary, but finite number of 
+elements.
+Vectors
+
+=== PAGE 68 ===
+13
+▪Addition: [a,b,c] + [d,e,f] == [(a+d) , (b+e), (c+f)]
+▪Subtraction: [a,b,c] - [d,e,f] == [(a-d) , (b-e), (c-f)]
+▪Dot product: [a,b,c] . [d,e,f] == ad + be + cf 
+▪Multiplication: q*[a,b,c] == [qa, qb, qc]
+▪Cross Product: [a,b,c] X [d,e,f] == [(bf-ce),(cd-af),(ae-bd)]
+▪Linear Transformation:  M [x,y,z] == [a,b,c]
+Vector Operations
+
+=== PAGE 69 ===
+14
+▪ 
+Matrices
+
+=== PAGE 70 ===
+15
+▪Typical processors, pipelined or superscalar, do not perform 
+well on vector arithmetic since they do not exploit the  
+properties of vectors.
+▪Vector arithmetic involves the repeated execution of the 
+same operation on consecutive elements of a vector.
+▪This is the SIMD model of execution
+▪Conventional processors incur an opcode fetch, operand 
+load and decode delay for every element in the vector - very 
+inefficient
+Vector Processing
+
+=== PAGE 71 ===
+16
+▪How can we optimise an architecture for vector arithmetic ?
+▪We can use an instruction set for vector operations: e.g. 
+Add vector operands of size N, V3 and V2, and put the 
+result into V1.
+ADD N, V1, V2, V3
+▪A vector operand may be a pointer to an array in memory, 
+or a register.
+Vector Processing
+
+=== PAGE 72 ===
+17
+▪Using vector operations we remove the overheads of N-1 
+opcode fetches, decodes and operand loads.
+▪Because the same operation is repeated N times, we can 
+operate a pipeline for N consecutive cycles with no stalls, 
+which is very efficient.
+▪By using multiple execution units, we can achieve stall free 
+superscalar operation, which is also very efficient.
+Vector Processing
+
+=== PAGE 73 ===
+18
+Vector Processing CPU
+
+
+=== PAGE 74 ===
+19
+▪The technique of “chaining” is frequently used in vector 
+processing architectures.
+▪Because the loading of an N element vector  into a vector 
+register requires N consecutive loads from memory, it is 
+slow.
+▪By arranging the use of the vector registers properly, in a 3 
+operand vector architecture, and using at least 4 vector 
+registers, it is possible to load one vector operand while two 
+others are being read into the EU and written into another
+Chaining
+
+=== PAGE 75 ===
+20
+Chaining
+
+
+=== PAGE 76 ===
+21
+Which of the following statements are true in vector processing?
+Assume the size of the vector is 16.
+1. Using vector operations we can only remove the overheads of 1 opcode 
+fetches, decodes and operand loads. 
+2. Using vector operations we can remove the overheads of 15 opcode fetches, 
+decodes and operand loads. 
+3. Using vector operations we can remove the overheads of 17 opcode fetches, 
+decodes and operand loads.
+4. Using vector operations we can remove the overheads of 32 opcode fetches, 
+decodes and operand loads.
+5. Vector operations cannot remove the overheads of opcode fetches, decodes 
+and operand loads since this is not a feature of vector processing.
+Q2
+
+=== PAGE 77 ===
+Network Topology: Latency & Bandwidth
+
+=== PAGE 78 ===
+23
+▪ Critical to performance of MIMD machines
+▪ Bandwidth and latency are both critical parameters
+Network (Fabric) Performance
+send (….) receive(….)
+: :
+: :
+broadcast(….) receive(….) receive(….)
+receive(….)
+latency & 
+bandwidth
+Efficiency of 
+broadcast?
+
+=== PAGE 79 ===
+24
+Characterised by:
+▪ Network Size (N) - Number of nodes in the network
+▪ Node degree  (d) - Number of I/O links per node
+▪ Network diameter (D) - Maximum number of hops to get from any 
+node to any other
+▪ Bisection Width (B) - Related to wiring density & overall bandwidth. 
+Minimum number of links broken to break network in 2 equal halves
+▪ Arc connectivity - Minimum number of arcs removed to break into two 
+disconnected networks, a measure of fault tolerance and contention 
+▪ Cost - Number of communication links in the network
+Interconnection Networks (Fabrics)
+
+=== PAGE 80 ===
+25
+Summary Of Static Network (Fabric) Parameters
+Topology Node degree Diameter Bisection 
+width
+Arc 
+connectivity
+Cost
+Linear array 1 or 2 N – 1 1 1 N - 1
+Ring 2 N/2 2 2 N
+Star 1 or N – 1 2 1 1 N - 1
+Binary tree 1, 2 or 3 2log((N+1)/2) 1 1 N – 1
+2-D mesh 2, 3 or 4 2(N1/2-1) N1/2 2 2(N-N1/2)
+2-D 
+wraparound
+4 N1/2 2N1/2 4 2N
+3-D cube 3, 4, 5 or 6 3(N1/3-1) N2/3 3 2(N-N2/3)
+Hypercube logN logN N/2 logN (NlogN)/2
+Completely 
+connected
+N - 1 1 N2/4 N – 1 N(N-1)/2
+
+=== PAGE 81 ===
+26
+Interconnection Topologies
+Static 
+Inteconnectio
+n 
+Topologies
+1 dimensional 2 dimensional 3 dimensional Hypercubes
+Linear 
+Array ring
+star
+tree
+2-d 
+mesh
+3-d 
+cube
+3-d 
+Connecte
+d
+cyclesComplete
+ly 
+connecte
+d
+2-d
+3-d
+N-d
+
+=== PAGE 82 ===
+27
+Example Networks
+Complet
+e
+Sta
+r
+Linea
+r
+Rin
+g
+Sourc
+eDestinatio
+n
+
+=== PAGE 83 ===
+28
+Mesh, Torus
+Sourc
+eDestinatio
+n
+
+=== PAGE 84 ===
+29
+Torus (1-D, 2-D, 3-D)
+https://commons.wikimedia.org/wiki/
+Category:Flat_torus_representations
+
+=== PAGE 85 ===
+30
+Tree Topologies
+Binary
+Fat 
+Tree
+If higher levels become a bottleneck, can 
+use 
+higher bandwidth or multiple connections
+at higher levels in the fat tree
+Sourc
+eDestinatio
+n
+
+=== PAGE 86 ===
+31
+▪ If a system has 2N elements, each 
+element has N connections to other 
+elements.   
+▪ Each element is connected to its 
+‘boolean’ neighbor (Node number 
+differs by only one bit). 
+▪ Longest # of hops between nodes = N.
+▪ Hard to build scalable fabric.
+▪ Has good nearest neighbor 
+connectivity.
+HyperCube
+000 001
+010
+100
+011
+111
+101
+110
+Sourc
+eDestinatio
+n
+
+=== PAGE 87 ===
+32
+▪These networks are hybrid of cross-bar and buses. They 
+can provide contention free access (excluding multiple 
+requests on same module), although contention does occur 
+at certain traffic levels.
+▪Unlike buses they are scalable.
+▪There are many different interconnection networks and 
+topologies of the same network.
+▪The simplest is the shuffle exchange network
+MultiStage Interconnection Networks
+
+=== PAGE 88 ===
+33
+MultiStage Interconnection Networks (1)
+In non-redundant 
+networks the 
+depth of the 
+network is 
+O(log(n))
+
+=== PAGE 89 ===
+34
+Summary Of Static Network (Fabric) Parameters
+Topology Node degree Diameter Bisection 
+width
+Arc 
+connectivity
+Cost
+Linear array 1 or 2 N – 1 1 1 N - 1
+Ring 2 N/2 2 2 N
+Star 1 or N – 1 2 1 1 N - 1
+Binary tree 1, 2 or 3 2log((N+1)/2) 1 1 N – 1
+2-D mesh 2, 3 or 4 2(N1/2-1) N1/2 4 2(N-N1/2)
+2-D 
+wraparound
+4 N1/2 2N1/2 4 2N
+3-D cube 3, 4, 5 or 6 3(N1/3-1) N2/3 3 2(N-N2/3)
+Hypercube logN logN N/2 logN (NlogN)/2
+Completely 
+connected
+N - 1 1 N2/4 N – 1 N(N-1)/2
+
+=== PAGE 90 ===
+35
+▪ Network structure defines pathways for the data
+▪ Switching techniques defines how to move data through the network
+Remove message from the input buffer
+Place in the output buffer
+Switching Techniques
+Switching 
+techniques
+Packet switching
+(store-and-forward) Circuit Virtual cut-through Wormhole routing
+
+=== PAGE 91 ===
+36
+▪ Data divided into packets
+Header, body, tail
+Whole packet stored at each node before being set on
+▪ Latency = (Packet length * Distance)/Channel Bandwidth
+Switching Techniques
+P1
+(process
+or)
+P2 P3 P4
+R
+1
+R
+2
+R
+3
+R
+4(route
+r) mess
+age
+packet 
+buffer
+
+=== PAGE 92 ===
+37
+▪ Path between source and destination built up
+Circuit establishment phase - Send probe through the network – opens the 
+path
+Transmission Phase - Assumes routing path already set up
+Termination Phase - Circuit is ripped up
+▪ Latency = (Probe Length * Distance) / Channel Bandwidth + 
+(Message Length/ Channel Bandwidth)
+▪ Advantages - Don’t need to build packets, no buffering required, routing 
+done once per message
+Circuit Switching
+
+=== PAGE 93 ===
+38
+The question asks about network topology on an interconnected network. 
+▪ Given 500 nodes, connected in a line topology connected via 1000 Mbps links. 
+▪ Suppose now a machine in the network is transmitting a 5 MB data block to another 
+machine. 
+▪ Assume transmission delay is the major factor, and we assume all the other delays 
+(queuing delay, the processing delay, and propagation delay) between a pair of connected 
+nodes adds up to 0.1s.
+▪ [For ease of calculations, we assume 1 MB = 1,000,000 bytes, and 1 Mbps = 1,000,000 
+bits per second (bps).]
+To communicate from one node to another node, what is the delay in the best case and the 
+worst case?
+[Write down the equations and/or your calculations]
+Q3
+
+=== PAGE 94 ===
+39
+The question asks about network topology on an interconnected network. 
+▪ Bob is implementing a program to gather information stored in other nodes (machines) 
+across a balanced binary tree network, connected via 100 Mbps links. 
+▪ Suppose the program runs in the root node and every leaf node will send a 5MB message 
+to the root node.    
+Assumption:
+▪ Assume messages are sent serially one after the other with no overlaps/congestions.
+▪ Transmission delay is the major factor, and we assume all the other delays (queuing delay, 
+the processing delay, and propagation delay) between a pair of connected nodes adds up 
+to 0.1s.
+▪ For ease of calculations, we assume 1 MB = 1,000,000 bytes, and 1 Mbps = 1,000,000 
+bits per second (bps).
+▪ If there are 31 nodes in the network, what is the delay experienced by one of the 
+messages?
+Q4
+
+=== PAGE 95 ===
+Summary
+
+=== PAGE 96 ===
+41
+▪ Workshop 5
+– SIMD (Refresh)
+– Vector Processing
+– Network topology: Latency & Bandwidth
+Summary
+
+=== PAGE 97 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Applied #1 (Week 5)
+Parallel Computing In Distributed Memory – Message 
+Passing Library
+
+
+=== PAGE 98 ===
+2
+1. Message Passing Interface (MPI) (60 minutes)
+2. Practice questions (30 minutes)
+3. Week 6 - Applied Tasks overview (15 minutes)
+Overview 
+
+=== PAGE 99 ===
+Message Passing Interface (MPI)
+
+=== PAGE 100 ===
+4
+M P I = Message Passing Interface 
+MPI is a specification for the developers and users of message passing libraries. By 
+itself, it is NOT a library - but rather the specification of what such a library should 
+be. 
+Simply stated, the goal of the Message Passing Interface is to provide a widely 
+used standard for writing message passing programs. The interface attempts to be 
+▪ practical 
+▪ portable 
+▪ efficient 
+▪ flexible 
+What is MPI
+
+=== PAGE 101 ===
+5
+▪ Standardization - Supported on all major platforms and also many specialised 
+HPC systems. (Practically has replaced all previous message passing libraries) 
+▪ Portability - Minimum (to none) need to modify your source code when you port 
+your application to a different platform compliant with MPI (standard). 
+▪ Performance Opportunities - Vendor implementations can exploit native hardware 
+features to optimize performance. 
+▪ Functionality - About 128 functions/routines in MPI 1.3, finalised in 2008. By 2026, 
+MPI has reached 5.0. 
+▪ Availability - A variety of implementations on the standard are available (vendor 
+and public domain implementations). 
+(For Applied/Lab assessment: OpenMPI library implementations)
+Reasons for Using MPI
+
+=== PAGE 102 ===
+6
+▪ MPI supports almost any popular distributed memory parallel programming model.
+▪ MPI can also be used to implement/support many shared memory models. 
+▪ Hardware platforms: 
+– Distributed Memory: Primarily targeted for distributed memory systems. 
+– Shared Memory: As shared memory systems became more popular (SMP / 
+NUMA architectures), MPI implementations for these platforms appeared. 
+– Hybrid: MPI supports most common hybrid architecture (massively parallel 
+machines, SMP clusters, workstation clusters and heterogeneous networks,  
+etc).
+Programming Model
+
+=== PAGE 103 ===
+7
+▪ All parallelism is explicit!
+▪ The programmer is responsible for correctly identifying parallelism and 
+implementing parallel algorithms using MPI constructs. 
+▪ Early version (MPI-1): 
+– Number of tasks dedicated to run a parallel program is static, i.e., new 
+tasks can not be dynamically spawned during run time. 
+Programming Model
+
+=== PAGE 104 ===
+8
+▪ MPI is native to ANSI C
+– C++ and Java bindings are available
+▪ MPI C++ classes – www.mcs.anl.gov
+▪ mpiJava API – www.hpjava.org
+▪ Make sure you check your MPI versions and implementation libraries!
+▪ MPI - C
+– Header File: 
+▪ Required for all programs/routines which make MPI library calls.
+#include "mpi.h" 
+Or
+#include <mpi.h>
+Getting Started
+
+=== PAGE 105 ===
+9
+General MPI Program Structure
+Format of MPI Calls: 
+● Format: rc = MPI_Xxxxx(parameter, ... ) 
+● Example: rc = 
+MPI_Bsend(&buf,count,type,dest,tag,comm) 
+● Error code: rc value is set to MPI_SUCCESS if 
+successful 
+
+=== PAGE 106 ===
+10
+1. Create Source Code File: hello.c
+#include <stdio.h> 
+#include <mpi.h> 
+int main(int argc, char *argv[]) 
+{ int numprocs, rank, namelen; 
+char processor_name[MPI_MAX_PROCESSOR_NAME]; 
+MPI_Init(&argc, &argv); 
+MPI_Comm_size(MPI_COMM_WORLD, &numprocs); 
+MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
+MPI_Get_processor_name(processor_name, &namelen); 
+printf("Process %d on %s out of %d\n", rank, processor_name, numprocs); 
+MPI_Finalize(); 
+} 
+MPI’s “Hello World”
+2. Compile: mpicc hello.c –o hello-mp
+3. Execute: mpirun -np 2 hello-mp
+
+=== PAGE 107 ===
+11
+▪ MPI uses objects called communicators and groups to define which 
+collection of processes may communicate with each other. 
+▪ Most MPI routines require you to specify a communicator (in the 
+argument list). 
+▪ MPI_COMM_WORLD is the predefined communicator that includes all 
+of your MPI processes. 
+(We will cover different communicators and groups later)
+Communicators and Groups
+
+=== PAGE 108 ===
+12
+1. Create Source Code File: hello.c
+#include <stdio.h> 
+#include <mpi.h> 
+int main(int argc, char *argv[]) 
+{ int numprocs, rank, namelen; 
+char processor_name[MPI_MAX_PROCESSOR_NAME]; 
+MPI_Init(&argc, &argv); 
+MPI_Comm_size(MPI_COMM_WORLD, &numprocs); 
+MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
+MPI_Get_processor_name(processor_name, &namelen); 
+printf("Process %d on %s out of %d\n", rank, processor_name, numprocs); 
+MPI_Finalize(); 
+} 
+MPI’s “Hello World”
+2. Compile: mpicc hello.c –o hello-mp
+3. Execute: mpirun -np 2 hello-mp
+
+=== PAGE 109 ===
+13
+▪ Every process has its own unique, integer identifier (called rank) 
+associated with every communicator. 
+▪ Ranks are contiguous and begin at zero. Ranks across communicators 
+may not be unique, i.e., a process may have many different identifiers.
+▪ Rank sometimes will also be called "task ID". 
+▪ Used by programmers to specify the source and destination of messages. 
+Often used to control program execution (if rank == 0 do MPI_Send() ). 
+Communicators and Groups (Rank)
+
+=== PAGE 110 ===
+14
+1. Create Source Code File: hello.c
+#include <stdio.h> 
+#include <mpi.h> 
+int main(int argc, char *argv[]) 
+{ int numprocs, rank, namelen; 
+char processor_name[MPI_MAX_PROCESSOR_NAME]; 
+MPI_Init(&argc, &argv); 
+MPI_Comm_size(MPI_COMM_WORLD, &numprocs); 
+MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
+MPI_Get_processor_name(processor_name, &namelen); 
+printf("Process %d on %s out of %d\n", rank, processor_name, numprocs); 
+MPI_Finalize(); 
+} 
+MPI’s “Hello World”
+2. Compile: mpicc hello.c –o hello-mp
+3. Execute: mpirun -np 2 hello-mp
+
+=== PAGE 111 ===
+Basic MPI functions
+
+=== PAGE 112 ===
+16
+MPI_Init 
+Initializes the MPI execution environment. This function must be called in every MPI program, must be 
+called before any other MPI functions and must be called only once in an MPI program. For C programs, 
+MPI_Init may be used to pass the command line arguments to all processes, although this is not required by 
+the standard and is implementation dependent. 
+MPI_Init (&argc, &argv) 
+ 
+MPI_Comm_size 
+Determines the number of processes in the group associated with a communicator. Generally used within 
+the communicator MPI_COMM_WORLD to determine the number of processes being used by your 
+application. 
+MPI_Comm_size (comm, &size) 
+Environment Management Routines
+
+=== PAGE 113 ===
+17
+MPI_Comm_rank 
+Determines the rank of the calling process within the communicator. Initially, each process will be assigned 
+a unique integer rank between 0 and number of processors - 1 within the communicator 
+MPI_COMM_WORLD. This rank is often referred to as a task ID. 
+MPI_Comm_rank (comm, &rank) 
+MPI_Abort 
+Terminates all MPI processes associated with the communicator. In most MPI implementations it terminates 
+ALL processes regardless of the communicator specified. 
+MPI_Abort (comm, errorcode)
+Environment Management Routines
+
+=== PAGE 114 ===
+18
+MPI_Get_processor_name 
+Returns the processor name. Also returns the length of the name. The buffer for "name" must be at least 
+MPI_MAX_PROCESSOR_NAME characters in size. What is returned into "name" is implementation 
+dependent - may not be the same as the output of the "hostname" or "host" shell commands. 
+MPI_Get_processor_name (&name, &resultlength)
+MPI_Initialized 
+Indicates whether MPI_Init has been called - returns flag as either logical true (1) or false(0). MPI requires 
+that MPI_Init be called once and only once by each process. This may pose a problem for modules that 
+want to use MPI and are prepared to call MPI_Init if necessary. MPI_Initialized solves this problem. 
+ 
+MPI_Initialized (&flag) 
+Environment Management Routines
+
+=== PAGE 115 ===
+19
+MPI_Wtime 
+Returns an elapsed wall clock time in seconds (double precision) on the calling processor. 
+MPI_Wtime ()
+ 
+MPI_Wtick 
+Returns the resolution in seconds (double precision) of MPI_Wtime. 
+MPI_Wtick ()
+ 
+MPI_Finalize 
+Terminates the MPI execution environment. This function should be the last MPI routine called in 
+every MPI program - no other MPI routines may be called after it. 
+MPI_Finalize ()
+Environment Management Routines
+
+=== PAGE 116 ===
+20
+#include "mpi.h"
+#include <stdio.h>
+int main(int argc, char *argv[])
+{
+   int numtasks, rank, rc;
+   rc = MPI_Init(&argc,&argv);
+   if (rc != MPI_SUCCESS)
+  {  printf ("Error starting MPI program. Terminating.\n");      
+     MPI_Abort(MPI_COMM_WORLD, rc);
+  } 
+   MPI_Comm_size(MPI_COMM_WORLD,&numtasks);
+   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+   printf ("Number of tasks= %d My rank= %d\n", numtasks,rank);
+ 
+   /******* do some work *******/ 
+   MPI_Finalize();
+}
+Environment Management Routines Example
+
+=== PAGE 117 ===
+MPI Point-to-Point Communication
+
+=== PAGE 118 ===
+22
+General Concepts
+▪ Types of Point-to-Point Operations: 
+– Message passing between two different MPI tasks (process). One task is performing a send 
+operation and the other task is performing a matching receive operation. 
+– Different types of send and receive routines for different purposes:
+▪ Synchronous
+▪ Blocking 
+▪ Non-blocking 
+▪ Buffered 
+▪ Routines combining send & receive 
+– MPI also provides several routines associated with send - receive operations, such as those 
+used to wait for a message's arrival or probe to find out if a message has arrived. 
+Point to Point (P2P) Communication
+
+=== PAGE 119 ===
+23
+Buffering: 
+In a perfect world, every send operation should be 
+perfectly synchronized with its matching receive. In 
+practice, this is rarely the case. The MPI implementation 
+must be able to handle tasks that are out of sync. 
+Consider the following two cases: 
+▪ A send operation occurs 5 seconds before the 
+receive is ready - where the message is stored?
+ 
+▪ Multiple sends arrive at the same receiving task 
+which can only accept one send at a time - what 
+happens to the messages that are "backing up"? 
+P2P general concepts
+The MPI implementation (not the MPI standard) 
+decides what happens to the data in these types 
+of cases. Typically, a system buffer area is 
+reserved to hold data in transit. 
+
+=== PAGE 120 ===
+24
+System buffer space is: 
+▪ Managed entirely by the MPI library implementation
+▪ A finite resource that can be easily exhausted 
+▪ Often mysterious and not well documented 
+▪ May exist on the sending side, the receiving side, or both 
+▪ Can be used to improve program performance because it allows send - receive 
+operations to be asynchronous. 
+▪ User managed address space (e.g., storing your program variables) is called 
+the application buffer. 
+P2P general concepts
+
+=== PAGE 121 ===
+25
+Blocking vs. Non-blocking: 
+▪ Most of the MPI point-to-point routines can be used in either blocking or non-blocking mode. 
+▪ Blocking: 
+– A blocking send routine will only "return" after it is safe to modify the application buffer (your 
+send data) for reuse. “Safe” does not imply that the data was actually received. Data may still be 
+sitting in system buffer waiting to be sent. 
+– Synchronous blocking send: Block until handshake occurs with the receive task (process). 
+– Asynchronous blocking send: Block until data is copied to the system buffer, which is used to 
+hold the data for the “eventual” delivery. 
+– Blocking receive: Blocks until after the data has arrived and is ready for use by the program.
+▪ Your parallel design will determine whether you should use blocking/non-block functions. Deadlocks, 
+computation errors, or failing to speed-up the program are common symptoms of using the wrong 
+functions with the wrong parallel design. 
+P2P general concepts
+
+=== PAGE 122 ===
+26
+▪ Non-blocking: 
+– Non-blocking send and receive routines will return “almost” immediately. 
+– They do not wait for any communication events to complete, such as message 
+copying from user memory to system buffer space or the actual arrival of message. 
+– Non-blocking operations simply "request" the MPI library to perform the operation.
+– Corollary: It is unsafe to modify the application buffer (your variable space) until you 
+know the requested operation has been completed. A series of "waiting"/"probing" 
+routines are designed for checking whether operations have been completed. 
+– Non-blocking communications are primarily used to overlap computation with 
+communication and exploit possible performance gains
+P2P general concepts
+
+=== PAGE 123 ===
+27
+Order:
+– MPI guarantees that messages are “ordered” and will not overtake 
+each other. 
+– If a sender sends two messages (Message 1 and Message 2) in 
+succession to the same destination, and both match the same 
+receive, the receive operation will receive Message 1 before 
+Message 2. 
+– If a receiver posts two receives (Receive 1 and Receive 2), in 
+succession, and both are looking for the same message, Receive 
+1 will receive the message before Receive 2. 
+– Order rules do not apply if there are multiple threads participating 
+in the communication operations. 
+P2P general concepts
+
+
+=== PAGE 124 ===
+28
+Fairness: 
+– MPI does not guarantee fairness
+– The programmer has responsibility to prevent operation/process 
+starvation. 
+– Often depends on how processes are scheduled in the underlying 
+Operating System.
+P2P general concepts
+
+
+=== PAGE 125 ===
+29
+MPI Message Passing Routine Arguments 
+Buffer 
+▪ Program (application) address space that references the data that is to be sent or received. 
+▪ In most cases, this is simply the variable name that is be sent/received. For C programs, this 
+argument is passed by reference (remember to pass variable addresses &var1)
+Point to Point Communication Routines  and Arguments
+Blocking sends MPI_Send(buffer, count, type, dest, tag, comm)
+Non-blocking sends MPI_Isend(buffer, count, type, dest, tag, comm, request)
+Blocking receive MPI_Recv(buffer, count, type, source, tag, comm, status)
+Non-blocking receive MPI_Irecv(buffer, count, type, source, tag, comm, request)
+
+=== PAGE 126 ===
+30
+Data Count 
+▪ Indicates the number of data elements of a particular type to be sent. 
+Data Type 
+▪ For reasons of portability, MPI pre-defines the allowed data types.
+Point to Point Communication Routines  and Arguments
+ Blocking sends MPI_Send(buffer, count, type, dest, tag, comm)
+Non-blocking sends MPI_Isend(buffer, count, type, dest, tag, comm, request)
+Blocking receive MPI_Recv(buffer, count, type, source, tag, comm, status)
+Non-blocking receive MPI_Irecv(buffer, count, type, source, tag, comm, request)
+
+=== PAGE 127 ===
+31
+Point to Point Communication Routines  and Arguments
+Blocking sends MPI_Send(buffer, count, type, dest, tag, comm)
+Non-blocking sends MPI_Isend(buffer, count, type, dest, tag, comm, request)
+Blocking receive MPI_Recv(buffer, count, type, source, tag, comm, status)
+Non-blocking receive MPI_Irecv(buffer, count, type, source, tag, comm, request)
+
+=== PAGE 128 ===
+32
+Destination 
+▪ An argument to send routines that indicates the process where a message should be delivered. 
+Specified as the rank of the receiving process. 
+Source 
+▪ An argument to receive routines that indicates the originating process of the message. Specified as 
+the rank of the sending process. This may be set to the wild card MPI_ANY_SOURCE to receive a 
+message from any task. 
+Tag 
+▪ Arbitrary non-negative integer assigned by the programmer to uniquely identify a message. Send and 
+receive operations should match message tags. For a receive operation, the wild card 
+MPI_ANY_TAG can be used to receive any message regardless of its tag. 
+▪ The MPI standard guarantees that integers 0-32767 can be used as tags, but most implementations 
+allow a much larger range than this. 
+MPI Message Passing Routine Arguments
+
+=== PAGE 129 ===
+33
+Point to Point Communication Routines  and Arguments
+Blocking sends MPI_Send(buffer, count, type, dest, tag, comm)
+Non-blocking sends MPI_Isend(buffer, count, type, dest, tag, comm, request)
+Blocking receive MPI_Recv(buffer, count, type, source, tag, comm, status)
+Non-blocking receive MPI_Irecv(buffer, count, type, source, tag, comm, request)
+Communicator 
+▪ Indicates the communication context, or set of processes for which the source or destination fields are 
+valid. 
+▪ Unless the programmer is explicitly creating new communicators, the predefined communicator 
+MPI_COMM_WORLD is commonly used. 
+
+
+=== PAGE 130 ===
+34
+Point to Point Communication Routines  and Arguments
+Blocking sends MPI_Send(buffer, count, type, dest, tag, comm)
+Non-blocking sends MPI_Isend(buffer, count, type, dest, tag, comm, request)
+Blocking receive MPI_Recv(buffer, count, type, source, tag, comm, status)
+Non-blocking receive MPI_Irecv(buffer, count, type, source, tag, comm, request)
+
+=== PAGE 131 ===
+35
+Status 
+▪ For a receive operation, indicates the status of the message (e.g., source, tag, and error status). 
+▪ In C, this argument is a pointer to a predefined structure MPI_Status. 
+Request (primarily for non-blocking send and receive operations)
+▪ Since non-blocking operations will immediately return before completion of the corresponding 
+operations, the system/library will issue a unique handle / "request number". 
+▪ The programmer can use this handle for future operations (e.g., “waiting” type of routines)
+▪ In C, this argument is a pointer to a predefined structure MPI_Request.
+MPI Message Passing Routine Arguments
+
+=== PAGE 132 ===
+Send and Receive Blocking Variants
+
+=== PAGE 133 ===
+37
+MPI_Send 
+▪ Routine blocks and returns only after the application buffer in the sending task is free for reuse. Note 
+that this routine may be implemented differently on different systems. The MPI standard permits the 
+use of a system buffer but does not require it. [Some implementations may actually use a 
+synchronous send to implement the basic blocking send.]
+MPI_Send (&buf,count,datatype,dest,tag,comm) 
+MPI_Recv 
+▪ Receive a message and block until the requested data is available in the application buffer in the 
+receiving task. 
+MPI_Recv (&buf,count,datatype,source,tag,comm,&status) 
+Blocking Message Passing Routines
+
+=== PAGE 134 ===
+38
+MPI_Ssend 
+▪ Synchronous blocking send: Send a message and block until the application buffer in the sending task 
+is free for reuse and the destination process has started to receive the message. 
+MPI_Ssend (&buf,count,datatype,dest,tag,comm) 
+MPI_Bsend 
+▪ Buffered blocking send: permits the programmer to allocate the required amount of buffer space into 
+which data can be copied until it is delivered. Insulates against the problems associated with 
+insufficient system buffer space. Routine returns after the data has been copied from application 
+buffer space to the allocated send buffer. Must be used with the MPI_Buffer_attach routine. 
+MPI_Bsend (&buf,count,datatype,dest,tag,comm) 
+Blocking Message Passing Routines
+
+=== PAGE 135 ===
+39
+MPI_Buffer_attach 
+▪ Used by programmer to allocate/deallocate message buffer space to be used by the MPI_Bsend 
+routine. The size argument is specified in actual data bytes - not a count of data elements. Only one 
+buffer can be attached to a process at a time. Note that the IBM implementation uses 
+MPI_BSEND_OVERHEAD bytes of the allocated buffer for overhead. 
+MPI_Buffer_attach (&buffer,size) 
+MPI_Buffer_detach (&buffer,size) 
+ 
+MPI_Rsend 
+▪ Blocking ready send. A send that uses the ready communication mode may be started only if the 
+matching receive is already posted. 
+▪ On some systems, this allows the removal of a hand-shake operation that is otherwise required and 
+results in improved performance.
+MPI_Rsend (&buf,count,datatype,dest,tag,comm) 
+Blocking Message Passing Routines
+
+=== PAGE 136 ===
+40
+MPI_Sendrecv 
+▪ Send a message and post a receive before blocking. 
+▪ Will block until the sending application buffer is free for reuse and until the receiving 
+application buffer contains the received message. 
+MPI_Sendrecv (&sendbuf,sendcount,sendtype,dest,sendtag, 
+ &recvbuf,recvcount,recvtype,source,recvtag, comm,&status) 
+Blocking Message Passing Routines
+
+=== PAGE 137 ===
+41
+MPI_Wait
+MPI_Waitany
+MPI_Waitall
+MPI_Waitsome 
+▪ MPI_Wait blocks until a specified non-blocking send or receive operation has completed. 
+For multiple non-blocking operations, the programmer can specify any, all or some 
+completions. 
+MPI_Wait (&request,&status) 
+MPI_Waitany (count,&array_of_requests,&index,&status) 
+MPI_Waitall (count,&array_of_requests,&array_of_statuses) 
+MPI_Waitsome (incount,&array_of_requests,&outcount,  
+           &array_of_offsets, &array_of_statuses) 
+Blocking Message Passing Routines
+
+=== PAGE 138 ===
+42
+MPI_Probe 
+▪ Performs a blocking test for a message. 
+▪ The "wildcards" MPI_ANY_SOURCE and MPI_ANY_TAG may be used to test 
+for a message from any source or with any tag. 
+▪ For the C routine, the actual source and tag will be returned in the status 
+structure as status.
+MPI_Probe (source,tag,comm,&status) 
+Blocking Message Passing Routines
+
+=== PAGE 139 ===
+43
+#include "mpi.h" 
+#include <stdio.h> 
+int main(int argc,char *argv[]) 
+{ int numtasks, rank, dest, source, rc, count, tag=1; 
+char inmsg, outmsg='x'; 
+MPI_Status Stat; 
+MPI_Init(&argc,&argv); 
+MPI_Comm_size(MPI_COMM_WORLD, &numtasks); 
+MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
+if (rank == 0) 
+{ dest = 1; source = 1; 
+rc = MPI_Send(&outmsg, 1, MPI_CHAR, dest, tag, 
+MPI_COMM_WORLD); 
+rc = MPI_Recv(&inmsg, 1, MPI_CHAR, source, tag, 
+MPI_COMM_WORLD, &Stat); 
+} 
+Example: Blocking Message Passing Routines
+else if (rank == 1) 
+{ dest = 0; source = 0; 
+rc = MPI_Recv(&inmsg, 1, MPI_CHAR, source, tag, 
+MPI_COMM_WORLD, &Stat); 
+rc = MPI_Send(&outmsg, 1, MPI_CHAR, dest, tag, 
+MPI_COMM_WORLD); 
+} 
+rc = MPI_Get_count(&Stat, MPI_CHAR, &count); 
+printf("Task %d: Received %d char(s) from task %d with 
+tag %d \n", rank, count,       
+Stat.MPI_SOURCE, Stat.MPI_TAG); 
+MPI_Finalize(); 
+} 
+What would happen if MPI_Recv 
+is posted before MPI_Send?
+
+=== PAGE 140 ===
+Send and Receive Non-blocking Variants
+
+=== PAGE 141 ===
+45
+MPI_Isend 
+Processing continues immediately without waiting for the message to be copied out from the application 
+buffer. 
+The program should not modify the application buffer until subsequent calls to MPI_Wait or MPI_Test 
+indicate that the non-blocking send has completed. 
+MPI_Isend (&buf,count,datatype,dest,tag,comm,&request) 
+ 
+MPI_Irecv 
+Processing continues immediately without actually waiting for the message to be received and copied into 
+the the application buffer. 
+The program must use calls to MPI_Wait or MPI_Test to determine when the non-blocking receive operation 
+completes and the requested message is available in the application buffer. 
+MPI_Irecv (&buf,count,datatype,source,tag,comm,&request) 
+Non-Blocking Message Passing Routines
+
+=== PAGE 142 ===
+46
+MPI_Issend 
+Non-blocking synchronous send. 
+Similar to MPI_Isend(), except MPI_Wait() or MPI_Test() indicates when the destination process has 
+received the message. 
+MPI_Issend (&buf,count,datatype,dest,tag,comm,&request) 
+ 
+MPI_Ibsend 
+Non-blocking buffered send. 
+Similar to MPI_Bsend() except MPI_Wait() or MPI_Test() indicates when the destination process has 
+received the message. Must be used with the MPI_Buffer_attach routine. 
+MPI_Ibsend (&buf,count,datatype,dest,tag,comm,&request) 
+ 
+Non-Blocking Message Passing Routines
+
+=== PAGE 143 ===
+47
+MPI_Irsend 
+Non-blocking ready send. 
+Similar to MPI_Rsend() except MPI_Wait() or MPI_Test() indicates when the destination process has 
+received the message. 
+MPI_Irsend (&buf,count,datatype,dest,tag,comm,&request) 
+ 
+Non-Blocking Message Passing Routines
+
+
+=== PAGE 144 ===
+48
+MPI_Test 
+MPI_Testany 
+MPI_Testall 
+MPI_Testsome 
+▪ MPI_Test checks the status of a specified non-blocking send or receive operation. 
+▪ The "flag" parameter is returned logical true (1) if the operation has completed, and logical false (0) if 
+not. 
+▪ For multiple non-blocking operations, the programmer can specify any, all or some completions. 
+MPI_Test (&request,&flag,&status) 
+MPI_Testany (count,&array_of_requests,&index,&flag,&status)
+MPI_Testall (count,&array_of_requests,&flag,&array_of_statuses)
+MPI_Testsome (incount,&array_of_requests,&outcount, &array_of_indices, 
+&array_of_statuses)
+Non-Blocking Message Passing Routines
+
+
+=== PAGE 145 ===
+49
+MPI_Iprobe 
+▪ Performs a non-blocking test for a message. 
+▪ The "wildcards" MPI_ANY_SOURCE and MPI_ANY_TAG may be used to test 
+for a message from any source or with any tag. 
+▪ The integer "flag" parameter is returned logical true (1) if a message has 
+arrived, and logical false (0) if not. 
+MPI_Iprobe (source,tag,comm,&flag,&status)
+Non-Blocking Message Passing Routines
+
+
+=== PAGE 146 ===
+50
+#include "mpi.h"
+#include <stdio.h>
+int main(int argc, char *argv[])
+{ 
+int numtasks, rank, next, prev, buf[2],   
+    tag1=1, tag2=2;
+MPI_Request reqs[4];
+MPI_Status stats[4];
+MPI_Init(&argc,&argv);
+MPI_Comm_size(MPI_COMM_WORLD, &numtasks); 
+MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+prev = rank-1;
+next = rank+1;
+Example: Non-Blocking Message Passing Routines
+if (rank == 0) prev = numtasks - 1;
+if (rank == (numtasks - 1)) next = 0;
+MPI_Irecv(&buf[0], 1, MPI_INT, prev, tag1, 
+MPI_COMM_WORLD, &reqs[0]);
+MPI_Irecv(&buf[1], 1, MPI_INT, next, tag2, 
+MPI_COMM_WORLD, &reqs[1]);
+MPI_Isend(&rank, 1, MPI_INT, prev, tag2, 
+MPI_COMM_WORLD, &reqs[2]);
+MPI_Isend(&rank, 1, MPI_INT, next, tag1, 
+MPI_COMM_WORLD, &reqs[3]);
+ { /* do some work */ }
+MPI_Waitall(4, reqs, stats);
+printf("I am proc %d buf[0]=%d 
+buf[1]=%d\n",rank,buf[0],buf[1]);
+MPI_Finalize(); 
+}
+
+=== PAGE 147 ===
+Collective Communication
+
+=== PAGE 148 ===
+52
+All or None: 
+▪ Collective communication involve all processes in the scope of a communicator. 
+▪ Programmer's responsibility to ensure all processes within a communicator are 
+correctly participating in any collective operations. 
+General types of collective operations: 
+▪ Synchronization: processes wait until all members of the group have reached the 
+synchronization point. 
+▪ Data Movement: broadcast, scatter/gather, all to all. 
+▪ Collective Computation (e.g., reductions): one member of the group collects data 
+from the other members and performs an operation (e.g., min, max, add, multiply) 
+on that data. 
+Collective Communication
+
+=== PAGE 149 ===
+53
+Programming Considerations and Restrictions: 
+▪ Collective operations are blocking. 
+▪ Collective communication routines do not have message tag arguments.
+▪ Putting in wrong communicator may result in erroneous computation or 
+deadlock.
+Collective Communication
+
+=== PAGE 150 ===
+54
+MPI_Barrier 
+▪ Creates a barrier synchronization (within a group/subgroup of processes). 
+▪ Each task (process) when reaching the MPI_Barrier call, blocks until all tasks 
+in the group reach the same MPI_Barrier call. 
+ MPI_Barrier (comm)  
+MPI_Bcast 
+▪ Broadcasts (sends) a message from the “root” process to all other processes in 
+the group. 
+MPI_Bcast (&buffer,count,datatype,root,comm) 
+ 
+Collective Communication Routines
+
+=== PAGE 151 ===
+55
+MPI_Scatter 
+▪ Distributes distinct messages from a single source task to each task in the group. 
+▪ E.g., Distributing different elements of a data array to different processes.
+MPI_Scatter (&sendbuf,sendcnt,sendtype,&recvbuf, 
+ ...... recvcnt,recvtype,root,comm) 
+ 
+MPI_Gather 
+▪ Gathers distinct messages from each task in the group to a single destination task. 
+▪ This routine is the reverse operation of MPI_Scatter. 
+MPI_Gather (&sendbuf,sendcnt,sendtype,&recvbuf, 
+ ...... recvcount,recvtype,root,comm) 
+ 
+Collective Communication Routines
+
+=== PAGE 152 ===
+56
+MPI_Allgather 
+▪ Concatenation of data to all tasks in a group. 
+▪ Each task in the group, in effect, performs a one-to-all broadcasting operation within the 
+group. 
+MPI_Allgather (&sendbuf,sendcount,sendtype,&recvbuf, recvcount,recvtype,comm) 
+ 
+MPI_Reduce 
+▪ Applies a reduction operation on all tasks in the group and places the result in one task. 
+MPI_Reduce (&sendbuf,&recvbuf,count,datatype,op,root,comm) 
+ 
+Collective Communication Routines
+
+=== PAGE 153 ===
+57
+MPI_Allreduce 
+▪ Applies a reduction operation and places the result in all tasks in the group. 
+▪ This is equivalent to an MPI_Reduce followed by an MPI_Bcast. 
+MPI_Allreduce (&sendbuf,&recvbuf,count,datatype,op,comm) 
+ 
+MPI_Reduce_scatter 
+▪ First does an element-wise reduction on a vector across all tasks in the group. Next, the 
+result vector is split into disjoint segments and distributed across the tasks. 
+▪ This is equivalent to an MPI_Reduce followed by an MPI_Scatter operation. 
+MPI_Reduce_scatter (&sendbuf,&recvbuf,recvcount,datatype, op,comm) 
+Collective Communication Routines
+
+=== PAGE 154 ===
+58
+MPI_Alltoall 
+Each task in a group performs a scatter operation, sending a distinct message to all the tasks 
+in the group in order by index. 
+MPI_Alltoall (&sendbuf,sendcount,sendtype,&recvbuf, 
+            recvcnt,recvtype,comm) 
+MPI_Scan 
+Performs a scan operation with respect to a reduction operation across a task group. 
+MPI_Scan (&sendbuf,&recvbuf,count,datatype,op,comm) 
+ 
+Collective Communication Routines
+
+=== PAGE 155 ===
+59
+#include "mpi.h" 
+#include <stdio.h>
+ #define SIZE 4 
+int main(argc,argv) 
+int argc; char *argv[]; 
+{ int numtasks, rank, sendcount, recvcount, source; 
+float sendbuf[SIZE][SIZE] = { {1.0, 2.0, 3.0, 4.0}, 
+{5.0, 6.0, 7.0, 8.0}, {9.0, 10.0, 11.0, 12.0}, 
+{13.0, 14.0, 15.0, 16.0} }; 
+float recvbuf[SIZE]; 
+MPI_Init(&argc,&argv); 
+MPI_Comm_rank(MPI_COMM_WORLD, &rank); 
+MPI_Comm_size(MPI_COMM_WORLD, &numtasks); 
+Examples: Collective Communications
+if (numtasks == SIZE) 
+{ source = 1; sendcount = SIZE; recvcount = SIZE; 
+MPI_Scatter(sendbuf,sendcount,MPI_FLOAT,recvbuf,recv
+count, MPI_FLOAT,source,MPI_COMM_WORLD); 
+printf("rank= %d Results: %f %f %f 
+%f\n",rank,recvbuf[0], 
+recvbuf[1],recvbuf[2],recvbuf[3]); } 
+else printf("Must specify %d processors. 
+Terminating.\n",SIZE); 
+MPI_Finalize(); 
+} 
+
+=== PAGE 156 ===
+Practice activities
+
+=== PAGE 157 ===
+61
+Please try out the following:
+▪ Download and run the following sample MPI code files from this folder
+▪ In each compiled code, observe the output
+▪ You are also encouraged to attempt the practice activities based on this 
+document.
+– The document contains 5 activities
+– The last activity requires you to parallelise the computation of a pi 
+approximation algorithm. The starter code for these activities are available 
+in the folder linked above.
+In-class & take home coding practice
+
+=== PAGE 158 ===
+Week 6 - Applied Tasks overview
+
+
+=== PAGE 159 ===
+63
+In Week 6, we will assess our first applied assessments (Applied #1). 
+▪ Please read the Week 6 applied specifications and marking guidelines that are 
+available on Moodle (Week 6)
+▪ Discuss with your peers on the tasks in this applied. Refer to your lecture 
+materials and also the sample MPI code discussed in Week 5 to help in the 
+design of the architecture.
+▪ Reach out to your tutor or teaching assistant if you require any clarification on 
+the assessments requirements.
+Week 6 - Applied tasks overview
+
+=== PAGE 160 ===
+                         
+ 
+MESSAGE  PASSING  INTERFACE  (MPI)  
+OBJECTIVES   
+●  The  purpose  of  this  lab  is  to  introduce  you  to  the  Message  Passing  Interface  (MPI)  
+●  This  is  an  optional  practice  activity  to  further  help  improve  your  comprehension  of  MPI.  No  
+marks
+ 
+are
+ 
+awarded
+ 
+for
+ 
+this
+ 
+exercise.
+ 
+You
+ 
+are
+ 
+not
+ 
+required
+ 
+to
+ 
+make
+ 
+any
+ 
+submissions
+ 
+for
+ 
+this
+ 
+practice
+ 
+activity.
+ 
+●  You  can  attempt  the  activities  below  during  the  Week  5  applied/lab  session  or  on  your  own  
+time
+ 
+before
+ 
+or
+ 
+after
+ 
+class.
+ 
+PRACTICE  ACTIVITIES 
+(
+BASED
+ 
+ON
+ 
+T
+UTORIAL
+ 
+BY
+ 
+W
+ILLIAM
+ 
+G
+ROPP
+ 
+AND
+ 
+EWING  LUSK)  
+   Activity  0  –  Getting  used  to  manual  pages  [Pre-class  warm-up  activities]  
+    Open  the  manual  pages  https://docs.open-mpi.org/en/v5.0.x/man-openmpi/index.html  
+Make  sure  it  sits  comfortably  in  your  browser,  and  you  can  quickly  access  the  API  descriptions  as  
+quickly
+ 
+as
+ 
+you
+ 
+can!
+ 
+   Activity  1  –  Getting  Started  with  “Hello  World”  [Pre-class  warm-up  activities]  
+ Write  a  program  that  uses  MPI.  Make  sure  each  MPI  process  will  print   
+Hello  world  from  process  i  of  n              1   
+
+
+=== PAGE 161 ===
+ 
+using  the  rank  in  MPI_COMM_WORLD  for  i  and  the  size  of  MPI_COMM_WORLD  for  n.  
+You
+ 
+can
+ 
+assume
+ 
+that
+ 
+all
+ 
+processes
+ 
+support
+ 
+output
+ 
+for
+ 
+this
+ 
+example.
+ 
+Do
+ 
+take
+ 
+note
+ 
+of
+ 
+the
+ 
+order
+ 
+that
+ 
+the
+ 
+output
+ 
+appears
+ 
+in.
+ 
+Depending
+ 
+on
+ 
+your
+ 
+MPI
+ 
+implementation,
+ 
+characters
+ 
+from
+ 
+different
+ 
+lines
+ 
+may
+ 
+be
+ 
+intermixed.
+  
+You  should  be  using  these  MPI  routines  in  your  solution:   
+MPI_Init  
+MPI_Comm_size  
+MPI_Comm_rank  
+MPI_Finalize   
+Note:  Activity  1  is  just  designed  to  ensure  that  you  are  able  to  compile  and  execute  a  
+simple
+ 
+C
+ 
+code
+ 
+with
+ 
+MPI
+ 
+and
+ 
+test
+ 
+on
+ 
+your
+ 
+Linux
+ 
+environment.
+ 
+Please
+ 
+also
+ 
+spend
+ 
+time
+ 
+looking
+ 
+up
+ 
+these
+ 
+methods
+ 
+in
+ 
+the
+ 
+manual
+ 
+page
+ 
+(Activity
+ 
+0)
+ 
+and
+ 
+study
+ 
+their
+ 
+functionalities
+ 
+again.
+  
+            2   
+
+=== PAGE 162 ===
+ 
+Please  copy/type  in  a  solution  below.  For  the  main  C  file:  
+#include  <stdio.h>  
+#include
+ 
+"mpi.h"
+ 
+ int  main(  argc,  argv  )  
+int
+ 
+argc;
+ char  **argv;  {  int  rank,  size;  
+MPI_Init(
+ 
+&argc,
+ 
+&argv
+ 
+);
+ MPI_Comm_size(  MPI_COMM_WORLD,  &size  );  
+MPI_Comm_rank(
+ 
+MPI_COMM_WORLD,
+ 
+&rank
+ 
+);
+ printf(  "Hello  world  from  process  %d  of  %d\n",  rank,  size  );  
+MPI_Finalize();
+ return  0;  
+}  For  the  Makefile:   ALL:  helloworld  
+helloworld:  helloworld.c  mpicc  -o  helloworld  helloworld.c  
+clean:  /bin/rm  -f  helloworld  *.o   If  you  don’t  like  to  use  Makefile,  here  is  the  compilation  command:  mpicc  -o  helloworld  helloworld.c   Command  to  run  after  compilation  (assuming  4  processes):  mpirun  -np  4  helloworld   
+ 
+Example  output  (note:  The  line  ordering  can  be  different):  Hello  world  from  process  0  of  4  
+Hello
+ 
+world
+ 
+from
+ 
+process
+ 
+3
+ 
+of
+ 
+4
+ 
+Hello
+ 
+world
+ 
+from
+ 
+process
+ 
+1
+ 
+of
+ 
+4
+ 
+Hello
+ 
+world
+ 
+from
+ 
+process
+ 
+2
+ 
+of
+ 
+4
+ 
+            3   
+
+=== PAGE 163 ===
+     
+ Activity  2  –  Shared  Data  –  Give  us  two  good  examples   A  common  routine  in  MPI:   -  One  process  is  designed  to  get  data  from  the  user  (either  by  reading  from  the  
+terminal
+ 
+or
+ 
+command
+ 
+line
+ 
+arguments),
+ 
+and;
+ -  The  processes  then  distribute  the  information  to  all  other  processors.   
+Write  two  simple  programs  that  read  an  integer  value  from  the  terminal  and  distribute  the  
+value
+ 
+to
+ 
+all
+ 
+MPI
+ 
+processes
+ 
+(including
+ 
+itself).
+ 
+Each
+ 
+process
+ 
+must:
+ 
+1)  print  out  its  rank,  and  
+2)  the  value  it  received.   
+Values  should  be  read  from  the  terminal  until  a  negative  integer  is  given  as  input.  You  
+can
+ 
+use
+ 
+either
+ 
+MPI_Send/MPI_Recv
+ 
+or
+ 
+MPI_Bcast
+ 
+for
+ 
+this
+ 
+activity.
+ 
+ 
+You  may  find  it  helpful  to  include  a  flush(stdout);  after  the  printf  calls  in  your  
+program.
+ 
+Without
+ 
+this,
+ 
+output
+ 
+may
+ 
+not
+ 
+appear
+ 
+when
+ 
+you
+ 
+expect
+ 
+it.
+ 
+You
+ 
+should
+ 
+also
+ 
+use
+ 
+these
+ 
+other
+ 
+MPI
+ 
+routines
+ 
+in
+ 
+your
+ 
+solution:
+ 
+ 
+MPI_Init  
+MPI_Comm_rank  
+MPI_Finalize  
+ 
+            4   
+
+=== PAGE 164 ===
+ 
+Activity  3  –  Using  MPI  datatypes  to  share  data    In  this  activity,  you  will  modify  your  argument  broadcast  routine  to  communicate  different  
+data
+ 
+types
+ 
+with
+ 
+a
+ 
+single
+ 
+MPI
+ 
+broadcast
+ 
+(
+MPI_Bcast
+)
+ 
+call.
+ 
+  Your  program  should  read  an  integer  and  then  a  double-precision  value  from  standard  
+input
+ 
+(from
+ 
+process
+ 
+0),
+ 
+and
+ 
+communicate
+ 
+the
+ 
+information
+ 
+to
+ 
+all
+ 
+other
+ 
+processes
+ 
+with
+ 
+an
+ 
+MPI_Bcast
+ 
+call.
+ 
+You
+ 
+must
+ 
+use
+ 
+MPI
+ 
+datatypes.
+ 
+Similarly,
+ 
+you
+ 
+should
+ 
+make
+ 
+sure
+ 
+all
+ 
+processes
+ 
+will
+ 
+quit/exit
+ 
+when
+ 
+a
+ 
+negative
+ 
+integer
+ 
+is
+ 
+read
+ 
+(from
+ 
+standard
+ 
+input).
+  You  should  try  to  research  and  use  these  MPI  routines  in  your  solution:  MPI_Get_address  MPI_Type_create_struct  MPI_Type_commit  MPI_Type_free  MPI_Bcast  
+Please  copy/type  in  the  code  template  below.   
+There  are  some  lines  of  code  missing,  please  fill  in  the  missing  code  
+#include  <stdio.h>  
+#include
+ 
+<mpi.h>
+  struct  valuestruct  {     //  Please  insert  two  lines  of  code  here }  ;   int  main(int  argc,  char**  argv)  {  struct  valuestruct  values;  
+int
+ 
+myrank;
+ MPI_Datatype  Valuetype;  MPI_Datatype  type[2]  =  {  MPI_INT,  MPI_DOUBLE  };  
+int
+ 
+blocklen[2]
+ 
+=
+ 
+{
+ 
+1,
+ 
+1};
+ MPI_Aint  disp[2];   MPI_Init(&argc,  &argv);  
+MPI_Comm_rank(MPI_COMM_WORLD,
+ 
+&myrank);
+  MPI_Get_address(&values.a,  &disp[0]);  
+MPI_Get_address(&values.b,
+ 
+&disp[1]);
+  //Make  relative  
+disp[1]=disp[1]-disp[0];
+ 
+disp[0]=0;
+  //  Create  MPI  struct       //  Please  insert  one  line  of  code  here   MPI_Type_commit(&Valuetype);  
+     
+ 
+  
+do{
+             5   
+
+=== PAGE 165 ===
+if  (myrank  ==  0){  printf("Enter  an  round  number  (>0)  &  a  real  number:  ");  
+fflush(stdout);
+ scanf("%d%lf",  &values.a,  &values.b);  }    //  Please  insert  one  line  of  code  here printf("Rank:  %d.  values.a  =  %d.  values.b  =  %lf\n",        myrank,  values.a,  values.b);   fflush(stdout);          }while(values.a  >  0);   
+ /*  Clean  up  the  type  */      MPI_Type_free(&Valuetype);     MPI_Finalize();   return  0;  } 
+ 
+            6   
+
+=== PAGE 166 ===
+ 
+Activity  4  –  Using  MPI_Pack  to  share  data   
+ In  this  activity,  you  will  modify  your  argument  broadcast  routine  to  communicate  different  data  types  by  using  MPI_Pack  and  MPI_Unpack.    
+Your  program  should  read  an  integer  and  then  a  double-precision  value  from  standard  
+input
+ 
+(from
+ 
+process
+ 
+0),
+ 
+and
+ 
+communicate
+ 
+the
+ 
+information
+ 
+to
+ 
+all
+ 
+other
+ 
+processes
+ 
+with
+ 
+an
+ 
+MPI_Bcast
+ 
+call.
+ 
+You
+ 
+should
+ 
+use
+ 
+MPI_Pack
+ 
+to
+ 
+pack
+ 
+the
+ 
+data
+ 
+into
+ 
+a
+ 
+buffer
+ 
+(for
+ 
+simplicity,
+ 
+you
+ 
+can
+ 
+use
+ 
+char
+ 
+packbuf[100]
+;
+ 
+but
+ 
+consider
+ 
+how
+ 
+to
+ 
+use
+ 
+MPI_Pack_size
+ 
+instead).
+  
+Note  that  MPI_Bcast ,  unlike  MPI_Send/MPI_Recv  operations,  requires  that  exactly  the  
+same
+ 
+amount
+ 
+of
+ 
+data
+ 
+be
+ 
+sent
+ 
+and
+ 
+received.
+ 
+Thus,
+ 
+you
+ 
+will
+ 
+need
+ 
+to
+ 
+make
+ 
+sure
+ 
+that
+ 
+all
+ 
+processes
+ 
+have
+ 
+the
+ 
+same
+ 
+value
+ 
+for
+ 
+the
+ 
+count
+ 
+argument
+ 
+to
+ 
+MPI_Bcast
+.
+ 
+Similarly,
+ 
+you
+ 
+should
+ 
+make
+ 
+sure
+ 
+all
+ 
+processes
+ 
+will
+ 
+quit/exit
+ 
+when
+ 
+a
+ 
+negative
+ 
+integer
+ 
+is
+ 
+read
+ 
+(from
+ 
+standard
+ 
+input).
+ 
+   You  should  use  these  MPI  routines  in  your  solution:  MPI_Pack   MPI_Unpack   MPI_Bcast  
+ 
+Please  copy/type  in  the  code  template  below.   
+There  are  4  lines  of  code  missing.  Please  fill  in  the  missing  code.  
+            7   
+
+=== PAGE 167 ===
+#include  <stdio.h>  #include  <stdlib.h>  #include  <mpi.h>  #include  <time.h>   int  main(){    int  my_rank;   struct  timespec  ts  =  {0,  50000000L};  /*  wait  0  sec  and  5^8  nanosec  */     int  a;  double  b;   char  *buffer;  int  buf_size,  buf_size_int,  buf_size_double,  position  =  
+0;
+    MPI_Init(NULL,  NULL);   MPI_Comm_rank(MPI_COMM_WORLD,  &my_rank);     //  Determine  buffer  size   MPI_Pack_size(1,  MPI_INT,  MPI_COMM_WORLD,  &buf_size_int);    MPI_Pack_size(1,  MPI_DOUBLE,  MPI_COMM_WORLD,  &buf_size_double);     buf_size  =  buf_size_int  +  buf_size_double;  //  Increase  the  buffer  size     //  Allocate  memory  to  the  buffer   buffer  =  (char  *)  malloc((unsigned)  buf_size);     do{    if(my_rank  ==  0){     nanosleep  (&ts,  NULL);          printf("Enter  an  round  number  (>0)  &  a  real  number:  ");     fflush(stdout);     scanf("%d  %lf",  &a,  &b);         position  =  0;  //  Reset  the  position  in  buffer         //  Pack  the  integer  a  into  the  buffer  //  Please  insert  one  line  of  code  here  (Hint:  a  
+MPI_Pack
+ 
+function
+ 
+call)     //  Pack  the  double  b  into  the  buffer  //  Please  insert  one  line  of  code  here  (Hint:  
+another
+ 
+MPI_Pack
+ 
+function
+ 
+call)    }       //  Broadcast  the  buffer  to  all  processes    MPI_Bcast(buffer,  buf_size,  MPI_PACKED,  0,  MPI_COMM_WORLD);          position  =  0;  //  Reset  the  position  in  buffer  in  each  iteration       //  Unpack  the  integer  a  from  the  buffer    //  Please  insert  one  line  of  code  here  (Hint:  a  
+MPI_Unpack
+ 
+function
+ 
+call)  
+            8   
+
+=== PAGE 168 ===
+  //  Unpack  the  double  b  from  the  buffer  //  Please  insert  one  line  of  code  here  (Hint:  another  
+MPI_Unpack
+ 
+function
+ 
+call)       printf("[Process  %d]  Received  values:  values.a  =  %d,  values.b  =  
+%lf\n",
+ 
+my_rank,
+ 
+a,
+ 
+b);
+   fflush(stdout);       MPI_Barrier(MPI_COMM_WORLD);   }while(a  >  0);      /*  Clean  up  */   free(buffer);   MPI_Finalize();     return  0;  } 
+            9   
+
+=== PAGE 169 ===
+             Activity  5  –  Using  MPI_Reduce  to  approximate  the  value  of  Pi   
+π  
+(sometimes
+ 
+written
+ 
+pi)
+ 
+is
+ 
+a
+ 
+mathematical
+ 
+constant
+ 
+whose
+ 
+value
+ 
+is
+ 
+the
+ 
+ratio
+ 
+of
+ 
+any
+ 
+circle's
+ 
+circumference
+ 
+to
+ 
+its
+ 
+diameter
+ 
+in
+ 
+Euclidean
+ 
+space;
+ 
+this
+ 
+is
+ 
+the
+ 
+same
+ 
+value
+ 
+as
+ 
+the
+ 
+ratio
+ 
+of
+ 
+a
+ 
+circle's
+ 
+area
+ 
+to
+ 
+the
+ 
+square
+ 
+of
+ 
+its
+ 
+radius.
+ 
+It
+ 
+is
+ 
+approximately
+ 
+equal
+ 
+to
+ 
+3.141593
+ 
+in
+ 
+the
+ 
+usual
+ 
+decimal
+ 
+notation
+ 
+(see
+ 
+the
+ 
+table
+ 
+for
+ 
+its
+ 
+representation
+ 
+in
+ 
+some
+ 
+other
+ 
+bases).
+  
+This  exercise  presents  a  simple  program  to  determine  the  value  of  pi,  based  on  the  
+following
+ 
+algorithm:
+ 
+Algorithm :  Find  the  integration  of  pi  between  0  &  1.  This  integral  is  approximated  by  a  sum  
+of  N  intervals.  The  approximation  to  the  integral  in  each  interval  is:
+ 
+.  In  
+1
+𝑁
+×
+ 4
+(
+1
++
+𝑥
+*
+𝑥
+)computational  terms,  this  algorithm  can  be  further  represented  as:  
+ 
+A  serial-based  C  code  implementation  of  this  algorithm  is  provided  as  follows:   #include  <stdio.h>  
+#include
+ 
+<stdlib.h>
+ 
+#include
+ 
+<math.h>
+ 
+#include
+ 
+<time.h>
+  static  long  N  =  100000000;   int  main(int  argc,  char*  argv[])  {  int  i;  double  sum  =  0.0;  
+double
+ 
+piVal;
+ struct  timespec  start,  end;  
+double
+ 
+time_taken;
+  //  Get  current  clock  time.  
+clock_gettime(CLOCK_MONOTONIC,
+ 
+&start);
+  for(i  =  0;  i  <  N;  i++)  {  sum  +=  4.0  /  (1  +  pow((2.0  *  i  +  1.0)/(2.0  *  N),  2));  }  piVal  =  sum  /  (double)N;   //  Get  the  clock  current  time  again  
+            10   
+
+
+=== PAGE 170 ===
+ //  Subtract  end  from  start  to  get  the  CPU  time  used.  
+clock_gettime(CLOCK_MONOTONIC,
+ 
+&end);
+ time_taken  =  (end.tv_sec  -  start.tv_sec)  *  1e9;  time_taken  =  (time_taken  +  (end.tv_nsec  -  start.tv_nsec))  *  
+1e-9;
+  printf("Calculated  Pi  value  (Serial-AlgoI)  =  %12.9f\n",  piVal);        printf("Overall  time  (s):  %lf\n",  time_taken);  //  ts   return  0;  }   
+Based  on  the  algorithm  and  serial  C  code  in  the  preceding  page:   
+a)  Make  sure  you  can  compile  and  run  the  serial  code.  Measure  the  overall  time  taken  
+to
+ 
+complete
+ 
+the
+ 
+computation
+ 
+(i.e.,
+ 
+ts
+).
+  
+b)  Implement  a  parallel  version  of  this  algorithm  using  Message  Passing  Interface  
+(MPI)
+ 
+ ●  The  root  rank  will  prompt  the  user  for  the  N  value.   ●  The  specified  N  value,  together  with  other  necessary  information,  will  then  be  
+disseminated
+ 
+to
+ 
+other
+ 
+processors
+ 
+to
+ 
+calculate
+ 
+part
+ 
+of
+ 
+the
+ 
+value
+ 
+of
+ 
+Pi.
+ 
+ ●  Apply  a  data  parallel  design  based  on  the  value  of  N  and  the  number  of  MPI  
+processes.
+ 
+ ●  You  will  need  to  measure  the  overall  time  taken  (i.e.,  tp )  for  large  values  of  N  
+(e.g.,
+ 
+N
+ 
+=
+ 
+100,000,000)
+ 
+and
+ 
+compute
+ 
+the
+ 
+actual
+ 
+speed
+ 
+up
+ 
+(if
+ 
+any).
+  
+Hint:  These  two  MPI  functions  are  extremely  useful:  MPI_Bcast  and  MPI_Reduce .  You  can  refer  to  the  starter  code  provided  with  this  activity.   
+c)  Compare  the  performance  of  the  serial  and  parallel  implementations  of  your  Pi  
+approximation
+ 
+code.
+ 
+ Note:  There  are  many  algorithms/approaches  to  approximate  the  integral.  Some  may  be  
+easy
+ 
+to
+ 
+parallelise,
+ 
+while
+ 
+some
+ 
+can
+ 
+be
+ 
+challenging.
+ 
+If
+ 
+one
+ 
+algorithm
+ 
+doesn’t
+ 
+work,
+ 
+please
+ 
+try
+ 
+another
+ 
+approach.
+ 
+Make
+ 
+sure
+ 
+you
+ 
+implement
+ 
+both
+ 
+the
+ 
+serial
+ 
+and
+ 
+parallel
+ 
+versions
+ 
+in
+ 
+C/C++
+ 
+(with
+ 
+Open
+ 
+MPI). 
+ 
+            11   

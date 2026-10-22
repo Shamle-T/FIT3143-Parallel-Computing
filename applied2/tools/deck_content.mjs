@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 // Canonical visible content for all three editable assessment decks.
 // Citations are numbered consistently across the combined and task decks.
 export const students = [
@@ -284,16 +285,16 @@ const conciseSlides = [
   {id:'speed-brief',task:'t1',kind:'columns',label:'Task 1(b) • Expected speedup',title:'Throughput gains depend on the bottleneck',citations:[2],
     left:{heading:'Why a GPU can be faster',body:[
       'Many execution units and high device-memory bandwidth process independent pixels concurrently.',
-      'Coalesced writes help; rotated gathers, registers and divergence can limit throughput.',
-      'Large/resident images amortize setup. Streams can overlap transfers/compute with separate pinned buffers and supporting hardware.',
+      'Coalescing combines nearby addresses into fewer transactions. Rotated gathers can limit bandwidth; 32 × 8 keeps a warp on one row, unlike 16 × 16. Profile both.',
+      'Large images amortize setup; keeping pixels on the GPU avoids repeated copies. More resident warps hide latency, but registers and divergence constrain execution.',
     ]},right:{heading:'Compare completed equivalent work',body:[
       'Speedup = TCPU / TGPU,total. Same rotation/sampling on one CPU thread; also test a multithreaded CPU.',
-      'Sequential time: setup + H2D + kernel + D2H. For overlapped batches, measure the completed critical path; wait before reusing buffers.',
-      'Amdahl: serial work bounds gains. No measured speedup; compile, verify and profile.',
+      'Streams can overlap independent images with separate pinned/device buffers and copy/compute support. Enqueue batches before waiting; extra buffers cost memory.',
+      'Time completed work: sequential setup + H2D + kernel + D2H, or the overlapped batch critical path. Amdahl bounds gains; no measured speedup is claimed.',
     ]}},
   {id:'access-brief',task:'t2',kind:'columns',label:'Task 2(c) • Access and socioeconomic impact',title:'Compute concentration limits participation',citations:[7,8,13],
     left:{heading:'Evidence and consequences',body:[
-      'Ahmed & Wahed [13]: institutional participation. Strubell et al. [8]: workload cost. Different scopes reveal barriers to training and replication.',
+      'Ahmed & Wahed [13]: institutional participation. Strubell et al. [8]: workload cost. Different scopes reveal who can train, replicate and shape the AI research agenda.',
       'Historical studies do not establish current global access.',
       'NAIRR: >600 teams and >6,000 students [7]; US reach does not establish worldwide equality.',
     ]},right:{heading:'An equitable shared-cluster policy',body:[
@@ -313,7 +314,7 @@ const conciseSlides = [
     ]}},
 ];
 const briefById=new Map(conciseSlides.map(d=>[d.id,d]));
-const timedOrder=[['cover',10],['transfer',30],['rotation',35],['cuda-brief',40],['speed-brief',30],['gds',30],['environment',55],['governance',55],['access-brief',35],['framework-brief',40],['conclusions',20]];
+const timedOrder=[['cover',8],['transfer',25],['rotation',30],['cuda-brief',42],['speed-brief',45],['gds',30],['environment',60],['governance',60],['access-brief',35],['framework-brief',45],['conclusions',20]];
 const narrations={
   cover:'We address GPU image rotation and responsible HPC scaling. The appendix retains our full implementation, research and calculations.',
   transfer:'The CPU loads and decodes an image into host RAM, allocates separate device input and output buffers, and launches the GPU work. DMA transfers decoded pixels to GPU memory over PCIe. The kernel rotates the pixels, and completed output returns to host RAM for saving. GPU memory bandwidth is different from link bandwidth. Pinned RAM supports efficient transfer; pageable memory may require staging.',
@@ -327,7 +328,8 @@ const narrations={
   'framework-brief':'Our proposal combines OECD rights and accountability, NIST risk management, Green AI measurement and carbon-aware scheduling. Govern assigns ownership throughout. Map defines the use, stakeholders and alternatives. Measure records quality, energy, security and group harms. Manage approves, defers, reduces scale or redesigns. Shift flexible jobs toward lower-carbon windows only when deadlines, water constraints and equitable waiting limits remain satisfied. An accountable owner records exceptions; forecast uncertainty and urgent work can override deferral. This is an iterative proposed policy, not a certification.',
   conclusions:'CUDA is promising for independent pixels, but performance needs measurement. Responsible HPC requires useful outcomes, protected data and equitable access. Next, compile and validate the rotation, then measure a real cluster job and revise decisions using evidence.',
 };
-export const mainSlides=timedOrder.map(([id,seconds])=>({...((briefById.get(id))??byId.get(id)),seconds,narration:narrations[id]}));
+const spokenScript=JSON.parse(readFileSync(new URL('./presentation_script.json',import.meta.url),'utf8')).slides;
+export const mainSlides=timedOrder.map(([id,seconds],i)=>({...((briefById.get(id))??byId.get(id)),seconds,narration:spokenScript[i].speech}));
 const retainedMainIds=new Set(mainSlides.filter(d=>!briefById.has(d.id)).map(d=>d.id));
 const previousSlides=[...preservedMainSlides,...preservedAppendixSlides];
 const appendixGuide={id:'appendix-guide',task:'both',kind:'columns',label:'Appendix • Not part of the seven-minute presentation',title:'Detailed answers and supporting evidence',citations:[],
@@ -338,7 +340,11 @@ const appendixGuide={id:'appendix-guide',task:'both',kind:'columns',label:'Appen
     'Parallel training, energy/carbon calculations, environmental accounting and research limitations.',
     'Risk owners, fairness example, allocation policy, framework roles, carbon-aware scheduling and cross-topic comparisons.',
   ]}};
-export const appendixSlides=[appendixGuide,...previousSlides.filter(d=>!retainedMainIds.has(d.id)).map(d=>({
+const retainedEvidence=[
+  {...briefById.get('cuda-brief'),id:'cuda-evidence',kind:'cudabrief-support',label:'Appendix • CUDA examples and execution detail'},
+  {...byId.get('environment'),id:'sector-evidence',kind:'environment-support',label:'Appendix • Sector charts and scope'},
+];
+export const appendixSlides=[appendixGuide,...retainedEvidence,...previousSlides.filter(d=>!retainedMainIds.has(d.id)).map(d=>({
   ...d,id:d.id==='conclusions'?'conclusions-detail':d.id,
   label:`Appendix • ${d.task==='t1'?'Task 1':d.task==='t2'?'Task 2':'Supporting material'} • ${d.label??'Detail'}`,
 }))];

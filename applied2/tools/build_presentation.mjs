@@ -151,6 +151,17 @@ function renderMain(s,d) {
     text(s,'lookup',1072,307,112,21,{color:C.teal});
     paragraphs(s,['Forward [c s; −s c]; inverse [c −s; s c]. Positive θ is visually counterclockwise.', 'Fixed RGB canvas can crop; black borders. Gathering avoids scatter holes; nearest-neighbour can alias.'],64,440,810,22,16);
   } else if(d.kind==='cudabrief') {
+    text(s,'Host launch: asynchronous submission',64,155,704,26,{bold:true,color:C.teal});
+    code(s,'dim3 block(16,16), grid(64,64);\nrotate_rgb<<<grid,block>>>(\n  d_in,d_out,1024,1024,c,s);',76,211,682,23);
+    text(s,'Device: global pixel index + edge guard. For other sizes, ceil-divide the grid. Check launch errors AND completion before reading/reusing output.',64,329,712,23);
+    text(s,'Not all threads run at once: finite SM resources execute queued blocks in waves.',64,437,712,26,{bold:true,color:C.teal});
+    text(s,'SIMT = single instruction, multiple threads. A warp issues common instructions; divergent paths can reduce efficiency.',64,525,712,22);
+    const a=node(s,'Grid: 64 × 64 blocks\n≈1.05 million logical threads',842,165,374,85);
+    const b=node(s,'Block: 16 × 16 threads\n256 threads = 8 warps',842,300,374,85);
+    const c=node(s,'SMs schedule resident warps\n32 threads per warp',842,435,374,85);
+    arrow(s,a,b,{from:'bottom',to:'top'});arrow(s,b,c,{from:'bottom',to:'top'});
+    text(s,'Appendix: full rotation, brightness, launch-shape and stream examples.',842,535,374,20);
+  } else if(d.kind==='cudabrief-support') {
     text(s,'Host launch + device pixel indexing',64,155,686,26,{bold:true,color:C.teal});
     code(s,'dim3 block(16,16), grid(64,64);\nrotate_rgb<<<grid,block>>>(\n    d_in,d_out,1024,1024,c,s);\nint x = blockIdx.x*blockDim.x + threadIdx.x;\nint y = blockIdx.y*blockDim.y + threadIdx.y;\nif (x >= W || y >= H) return;',76,206,690,20);
     const a=node(s,'Grid: 64 × 64 blocks',842,165,374,63);
@@ -168,9 +179,9 @@ function renderMain(s,d) {
     arrow(s,a,b);arrow(s,b,c);
     text(s,'Govern throughout: accountable owner, rights, data rules and equitable access',64,321,1152,26,{bold:true,color:C.teal});
     paragraphs(s,[
-      'Green AI [10]: efficiency per useful outcome. OECD [15] + NIST [16]: rights, safeguards and review.',
-      'Carbon-aware scheduling [14]: shift flexible jobs within deadlines, water/site limits and equitable waiting commitments.',
-      'Record exceptions and outcomes; urgent work and forecast uncertainty can override deferral. Prevent starvation.',
+      'Green AI [10] measures efficiency; Radovanovic et al. [14] turn forecasts into scheduling of flexible work. Measurement and action address different needs.',
+      'OECD [15]: rights and accountability. NIST [16]: operational risk decisions. Use an energy budget, named owner, safeguards and outcome review.',
+      'Defer only within deadlines, capacity, water/site and equitable waiting limits. Record urgent/forecast exceptions; prevent starvation.',
     ],64,379,1152,23,14);
   } else if(d.kind==='launch') {
     code(s,'dim3 block(16,16);\ndim3 grid(64,64);\nrotate_rgb<<<grid,block>>>(\n  d_in,d_out,1024,1024,c,s);',76,168,600,22);
@@ -231,6 +242,18 @@ function renderMain(s,d) {
     text(s,'More GPUs enable larger work; communication, serial work and imbalance limit speedup. Evaluate useful output against resource cost.',674,499,542,23);
   } else if(d.kind==='environment') {
     text(s,'Global data-centre electricity (TWh/year)',64,151,552,23,{bold:true});
+    const chart=s.charts.add('bar',{position:{left:64,top:197,width:552,height:299},hasLegend:false,barOptions:{direction:'column',grouping:'clustered',gapWidth:120},categories:['2025 estimate','2030 projection'],series:[{name:'Electricity (TWh)',values:[485,950],fill:C.teal}],dataLabels:{showValue:true,position:'outEnd',textStyle:{fontSize:23,typeface:'Arial',fill:C.ink}},chartFill:'none',chartLine:{fill:'none'},plotAreaFill:'none',plotAreaLine:{fill:'none'},xAxis:{textStyle:{fontSize:19,typeface:'Arial'},line:{fill:C.rule}},yAxis:{textStyle:{fontSize:18,typeface:'Arial'},majorGridlines:{fill:C.rule,width:1},minimumScale:0,maximumScale:1000,numberFormatCode:'0'}});
+    applyPresentationChartFont(chart,{fontFamily:'Arial'});
+    text(s,'IEA [6]: whole-sector context, not one AI job. Estimate vs projection; ≈96% growth. Full growth charts are in the appendix.',64,511,552,21);
+    text(s,'From cluster scaling to job-level impact',674,159,542,26,{bold:true,color:C.teal});
+    paragraphs(s,[
+      'Data-parallel GPUs train different batches; gradient all-reduce synchronizes updates. Communication and stragglers limit scaling.',
+      'Energy = ∫ power dt; carbon ≈ Σ energy × local carbon intensity. Faster completion can still consume more energy.',
+      'Count CPUs, network/storage, cooling, tuning and failed runs. Water consumption varies by site/time; manufacture adds embodied impacts.',
+    ],674,214,542,23,15);
+    text(s,'Green AI [10]: efficiency per useful output. Li et al. [9]: local water pressure. Track both; lower carbon alone can miss water costs.',64,606,1152,21,{bold:true,h:53});
+  } else if(d.kind==='environment-support') {
+    text(s,'Global data-centre electricity (TWh/year)',64,151,552,23,{bold:true});
     text(s,'Electricity growth during 2025',664,151,552,23,{bold:true});
     const common={hasLegend:false,barOptions:{direction:'column',grouping:'clustered',gapWidth:120},dataLabels:{showValue:true,position:'outEnd',textStyle:{fontSize:23,typeface:'Arial',fill:C.ink}},chartFill:'none',chartLine:{fill:'none'},plotAreaFill:'none',plotAreaLine:{fill:'none'},xAxis:{textStyle:{fontSize:19,typeface:'Arial'},line:{fill:C.rule}},yAxis:{textStyle:{fontSize:18,typeface:'Arial'},majorGridlines:{fill:C.rule,width:1}}};
     const chart1=s.charts.add('bar',{...common,position:{left:64,top:197,width:552,height:299},categories:['2025 estimate','2030 projection'],series:[{name:'Electricity (TWh)',values:[485,950],fill:C.teal}],yAxis:{...common.yAxis,minimumScale:0,maximumScale:1000,numberFormatCode:'0'}});
@@ -243,11 +266,11 @@ function renderMain(s,d) {
     text(s,'Fairness: evaluate affected groups',664,158,552,26,{bold:true,color:C.teal});
     const l1=node(s,'Workers exchange gradients\nand save checkpoints',64,211,548,92);
     const l2=node(s,'Least privilege, isolation,\nprotected transport/storage',64,360,548,92);arrow(s,l1,l2,{from:'bottom',to:'top'});
-    const r1=node(s,'Data coverage and model outputs\nmay differ across groups',664,211,552,92);
-    const r2=node(s,'Disaggregated, harm-specific tests\n+ mitigation and reevaluation',664,360,552,92);arrow(s,r1,r2,{from:'bottom',to:'top'});
-    text(s,'Zhu et al. [11]: exposed gradients can reconstruct inputs in studied settings. Not every production collective leaks.',64,479,548,22);
-    text(s,'Gallegos et al. [12]: metrics, datasets and mitigations differ. Apply these to cluster-trained models; scale alone does not guarantee fairness.',664,474,552,22);
-    text(s,'Provenance/permissions, replica access and dual-use review need owners. Encryption alone cannot establish fair outputs.',64,568,1152,21);
+    const r1=node(s,'Example: cluster-trained multilingual LLM\ncoverage/harms differ by language',664,211,552,92);
+    const r2=node(s,'Compare harmful-output rates by language\n+ uncertainty, data-coverage fixes, reevaluation',664,360,552,92);arrow(s,r1,r2,{from:'bottom',to:'top'});
+    text(s,'Zhu et al. [11]: input reconstruction from exposed gradients in studied settings. Protect intermediates; not every collective leaks.',64,475,548,21);
+    text(s,'Gallegos et al. [12]: metrics/datasets/mitigations differ. Reserve evaluation compute; GPU count cannot fix unrepresentative data.',664,475,552,21);
+    text(s,'Governance: provenance, permission, replica retention/deletion and dual-use review; named data/security owners.',64,562,1152,21);
   } else if(d.kind==='access') {
     const t=s.tables.add({rows:3,columns:3,left:64,top:165,width:1152,height:250,columnWidths:[300,430,422],values:[['Evidence','What it shows','What it cannot establish'],['Ahmed & Wahed [13]','Historical research participation and compute concentration','Current worldwide access or a universal causal effect'],['Strubell et al. [8]','Selected NLP workload costs and financial barriers','The cost of every current AI workload']]});
     t.borders.assign({fill:C.rule,width:1});t.styleOptions={headerRow:true};
@@ -262,7 +285,7 @@ function renderMain(s,d) {
     text(s,'OECD: values and rights [15]  •  NIST: Govern, Map, Measure, Manage [16]',64,379,1152,24);
     paragraphs(s,['Use an energy budget, security/group evaluation and transparent access rules. Record owner, rationale, exceptions and outcomes.', 'Measurement informs action: shift flexible jobs to cleaner periods within deadlines/capacity. Forecast uncertainty, water stress and urgent access can change the decision.'],64,429,1152,24,13);
   }
-  if(d.kind!=='environment') takeaway(s,d.takeaway);
+  if(!['environment','environment-support'].includes(d.kind)) takeaway(s,d.takeaway);
 }
 
 function renderAppendix(s,d) {
@@ -347,7 +370,7 @@ async function buildDeck(which) {
       while(font>18&&wrap(d.prompt,1152,font).split('\n').length*font*1.24>485)font--;
       const h=text(s,d.prompt,64,157,1152,font,{h:493});
       if(wrap(d.prompt,1152,font).split('\n').length*font*1.24>493)throw new Error(`Prompt overflow ${d.id}`);
-    }else if(['cover','transfer','rotation','cudabrief','frameworkbrief','launch','features','speed','streamcore','gds','hpc','environment','governance','access','framework'].includes(d.kind))renderMain(s,d);
+    }else if(['cover','transfer','rotation','cudabrief','cudabrief-support','frameworkbrief','launch','features','speed','streamcore','gds','hpc','environment','environment-support','governance','access','framework'].includes(d.kind))renderMain(s,d);
     else renderAppendix(s,d);
     if(d.kind!=='cover')sourceFooter(s,d.citations,i,slides.length);
     const sourceNotes=(d.citations??[]).map(n=>{const r=refs.find(x=>x.n===n);const url=which==='combined'||r.url.startsWith('https:')?r.url:'../'+r.url;return `[${n}] ${r.text}\n${url}`;}).join('\n\n');
@@ -377,5 +400,8 @@ async function buildDeck(which) {
   console.log(`FINAL ${dest} (${slides.length} slides)`);
 }
 function dTitle(d){return d.title.replaceAll('\n',' / ');}
-for(const which of (process.argv.slice(2).length?process.argv.slice(2):['combined','t1','t2']))await buildDeck(which);
-await fs.writeFile(path.join(buildDir,'authored_geometry.json'),JSON.stringify(boxes,null,2));
+export {Presentation,PresentationFile,renderMain,renderAppendix,sourceFooter,C};
+if(!process.env.SKIP_DECK_BUILD){
+  for(const which of (process.argv.slice(2).length?process.argv.slice(2):['combined','t1','t2']))await buildDeck(which);
+  await fs.writeFile(path.join(buildDir,'authored_geometry.json'),JSON.stringify(boxes,null,2));
+}

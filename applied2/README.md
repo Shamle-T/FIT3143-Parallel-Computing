@@ -1,6 +1,6 @@
 # Applied 2: GPU rotation and responsible HPC for AI
 
-All files to upload are collected in [submission/](submission/README.md): the combined PowerPoint/PDF, associated CUDA sources, chart data and the required AI prompt-record PDF. The speaking script is rehearsal material in this parent folder. Run tools/package_submission.py after changing the canonical files to refresh the upload copies.
+The current upload materials are in [submission/](submission/): the latest combined PowerPoint, associated CUDA sources and chart data. The combined PDF and speaking script in this parent folder are optional viewing/rehearsal copies. This review preserves the files previously removed from submission/.
 
 Use [the combined PowerPoint](Applied2_Combined_Presentation.pptx) and [its PDF copy](Applied2_Combined_Presentation.pdf) as the current presentation package. Both contain the assessment explanations, code excerpts, research comparisons, citations, references and a brief AI declaration. No separate report is needed to understand Tasks 1 and 2.
 
@@ -8,15 +8,15 @@ Use [the combined PowerPoint](Applied2_Combined_Presentation.pptx) and [its PDF 
 
 | Slides | Content |
 | --- | --- |
-| 1 | Cover with both students' verified details |
-| 2–6 | Task 1: transfer/rotation diagrams, CUDA launch and features, expected speedup and GDS |
-| 7–10 | Task 2: environment, governance/fairness, access and responsible-use framework |
-| 11 | Conclusions, limitations and next measurements |
-| 12–41 | Full detailed answers, implementations, calculations and research comparisons; not presented |
-| 42–45 | Numbered website references |
-| 46 | One brief AI model/tool and use declaration |
+| 1 | Cover |
+| 2–6 | Task 1: transfers, rotation, CUDA execution/performance and GDS |
+| 7–10 | Task 2: environment, governance/fairness, access and responsible framework |
+| 11 | Conclusion and next measurements |
+| 12–43 | Supporting examples, calculations and research comparisons |
+| 44–47 | Numbered website references |
+| 48 | One brief AI-use declaration |
 
-Present slides 1–11, including the cover and conclusion. The target is 6:20, with a 40-second buffer within seven minutes. [Timing and optional narration](Presentation_Timing_and_Notes.md) are also embedded in the PowerPoint speaker notes. Detailed content has been retained in the appendix, followed by website references and one AI-use declaration. Timing targets support the seven-minute limit; actual delivery duration needs rehearsal. No Q&A slide was added.
+Present slides 1–11, including the cover and conclusion. The target is 6:40, with a 20-second buffer within seven minutes. [Timing and optional narration](Presentation_Timing_and_Notes.md) are also embedded in the PowerPoint speaker notes. Detailed content has been retained in the appendix, followed by website references and one AI-use declaration. Timing targets support the seven-minute limit; actual delivery duration needs rehearsal. No Q&A slide was added.
 
 ## Design and evidence
 
@@ -28,10 +28,13 @@ The content follows [teaching-team guidance](TEACHING_TEAM_GUIDANCE.md), the [sp
 
 ## Supporting files
 
-The current [conversational presentation script](Applied2_Presentation_Script.md) and [printable PDF](Applied2_Presentation_Script.pdf) follow slides 1–11. They include a suggested Savin/Shamle split, slide timings and brief diagram cues; the 755 spoken words fit the 6:20 planning target at the stated pace.
+The current [conversational presentation script](Applied2_Presentation_Script.md) and [printable PDF](Applied2_Presentation_Script.pdf) follow slides 1–11. They include a suggested Savin/Shamle split, slide timings and brief diagram cues; the 793 spoken words support the 6:40 planning target at the stated pace. Actual delivery needs rehearsal.
 
-The task folders contain synchronized standalone decks, optional slide companions and source examples/chart data. The presentation contains one brief AI-use slide, as requested. Historical prompt sources remain in tools/ai_prompt_record.json and tools/deck_content.mjs; prompt-by-prompt slides are excluded from the presentation and its companions.
+The task folders contain earlier standalone decks/companions and source examples/chart data. The revised combined presentation in submission/ is the current assessment deck. The presentation contains one brief AI-use slide, as requested. Historical prompt sources remain in tools/ai_prompt_record.json and tools/deck_content.mjs; prompt-by-prompt slides are excluded from the presentation and its companions.
 
 The earlier six-minute spoken script belongs to the previous deck and is now under archive/. Its slide cues are obsolete. It is not part of the current submission package.
 
 The original review/action plan is retained as a historical audit with a revision-status section. Build sources and content checks are under tools/; private renders and validation receipts are ignored by Git. Moodle requires actual files rather than repository links.
+
+
+The 9 October spoken-coverage review places core explanations on main slides and explicitly mentions each in the script. See [coverage mapping](HD_SPOKEN_COVERAGE.md). Original detailed code, calculations, charts and research comparisons are retained in the appendix.

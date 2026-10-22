@@ -1,0 +1,162 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 7B: 
+Parallel Application Performance Modelling 
+–
+Part B 
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information Technology
+© 2024 Monash University
+
+=== PAGE 2 ===
+2
+§Large clusters with significant latency in the fabric§Large clouds with significant latency in the fabric§Large grids with significant latency in network§“Fog computing”systems§“Edge computing” systems§General definition? Any parallel system where the interconnect between CPUs/cores introduces non-negligible latency in messaging between CPUs§Why does it matter? Interconnect latency may exceed time expended on computations with large impacts on aggregate system performance
+Distributed Parallel Systems
+
+=== PAGE 3 ===
+Amdahl Revisited
+
+=== PAGE 4 ===
+4
+§Amdahl’s Law was originally defined for multiple CPU systems, during that period mainframes with CPUs sharing a bus and memory§Clusters / clouds which involve local interconnection of hosts, represent in architectural terms “distributed multiprocessors”.§A cluster / cloud is subject to the same fundamental performance constraints imposed by Amdahl’s Law for bussed multiprocessors.§In a distributed environment, data dependencies result in fabric or network communications which increase the total time required to complete a serial component. Latency in messaging adds to delays.§Fabric (network) performance is therefore critical to cluster / cloud design.
+Revision: Clusters / Clouds == Distributed Multiprocessors (MIMD)
+
+=== PAGE 5 ===
+5
+Revision: Cluster Fabric Topology Example –Fat Tree Model
+AggregationLayer Routers
+EdgeLayer Routers
+Server Pod 0 Server Pod 1 Server Pod 2 Server Pod 3
+Core Layer Routers
+Note core layer routers will be higher performing compared to aggregation and edge layer switches
+
+=== PAGE 6 ===
+6
+§Consider Amdahl’s Law:                              𝑆=!"#$%   where s	+	p	=	1
+§The variable p reflects the fraction of time processing data with no dependencies, which can be parallelised. p is “parallel” time.§The variable s reflects the fraction of time processing data with dependencies, which cannot be parallelised. s is “serial” time.
+Revision: Amdahl’s Law in Distributed Parallel Processing
+
+=== PAGE 7 ===
+7
+§In a distributed environment, the fraction of time consumed performing “serial”  computation comprises the time consumed by the CPUs doing the work, and the time consumed communicating, when hosts working on data with dependencies must transmit the results of communitations.§Therefore:     	𝑠=𝑠!"#$+	𝑠%&'()!§Where sfabric is the time for these results to be encapsulated in a message, sent across the fabric, and extracted for use at the destination.
+Revision: Amdahl’s Law in Distributed Parallel Processing
+
+=== PAGE 8 ===
+8
+§This results in Amdahl’s Law for Distributed Parallel Processing:		𝑆=!"&'($	#	"*+,-.&	#	$%    where scomp	+	sfabric	+	p	=	1
+§What is important is that the fabric (network) can impact speedup performance no differently than the fraction of time expended on computations with dependencies.§If the fabric provides extremely high capacity and thus short latency to transmit, then scomp	≫	sfabric		and the system behaves no differently from a conventional “bussed” multiprocessor such as a multicore CPU chip
+Revision: Amdahl’s Law in Distributed Parallel Processing
+
+=== PAGE 9 ===
+9
+§The time it takes a message to travel across a fabric depends on a number of factors:A.Processing delays on the middleware libraries and protocols stack at the transmitting end;B.Cumulative queueing delays in routers along the transmission route through the fabric;C.Propagation delay through cables in the fabric, proportional to total cable length;D.Processing delays on the middleware libraries and protocols stack at the receiving end.§Only C) is constant in time, the remainder being time variant, and depend on fabric congestion.
+Revision: The Impact of Fabric (Network) Performance
+
+=== PAGE 10 ===
+10
+§Modelling the performance of an application intended to run on a conventional multi-processor architecture is often difficult.§The starting point is model such as Amdahl’s Law and its parametric requirement for decomposition of the computing load into “parallel” components without data dependencies, and “serial” components with dependencies.§This typically requires careful study of the algorithm used in the computation, as well as the implementation of the algorithm, to identify what data dependencies might exist.
+Modelling Distributed System Performance (1)
+
+=== PAGE 11 ===
+11
+§Some application environments or compilers can parallelise automatically, however this function is usually built around a particular multiprocessor architecture (more later).§More than often this facility will not be available and it will be necessary to analyse the code and break it into modules or functions which are suitable for parallel execution, and vice versa.§Code with data dependencies behaves as the serial component in the Amdahl model.
+Modelling Distributed System Performance (2)
+
+=== PAGE 12 ===
+12
+§In a clustered or cloud environment, the serial component comprises both computation time, and time to transmit results across the local fabric, a dedicated high speed network, or the Internet.§The computational component of that time can be easily benchmarked for the processor and compiler intended to be used. Alternately, it could be treated analytically.§For a given processor architecture and compiler, clock speed, etc, the time for such computations is often (nearly) constant.§Approximating scomp	≈	const		is often acceptable.
+Modelling Distributed System Performance (3)
+
+=== PAGE 13 ===
+13
+§In clusters or grids with dedicated high performance networks, where  scomp	≫	sfabric, the time consumed in transmission of results between processors can safely be approximated by using a constant value, typically measured by benchmarking.§This approach breaks down under one or both of these conditions:a)scomp	≈	sfabric	b)scomp	≪	sfabric	
+Modelling Distributed System Performance - Network
+
+=== PAGE 14 ===
+Impacts of Fabric Behaviour Under Load
+
+=== PAGE 15 ===
+15
+§The problem is usually complicated by the variability of transmission time over the fabric / network, i.e. sfabric	(t).§This variability depends on the instantaneous congestion of the fabric and the size of the data being transmitted.§Instantaneous fabric congestion can be modelled using queueing theory §Queueing theory is also one of the most common techniques used for modelling performance in large multiuser machines.§Queueing models are therefore important to know.
+Modelling Parallel System Performance - Fabric
+
+=== PAGE 16 ===
+16
+§Variability arising from variable data volumes can be readily measured or modelled, given knowledge of the program’s behaviour.§Importantly, network performance will impact behaviour, and again queueing theory applies.§What Amdahl’s Law shows is that distributed parallel application performance degrades the most when:a)There is a lot of data dependency in the computation.b)There are a large number of CPUs/cores required for the calculation.c)The fabric is slow or highly variable in throughput performance.
+Modelling Parallel System Performance - Fabric
+
+=== PAGE 17 ===
+17
+§A detailed treatment of queueing theory exceeds the scope of this subject [Non-examinable tutorial notes have been provided to aid in understanding how queues behave].§In terms of understanding distributed system performance degradations, we are most interested in what happens in a queueing system when the load (i.e. amount of traffic) approaches the limits of the queue’s capacity to handle.§This is termed “saturation” and results in a non-linear and rapid increase in delays experienced waiting in the queue. 
+Queueing Models for Fabrics and Networks
+
+=== PAGE 18 ===
+18
+The Fabric / Network Saturation ProblemSaturated Fabric
+Lightly Loaded FabricIncreasing Load on Fabric è
+Increasing Delay Through Network è
+
+=== PAGE 19 ===
+19
+The Fabric / Network Saturation Problem
+Saturated FabricLightly Loaded Fabric
+Increasing Load on Fabric èIncreasing Delay Through Fabric è
+ 0
+ 100
+ 200
+ 300
+ 400
+ 500
+ 600
+ 700
+ 800
+ 900
+ 1000
+ 0  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+Speedup [-]
+M/M/1 Queue Utilisation in Interprocess Channel [-]
+Amdahl's Law in Distributed System with Serial M/M/1 Queueing Delay
+Number of CPUs=10 Sc=0.003Number of CPUs=100 Sc=0.003Number of CPUs=1,000 Sc=0.003Number of CPUs=10,000 Sc=0.003Number of CPUs=100,000 Sc=0.003Number of CPUs=1,000,000 Sc=0.003
+
+=== PAGE 20 ===
+20
+§If the network is poorly matched to the distributed parallel application, third party background traffic may drive it into saturation, causing unpredictable traffic delays and thus unpredictable degradation in application performance.§If the distributed parallel application produces large surges in traffic load across the network, it may drive the network into saturation, resulting in unwanted but predictable degradation in distributed application performance.§How can a distributed application designer avoid these problems?
+Queueing Models for Fabrics / Networks
+
+=== PAGE 21 ===
+21
+§The application designer must first understand what traffic the application produces, and to what extent transmission delays will impair application performance.§If the application is highly sensitive to delays, then measures will be needed to control the delay through the network.§Two basic strategies are possible:a)Install a fabric or network with very much higher throughput.b)Use bandwidth reservation techniques to ensure that the distributed application does not have to compete for network bandwidth / capacity.
+Matching Applications and Fabrics / Networks
+
+=== PAGE 22 ===
+22
+§Guaranteed to improve performance every time.§Simple to understand and simple to explain.§Does not require particular manipulation of the distributed application software or toolset.§Preferred strategy where possible.  What is wrong with this strategy?a)Increasingly expensive to implement if fabric or network spans buildings, campuses, sites, cities, states or nations.b)The cost with multiple sites is driven by the cost of installing or leasing high speed optical fibre cables; the cost is directly proportional to the length and number of links.
+Higher Fabric / Network Capacity Approach 
+
+=== PAGE 23 ===
+23
+§Heavy traffic loads in cloud systems, especially involving VM to VM traffic, often require bandwidth reservation inside a cloud to guarantee Quality of Service for specific users.§Bandwidth reservation can be applied for traffic between the cloud and external user platforms§Bandwidth reservation can be applied for traffic between VMs inside the cloud§The statistical properties of bandwidth demand can be a big challenge in determining required bandwidth.§VM to VM traffic can be “self-similar” (chaotic) and exhibit very high peak bandwidth demands.
+Bandwidth Reservation in Clouds (1)
+
+=== PAGE 24 ===
+24
+§Heavy traffic loads are frequently associated with application that must perform bulk data transfers between VMs, especially multimedia apps§VM migration between nodes in a cloud may also produce large surges in bandwidth required§Policies for bandwidth reservation can broadly be divided into:a)Fixed bandwidth reservation policiesb)Elastic bandwidth reservation policies§In commercial clouds bandwidth reservation incurs addition costs to users – quality of service must be purchased
+Bandwidth Reservation in Clouds (2)
+
+=== PAGE 25 ===
+Summary
+
+=== PAGE 26 ===
+26
+§Amdahl’s Law for Distributed Parallel Systems§Impact of fabric and network performance problems§Causes of fabric and network performance problems§Strategies for dealing with fabric and network performance problems in grids and clouds§Non-examinable queuing tutorial
+Summary
+
+=== PAGE 27 ===
+Reading Materials
+
+=== PAGE 28 ===
+28
+§C. Kopp, Primer on Network Congestion, Monash Lens 2020: https://lens.monash.edu/@carlo-kopp/2020/04/03/1379973/a-road-more-travelled-network-congestion-a-consequence-of-working-from-home §Rashid J., Analysis and Provision of QoS for Distributed Grid Applications URL: http://www.wesc.ac.uk/resources/publications/pdf/final-jogc.pdf §L. Kleinrock, Queuing Systems, Volumes I & II. New York: Wiley, 1976§Lazowska E.D. et al, Quantitative System Performance, http://www.cs.washington.edu/homes/lazowska/qsp/  §Thomas G. Robertazzi, Computer Networks and Systems, Springer-Verlag, 1990§Myron Hlynka's Queueing Theory Page URL:  http://www2.uwindsor.ca/~hlynka/queue.html  §Myron Hlynka's Queueing Definitions URL: http://www2.uwindsor.ca/~hlynka/qdef.html  
+Reading and References

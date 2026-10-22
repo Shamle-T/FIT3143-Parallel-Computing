@@ -1,0 +1,69 @@
+{"kind":"deck","id":"pr/rmns48","name":"Deck"}
+{"kind":"layout","layoutId":"8750c761-9848-447f-8f25-635b23e4bf0b","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"859f1f61-38ce-4591-ab22-d57a74338f97","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/p5vcyi","slide":1,"title":"FIT3143 Week 8 Lab 2","textShapes":4}
+{"kind":"textbox","id":"sh/ov21cjal","slide":1,"text":"FIT3143 Week 8 Lab 2","textPreview":"FIT3143 Week 8 Lab 2","textChars":20,"textLines":1,"bbox":[70,120,1140,72]}
+{"kind":"textbox","id":"sh/nutk3e90","slide":1,"text":"Open MPI and Hybrid OpenMP Prime Search","textPreview":"Open MPI and Hybrid OpenMP Prime Search","textChars":39,"textLines":1,"bbox":[70,210,1080,45]}
+{"kind":"textbox","id":"sh/mtkja9sf","slide":1,"text":"Savin Vindiv De Alwis (35221631)\nWillwara Arachchilage Shamle Imal Thilaksiri (35512075)","textPreview":"Savin Vindiv De Alwis (35221631) | Willwara Arachchilage Shamle Imal Thilaksiri (35512075)","textChars":88,"textLines":2,"bbox":[70,470,900,68]}
+{"kind":"textbox","id":"sh/x0v29or2","slide":1,"text":"7-minute presentation","textPreview":"7-minute presentation","textChars":21,"textLines":1,"bbox":[70,570,500,28]}
+{"kind":"notes","id":"nt/p5vcyi","slide":1,"text":""}
+{"kind":"slide","id":"sl/44lr1e","slide":2,"title":"Experimental environment and correctness","textShapes":5}
+{"kind":"shape","id":"sh/qxczqdwr","slide":2,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/dknil8v2","slide":2,"text":"Experimental environment and correctness","textPreview":"Experimental environment and correctness","textChars":40,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"textbox","id":"sh/szehs3ex","slide":2,"text":"Single-node local Open MPI environment","textPreview":"Single-node local Open MPI environment","textChars":38,"textLines":1,"bbox":[70,130,500,35]}
+{"kind":"textbox","id":"sh/3ul0fyx0","slide":2,"text":"• WSL2 Ubuntu, Open MPI 4.1.6\n• Intel Core i7-13700H: 14 physical cores, 20 logical CPUs\n• n = 60,000,000; 4 MPI ranks × 2 OpenMP threads\n• Median of three end-to-end runs for scaling results\n• End-to-end time includes communication, root merge, and file writing","textPreview":"• WSL2 Ubuntu, Open MPI 4.1.6 | • Intel Core i7-13700H: 14 physical cores, 20 logical CPUs | • n = 60,000,000; 4 MPI ranks × 2 OpenMP thr...","textChars":262,"textLines":5,"bbox":[85,190,560,240]}
+{"kind":"textbox","id":"sh/itczmtwf","slide":2,"text":"Independent output validation","textPreview":"Independent output validation","textChars":29,"textLines":1,"bbox":[700,130,450,35]}
+{"kind":"textbox","id":"sh/5w3ih8f6","slide":2,"text":"Both Task 1 and Task 2 produced 3,562,115 primes.\nA separate sieve compared every output value against all expected primes below n.\n\nResult: sorted, unique, complete, and prime-only output.","textPreview":"Both Task 1 and Task 2 produced 3,562,115 primes. | A separate sieve compared every output value against all expected primes below n. |  ...","textChars":189,"textLines":4,"bbox":[715,190,460,235]}
+{"kind":"notes","id":"nt/44lr1e","slide":2,"text":""}
+{"kind":"slide","id":"sl/28sxzp","slide":3,"title":"Task 1 workload distribution","textShapes":6}
+{"kind":"shape","id":"sh/jex8rulk","slide":3,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/kf6pkz2p","slide":3,"text":"Task 1 workload distribution","textPreview":"Task 1 workload distribution","textChars":28,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"textbox","id":"sh/5gfqtk3a","slide":3,"text":"Odd candidates only. Rank r owns indices r, r+p, r+2p, …","textPreview":"Odd candidates only. Rank r owns indices r, r+p, r+2p, …","textChars":56,"textLines":1,"bbox":[70,120,1130,42]}
+{"kind":"textbox","id":"sh/ap47e5kn","slide":3,"text":"Cyclic ownership balances candidate magnitude as well as count. Each rank receives a mix of cheap composites and expensive large prime candidates. Rank 0 merges sorted rank lists in O(m log p) while writing the output.","textPreview":"Cyclic ownership balances candidate magnitude as well as count. Each rank receives a mix of cheap composites and expensive large prime ca...","textChars":218,"textLines":1,"bbox":[70,180,1130,90]}
+{"kind":"textbox","id":"sh/vqd8nal8","slide":3,"text":"Measured 4-rank balance at n = 60M","textPreview":"Measured 4-rank balance at n = 60M","textChars":34,"textLines":1,"bbox":[70,300,530,32]}
+{"kind":"textbox","id":"sh/wrmpgf2t","slide":3,"text":"Rank 0: 6.418 s   Rank 1: 6.393 s\nRank 2: 6.385 s   Rank 3: 6.497 s\nCandidate-count range: 7,499,999–7,500,000\nMax/min computation-time ratio: 1.017","textPreview":"Rank 0: 6.418 s   Rank 1: 6.393 s | Rank 2: 6.385 s   Rank 3: 6.497 s | Candidate-count range: 7,499,999–7,500,000 | Max/min computation-...","textChars":148,"textLines":4,"bbox":[85,350,560,150]}
+{"kind":"textbox","id":"sh/xsvqpk3e","slide":3,"text":"Conclusion: cyclic partitioning is balanced for the non-uniform trial-division kernel.","textPreview":"Conclusion: cyclic partitioning is balanced for the non-uniform trial-division kernel.","textChars":86,"textLines":1,"bbox":[70,565,1120,40]}
+{"kind":"notes","id":"nt/28sxzp","slide":3,"text":""}
+{"kind":"slide","id":"sl/4k4gv2","slide":4,"title":"Task 1 runtime as n increases","textShapes":1}
+{"kind":"shape","id":"sh/mxczupg7","slide":4,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/903y5kfi","slide":4,"text":"Task 1 runtime as n increases","textPreview":"Task 1 runtime as n increases","textChars":29,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"image","id":"im/58fy1wb6","slide":4,"name":"","alt":"01_runtime_n.png","bbox":[110,130,1060,500]}
+{"kind":"notes","id":"nt/4k4gv2","slide":4,"text":"Source: results/n_scaling.csv and results/openmp_n_scaling.csv."}
+{"kind":"slide","id":"sl/0tasx6","slide":5,"title":"Task 1 empirical speedup as n increases","textShapes":1}
+{"kind":"shape","id":"sh/8re5w32l","slide":5,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/7q543ylg","slide":5,"text":"Task 1 empirical speedup as n increases","textPreview":"Task 1 empirical speedup as n increases","textChars":39,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"image","id":"im/zmdkfyhg","slide":5,"name":"","alt":"02_speedup_n.png","bbox":[110,130,1060,500]}
+{"kind":"notes","id":"nt/0tasx6","slide":5,"text":"Source: results/n_scaling.csv and results/openmp_n_scaling.csv."}
+{"kind":"slide","id":"sl/lt19sg","slide":6,"title":"Task 1 process scaling and Amdahl analysis","textShapes":2}
+{"kind":"shape","id":"sh/m9o3md8f","slide":6,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/9wf2xs76","slide":6,"text":"Task 1 process scaling and Amdahl analysis","textPreview":"Task 1 process scaling and Amdahl analysis","textChars":42,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"textbox","id":"sh/axo3qd8b","slide":6,"text":"At 16 MPI ranks, empirical speedup is 6.66×. The Amdahl curve is higher because it does not model increasing collective latency or root-only file output.","textPreview":"At 16 MPI ranks, empirical speedup is 6.66×. The Amdahl curve is higher because it does not model increasing collective latency or root-o...","textChars":153,"textLines":1,"bbox":[70,585,1130,55]}
+{"kind":"image","id":"im/dczalcba","slide":6,"name":"","alt":"06_task1_amdahl.png","bbox":[65,120,560,430]}
+{"kind":"image","id":"im/i5or6xcn","slide":6,"name":"","alt":"03_task1_process.png","bbox":[655,120,560,430]}
+{"kind":"notes","id":"nt/lt19sg","slide":6,"text":"Source: results/task1_process_scaling.csv."}
+{"kind":"slide","id":"sl/vk3ujr","slide":7,"title":"Task 2 hybrid decomposition","textShapes":7}
+{"kind":"shape","id":"sh/3mh4zyh8","slide":7,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/onql8jit","slide":7,"text":"Task 2 hybrid decomposition","textPreview":"Task 2 hybrid decomposition","textChars":27,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"textbox","id":"sh/pojm1oze","slide":7,"text":"MPI distributes cyclic candidate sets across processes. Each process applies OpenMP dynamic scheduling to its local candidates.","textPreview":"MPI distributes cyclic candidate sets across processes. Each process applies OpenMP dynamic scheduling to its local candidates.","textChars":127,"textLines":1,"bbox":[70,120,1130,60]}
+{"kind":"textbox","id":"sh/qps3at0j","slide":7,"text":"Measured 4-rank × 2-thread balance at n = 60M","textPreview":"Measured 4-rank × 2-thread balance at n = 60M","textChars":45,"textLines":1,"bbox":[70,225,540,34]}
+{"kind":"textbox","id":"sh/ba143yh4","slide":7,"text":"Rank 0: 4.264 s   Rank 1: 4.434 s\nRank 2: 4.493 s   Rank 3: 4.431 s\nCandidate-count range: 7,499,999–7,500,000\nMax/min computation-time ratio: 1.054","textPreview":"Rank 0: 4.264 s   Rank 1: 4.434 s | Rank 2: 4.493 s   Rank 3: 4.431 s | Candidate-count range: 7,499,999–7,500,000 | Max/min computation-...","textChars":148,"textLines":4,"bbox":[85,275,560,150]}
+{"kind":"textbox","id":"sh/cbalw3ip","slide":7,"text":"Dynamic OpenMP scheduling smooths residual cost variation after MPI’s cyclic partitioning.","textPreview":"Dynamic OpenMP scheduling smooths residual cost variation after MPI’s cyclic partitioning.","textChars":90,"textLines":1,"bbox":[70,485,560,70]}
+{"kind":"textbox","id":"sh/dcjm58za","slide":7,"text":"Task 2 result","textPreview":"Task 2 result","textChars":13,"textLines":1,"bbox":[720,225,380,34]}
+{"kind":"textbox","id":"sh/ydsnyd0v","slide":7,"text":"4 ranks × 2 threads\n5.054 s representative run\n6.97 s Task 1 representative run\n\nHybrid reduces elapsed time while retaining globally ordered output.","textPreview":"4 ranks × 2 threads | 5.054 s representative run | 6.97 s Task 1 representative run |  | Hybrid reduces elapsed time while retaining glob...","textChars":149,"textLines":5,"bbox":[735,275,420,180]}
+{"kind":"notes","id":"nt/vk3ujr","slide":7,"text":""}
+{"kind":"slide","id":"sl/1vo9pw","slide":8,"title":"Hybrid scalability","textShapes":2}
+{"kind":"shape","id":"sh/cry5o3m1","slide":8,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/bq5ofylg","slide":8,"text":"Hybrid scalability","textPreview":"Hybrid scalability","textChars":18,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"textbox","id":"sh/one5kjmp","slide":8,"text":"Four ranks × four threads reached 6.63× speedup. Larger thread counts oversubscribe the available cores and lower efficiency.","textPreview":"Four ranks × four threads reached 6.63× speedup. Larger thread counts oversubscribe the available cores and lower efficiency.","textChars":125,"textLines":1,"bbox":[70,570,1130,48]}
+{"kind":"image","id":"im/na1g3ulw","slide":8,"name":"","alt":"04_hybrid_threads.png","bbox":[60,120,560,400]}
+{"kind":"image","id":"im/wzuh0j2d","slide":8,"name":"","alt":"05_hybrid_openmp.png","bbox":[660,120,560,400]}
+{"kind":"notes","id":"nt/1vo9pw","slide":8,"text":""}
+{"kind":"slide","id":"sl/xbcc5o","slide":9,"title":"Hybrid Amdahl analysis, limitations, and Q&A","textShapes":5}
+{"kind":"shape","id":"sh/e10n6xcn","slide":9,"bbox":[0,0,1280,18]}
+{"kind":"textbox","id":"sh/14rmhsve","slide":9,"text":"Hybrid Amdahl analysis, limitations, and Q&A","textPreview":"Hybrid Amdahl analysis, limitations, and Q&A","textChars":44,"textLines":1,"bbox":[58,38,1160,50]}
+{"kind":"textbox","id":"sh/ry94bidc","slide":9,"text":"Why empirical speedup is lower","textPreview":"Why empirical speedup is lower","textChars":30,"textLines":1,"bbox":[700,120,430,30]}
+{"kind":"textbox","id":"sh/qxgn2dcr","slide":9,"text":"• MPI collective latency rises with rank count\n• Rank 0 still merges and writes the result\n• Memory bandwidth and scheduling contend at high worker counts\n• Amdahl assumes an ideal fixed serial fraction","textPreview":"• MPI collective latency rises with rank count | • Rank 0 still merges and writes the result | • Memory bandwidth and scheduling contend ...","textChars":202,"textLines":4,"bbox":[715,165,450,160]}
+{"kind":"textbox","id":"sh/d0rmdsvi","slide":9,"text":"Q&A","textPreview":"Q&A","textChars":3,"textLines":1,"bbox":[700,370,180,30]}
+{"kind":"textbox","id":"sh/szi54nux","slide":9,"text":"Open MPI enables distributed-memory execution across nodes, but this fine-grained kernel pays communication and root-aggregation overhead. Hybrid OpenMP improves local compute throughput; oversubscription reduces efficiency.","textPreview":"Open MPI enables distributed-memory execution across nodes, but this fine-grained kernel pays communication and root-aggregation overhead...","textChars":224,"textLines":1,"bbox":[715,415,450,125]}
+{"kind":"image","id":"im/1kzad436","slide":9,"name":"","alt":"07_hybrid_amdahl.png","bbox":[65,105,580,410]}
+{"kind":"notes","id":"nt/xbcc5o","slide":9,"text":"Source: results/hybrid_scaling.csv."}

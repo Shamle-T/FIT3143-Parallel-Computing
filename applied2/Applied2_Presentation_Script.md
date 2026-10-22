@@ -1,6 +1,6 @@
 # Applied 2: conversational presentation script
 
-755 spoken words. Target: 6:20, with 40 seconds available before seven minutes. At an assumed 130 words per minute, speech takes about 5.8 minutes, leaving time for pauses and slide changes. This is a planning estimate, not a measured rehearsal.
+793 spoken words. Target: 6:40, with 20 seconds available before seven minutes. At an assumed 130 words per minute, speech takes about 6.1 minutes, leaving time for pauses and slide changes. This is a planning estimate, not a measured rehearsal.
 
 Suggested split: Savin presents slides 1–6; Shamle presents slides 7–11. Stop at the conclusion; the appendix is not part of the script.
 
@@ -8,17 +8,17 @@ Italic cues are directions, not spoken lines. Use the wording naturally rather t
 
 | Slide | Speaker | Target | Finish by |
 | --- | --- | --- | --- |
-| 1 | Savin | 10 s | 0:10 |
-| 2 | Savin | 30 s | 0:40 |
-| 3 | Savin | 35 s | 1:15 |
-| 4 | Savin | 40 s | 1:55 |
-| 5 | Savin | 30 s | 2:25 |
-| 6 | Savin | 30 s | 2:55 |
-| 7 | Shamle | 55 s | 3:50 |
-| 8 | Shamle | 55 s | 4:45 |
-| 9 | Shamle | 35 s | 5:20 |
-| 10 | Shamle | 40 s | 6:00 |
-| 11 | Shamle | 20 s | 6:20 |
+| 1 | Savin | 8 s | 0:08 |
+| 2 | Savin | 25 s | 0:33 |
+| 3 | Savin | 30 s | 1:03 |
+| 4 | Savin | 42 s | 1:45 |
+| 5 | Savin | 45 s | 2:30 |
+| 6 | Savin | 30 s | 3:00 |
+| 7 | Shamle | 60 s | 4:00 |
+| 8 | Shamle | 60 s | 5:00 |
+| 9 | Shamle | 35 s | 5:35 |
+| 10 | Shamle | 45 s | 6:20 |
+| 11 | Shamle | 20 s | 6:40 |
 
 ## Student details
 
@@ -28,88 +28,88 @@ Shamle Thilaksiri (35512075) — wthi0003@student.monash.edu
 
 ## Slide 1: Introduction
 
-**Savin · 10 seconds · finish by 0:10**
+**Savin · 8 seconds · finish by 0:08**
 
 *[Start on the cover.]*
 
-We’re Savin and Shamle. We’ll cover GPU image rotation, then the main challenges of scaling HPC for AI.
+We’re Savin and Shamle. We’ll cover GPU rotation and responsible HPC scaling.
 
 ## Slide 2: Moving the image to the GPU
 
-**Savin · 30 seconds · finish by 0:40**
+**Savin · 25 seconds · finish by 0:33**
 
 *[Follow the arrows from storage to the final host buffer.]*
 
-First, the CPU loads and decodes the image into host RAM and allocates GPU buffers. DMA then transfers the pixels over PCI Express. The GPU rotates them, and we copy the finished result back for saving. Pinned RAM helps transfers; pageable RAM may need staging. GPU memory bandwidth and transfer bandwidth are different, so both affect performance.
+The CPU decodes the image into host RAM and allocates GPU buffers. DMA copies the pixels over PCI Express; the GPU rotates them, and completed output returns for saving. Pinned RAM helps DMA; pageable RAM may need staging. Device bandwidth and transfer bandwidth are different. We wait before saving or reusing buffers.
 
 ## Slide 3: How the rotation works
 
-**Savin · 35 seconds · finish by 1:15**
+**Savin · 30 seconds · finish by 1:03**
 
 *[Point to the inverse-mapping equations, then the output-to-input diagram. Do not read the equations aloud.]*
 
-For rotation, each thread handles one output pixel. It works backwards using this inverse rotation to find the nearest input pixel, then copies its RGB values. Outside the image, we write black. Each thread writes somewhere different, so there’s no need for atomics or a barrier. With our y-down coordinates, positive angles are counterclockwise. The trade-off is possible cropping and jagged edges from nearest-neighbour sampling.
+Each thread owns one output pixel. We rotate backwards about the image centre, with the angle in radians, to find the nearest source pixel and copy its RGB values. Outside the image, we write black. Independent writes need no atomics or barrier. Positive angles are counterclockwise with our y-down coordinates. Gathering avoids holes, but a fixed canvas can crop corners and nearest-neighbour sampling can alias.
 
 ## Slide 4: CUDA threads, blocks and grids
 
-**Savin · 40 seconds · finish by 1:55**
+**Savin · 42 seconds · finish by 1:45**
 
-*[Point to the launch, the hierarchy and the short brightness example. Do not read every code line.]*
+*[Point to the grid/block launch, then the scheduling diagram. Mention the appendix examples without opening them.]*
 
-The CPU launches a grid of blocks, and each block contains threads. Here, sixteen by sixteen gives two hundred and fifty-six threads per block, or eight warps. For the image size shown, that’s sixty-four by sixty-four blocks. Each thread finds its pixel and checks the boundary. Streaming multiprocessors, or SMs, schedule resident warps using SIMT, with thirty-two threads per warp. This helps hide delays, but registers and branching can limit it. The second snippet adds brightness and clamps the result.
+The CPU launches a kernel with grid and block settings. Sixteen-by-sixteen blocks contain two hundred and fifty-six threads, or eight warps. This sixty-four-by-sixty-four grid describes about a million threads. They don’t all run at once: finite streaming multiprocessors schedule blocks in waves. SIMT means a warp follows common instructions, with thirty-two threads per warp. Threads compute pixel indices and guard image edges; other sizes need ceiling division. Launches are asynchronous, so check errors and completion. Full rotation, brightness, block-shape and stream examples are in the appendix.
 
 ## Slide 5: Expected speedup
 
-**Savin · 30 seconds · finish by 2:25**
+**Savin · 45 seconds · finish by 2:30**
 
 *[Emphasize the full workload, rather than only the kernel.]*
 
-The GPU can process lots of pixels at once, but memory access matters. Coalesced writes help; rotated reads can be less efficient. We’d compare the same rotation against single-threaded and multithreaded CPUs, counting setup, transfers and completed GPU work. Streams can overlap work when hardware and pinned buffers allow it. Serial work still limits speedup. We haven’t measured a speedup yet.
+Many GPU execution units and high memory bandwidth process independent pixels together. Coalescing combines nearby addresses into fewer transactions; rotated reads can limit bandwidth. Thirty-two-by-eight blocks keep a warp on one row, so we’d profile them against sixteen-by-sixteen. Resident warps hide latency, but registers and divergent branches limit execution. Large images amortize setup; keeping pixels on the GPU avoids repeat copies. Streams overlap independent images with separate pinned buffers and supporting hardware, but need more memory. Compare identical rotation against serial and multithreaded CPUs, timing setup, transfers and completed work. Serial work bounds speedup; no measured result is claimed.
 
 ## Slide 6: Where GPUDirect Storage helps
 
-**Savin · 30 seconds · finish by 2:55**
+**Savin · 30 seconds · finish by 3:00**
 
 *[Compare the two storage paths. Hand over after the final sentence.]*
 
-GPUDirect Storage can skip host staging and transfer storage data straight into GPU memory. The CPU still controls I/O through cuFile. It doesn’t decode images or speed up the rotation kernel. Our CPU-decoded pipeline still needs host RAM. We’d consider GDS for supported, storage-bound batches with GPU-ready data, then measure the benefit. Fallback may still use host staging. Shamle will cover responsible HPC scaling.
+GPUDirect Storage uses storage-side DMA to bypass host staging; the CPU still issues cuFile requests. It doesn’t decode images or accelerate the rotation kernel. CPU-decoded or already-in-RAM pixels gain little from a storage bypass. GPU-ready, storage-bound batches may benefit, but GPU, filesystem, drivers and topology must support the direct path. Fallback may still stage through RAM. We’d measure completed batch time and CPU overhead. Shamle will cover responsible scaling.
 
 ## Slide 7: Energy and environmental costs
 
-**Shamle · 55 seconds · finish by 3:50**
+**Shamle · 60 seconds · finish by 4:00**
 
-*[Point to 485 and 950 on the first chart. Briefly indicate the overlapping categories on the second.]*
+*[Point to the sector trend, then the job-level accounting. Mention the supporting charts and calculation in the appendix.]*
 
-Adding GPUs gives us more capacity, but it also adds communication and resource costs. Finishing faster doesn’t always mean using less energy. The IEA’s 2026 report estimates data-centre electricity use at four hundred and eighty-five terawatt-hours in 2025, and projects nine hundred and fifty for 2030. That covers the whole sector, not just AI training. The growth categories on the right overlap, so we can’t add them. Green AI focuses on efficiency per useful result, while water research shows that location and timing matter too. We’d track whole-job energy, carbon and cooling impacts, including failed runs and tuning. Manufacturing the hardware also has an environmental cost.
+In data-parallel training, GPUs process different batches, and gradient all-reduce synchronizes updates. Communication and slow workers limit scaling. The IEA projects near-doubling of data-centre electricity by 2030, but that’s whole-sector context, not one model’s footprint. For a job, energy depends on power over time; carbon also depends on local carbon intensity. Faster can still use more energy. Count CPUs, networking, storage, cooling, tuning and failed runs, plus manufacturing impacts. Green AI measures efficiency per useful result; Li’s water research adds local resource pressure. Lower carbon alone can miss water costs. The appendix has the detailed calculation, growth charts and research comparison.
 
 ## Slide 8: Security, governance and fairness
 
-**Shamle · 55 seconds · finish by 4:45**
+**Shamle · 60 seconds · finish by 5:00**
 
 *[Explain the security side, then move to the fairness side.]*
 
-Distributed training means gradients and checkpoints move between workers, so there are more things to protect. Zhu’s study shows that exposed gradients can sometimes reveal training inputs. That doesn’t mean every system leaks. We’d use restricted access, isolation and protected transfers and storage, with clear rules for data permissions, copies and deletion. Dual-use risks also need an accountable owner. Fairness is a separate issue. Gallegos’s survey shows why the tests, datasets and mitigations matter. More GPUs don’t automatically make a model fair. We’d reserve compute to test affected groups, check their results separately, and test again after making changes. Encryption protects data; it doesn’t guarantee fair outputs.
+Distributed replicas, gradients and checkpoints add assets to protect. Zhu’s study shows input reconstruction from exposed gradients in studied settings; it doesn’t prove every collective leaks. Use least privilege, isolation and protected transport and storage. Named owners check data provenance, permissions, replica retention and deletion, and dual-use risks. Fairness needs different controls. For a multilingual LLM, reserve compute to compare harmful-output rates across languages, examine uncertainty, improve underrepresented-language coverage and retest. Gallegos’s survey explains why metrics and datasets matter; more GPUs can’t fix unrepresentative data. Security protects intermediates; fairness tests outcomes. The full risk register and evaluation details are in the appendix.
 
 ## Slide 9: Who gets access to compute?
 
-**Shamle · 35 seconds · finish by 5:20**
+**Shamle · 35 seconds · finish by 5:35**
 
 *[Keep the emphasis on participation, allocation and the trade-off.]*
 
-Access to compute affects who can train models and reproduce research. Ahmed and Wahed look at historical institutional participation, while Strubell’s study looks at workload costs. Their scopes differ, but both highlight barriers. NAIRR is a US response; it doesn’t prove worldwide equality. We’d publish GPU-hour allocation rules, support smaller institutions, and offer training and appeals. Reserved capacity can reduce utilization or delay urgent work, so waiting times need monitoring too.
+Compute access affects who can train, reproduce and shape AI research. Ahmed and Wahed study historical participation; Strubell examines workload costs. Their scopes differ, but both reveal barriers. NAIRR’s US reach doesn’t prove global equality. Publish GPU-hour rules, reserve smaller-institution and replication capacity, offer training and appeals, and audit awards and waiting times with privacy safeguards. Reservations can reduce utilization or delay urgent jobs; prevent starvation.
 
 ## Slide 10: Our responsible-use framework
 
-**Shamle · 40 seconds · finish by 6:00**
+**Shamle · 45 seconds · finish by 6:20**
 
 *[Follow Map, Measure and Manage. Indicate that Govern applies throughout.]*
 
-Our proposal brings together OECD principles, NIST risk management, Green AI and carbon-aware scheduling. Govern means someone is accountable throughout. Map means understanding the use, the people affected and the alternatives. Measure means checking quality, energy, security and group harms. Manage means deciding whether to approve, defer, reduce scale or redesign. We’d shift flexible jobs to lower-carbon periods only if deadlines, water limits and fair waiting times still allow it. Urgent work and uncertain forecasts can justify exceptions, but we’d record and review those decisions.
+OECD supplies rights and accountability; NIST structures risk decisions. Govern assigns ownership throughout. Map defines the use, affected people and alternatives. Measure checks quality, energy, security and group harms. Manage approves, defers, reduces scale or redesigns. Green AI tells us to measure efficiency; Radovanovic’s scheduling research shows how forecasts can shift flexible work. Measurement and action serve different needs. Set an energy budget and shift jobs only within deadlines, capacity, water limits and fair waiting commitments. Record urgent or forecast exceptions and review outcomes. This is an iterative proposal, not a certification; the detailed policy is in the appendix.
 
 ## Slide 11: Conclusion
 
-**Shamle · 20 seconds · finish by 6:20**
+**Shamle · 20 seconds · finish by 6:40**
 
 *[Finish here. Do not continue into the appendix.]*
 
-So, CUDA suits independent pixel work, but we still need to verify the output and measure performance. Responsible HPC also needs protected data, fair access and useful results. Next, we’d compile and check the rotation, then measure a real cluster workload.
+CUDA suits independent pixels, but performance still needs measurement. Responsible scaling needs useful outcomes, protected data and fair access. Next, compile and validate the rotation, then measure a real cluster job and review its impacts. Our code examples are uncompiled and unbenchmarked.

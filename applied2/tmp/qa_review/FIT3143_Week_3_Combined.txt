@@ -1,0 +1,1930 @@
+=== PAGE 1 ===
+www.infotech.monash.edu
+Information Technology
+FIT3143 Parallel Computing
+Semester 2 2024
+Topic 3: 
+Pipelining and Superscalar Processing
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information Technology
+© 2024 Monash University
+
+
+=== PAGE 2 ===
+www.infotech.monash.edu
+2
+Why Study Pipelining?•CPU organisationand design strongly impacts performance and functionality of all modern computers.•Foundation knowledge: Pipeline design is critical to system performance and a major area in contemporary machine design, especially high performancechips like GPUs and NPUs.•Foundation knowledge:introducekeyparallelismconcepts•Practical skills: Ability to optimiseapplication code design to best take advantage of pipeline architecture and thus maximiseapplication performance.•Practical skills: Ability to recogniseand differentiate machine performance by understanding pipeline design limitations.•Practical skills: Ability to anticipate likely application performance problems by relating application design to pipeline organisationin target platforms for the application.
+
+=== PAGE 3 ===
+www.infotech.monash.edu
+3
+Introduction to Pipelining
+
+=== PAGE 4 ===
+www.infotech.monash.edu
+4
+A Basic Computer System•CPU -Control Unit / Instruction Register•CPU -Register File / ALU•CPU -Instruction & Data Caches•CPU -Program Counter•System -Main Memory, Disk, I/O 
+
+=== PAGE 5 ===
+www.infotech.monash.edu
+5
+Control UnitInstruction RegisterProgram CounterInstruction CacheData Cache
+TLBALURegister FileMain MemoryData Cache
+A Basic Computer System
+
+=== PAGE 6 ===
+www.infotech.monash.edu
+6
+Executing Instructions•Phase 1: Increment PC, fetch Opcode for next instruction.•Phase 2: Decode the Opcode to determine operands.•Phase 3: Route the operands to ALU.•Phase 4: ALU operation.•Phase 5: Store ALU output in register as result.
+
+=== PAGE 7 ===
+www.infotech.monash.edu
+7
+IdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleIdleT1InstructionFetchInstructionDecodeOperandFetchALUOperationTIMEInst #1Inst #1Inst #1Inst #1Inst #1T0T2T3T4T0T1Inst #2Inst #2Inst #2Store ResultInst #2Inst #2
+
+=== PAGE 8 ===
+www.infotech.monash.edu
+8
+Observations:•Whichever instruction we are executing, it must go through these five phases. Such a time phase is usually a single clock cycle.•Typically each phase uses only some portions of the CPU.•If we wait for the completion of an instruction, before we start the opcode fetch of the next instruction, much of the CPU is idle.•This is not very efficient, since most of the CPU is not being used, most of the time.
+
+=== PAGE 9 ===
+www.infotech.monash.edu
+9
+Pipelining•An alternative approach is to “pipeline” the CPU. •In a pipelined CPU design, the internal architecture is organised in such a manner, that we can execute separate phases of consecutive instructions concurrently.•Therefore, the result of an instruction appears at the end of every time phase.•For this example, this CPU on average completes instructions five times faster than the previous example.
+
+=== PAGE 10 ===
+www.infotech.monash.edu
+10
+TIMEInst #3Inst #4Inst #3Inst #3Inst #4Inst #3Inst #4Inst #3Inst #1Inst #1Inst #1Inst #1Inst #1Inst #2Inst #2Inst #2Inst #2Inst #4Inst #2Inst #4InstructionFetchInstructionDecodeOperandFetchALUOperationStore ResultInst #5Inst #6Inst #5Inst #5Inst #6Inst #5Inst #6Inst #5Inst #6Inst #6
+
+=== PAGE 11 ===
+www.infotech.monash.edu
+11
+Time
+Inst #3Inst #4Inst #3Inst #3Inst #4Inst #3Inst #4Inst #3
+Inst #1Inst #1Inst #1Inst #1Inst #1Inst #2Inst #2
+Inst #2Inst #2
+Inst #4 Inst #2
+Inst #4
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Inst #5Inst #6Inst #5Inst #5Inst #6Inst #5Inst #6Inst #5Inst #6
+Inst #6
+
+=== PAGE 12 ===
+www.infotech.monash.edu
+12
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 1
+
+=== PAGE 13 ===
+www.infotech.monash.edu
+13
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 2
+Inst #1Inst #2
+
+=== PAGE 14 ===
+www.infotech.monash.edu
+14
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 3
+Inst #1Inst #2Inst #2Inst #1Inst #3
+
+=== PAGE 15 ===
+www.infotech.monash.edu
+15
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 4
+Inst #1Inst #2Inst #2Inst #1Inst #3Inst #3Inst #2Inst #1Inst #4
+
+=== PAGE 16 ===
+www.infotech.monash.edu
+16
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 5
+Inst #1Inst #2Inst #2Inst #1Inst #3Inst #3Inst #2Inst #1Inst #4 Inst #1Inst #2Inst #3Inst #4Inst #5
+
+=== PAGE 17 ===
+www.infotech.monash.edu
+17
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 6
+Inst #1Inst #2Inst #2Inst #1Inst #3Inst #3Inst #2Inst #1Inst #4 Inst #1Inst #2Inst #3Inst #4Inst #5 Inst #2Inst #3Inst #4Inst #5
+
+=== PAGE 18 ===
+www.infotech.monash.edu
+18
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 7
+Inst #1Inst #2Inst #2Inst #1Inst #3Inst #3Inst #2Inst #1Inst #4 Inst #1Inst #2Inst #3Inst #4Inst #5 Inst #2Inst #3Inst #4Inst #5 Inst #3Inst #4Inst #5
+
+=== PAGE 19 ===
+www.infotech.monash.edu
+19
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 8
+Inst #1Inst #2Inst #2Inst #1Inst #3Inst #3Inst #2Inst #1Inst #4 Inst #1Inst #2Inst #3Inst #4Inst #5 Inst #2Inst #3Inst #4Inst #5 Inst #3Inst #4Inst #5Inst #4Inst #5
+
+=== PAGE 20 ===
+www.infotech.monash.edu
+20
+Time
+Inst #1
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+Time Slot 9
+Inst #1Inst #2Inst #2Inst #1Inst #3Inst #3Inst #2Inst #1Inst #4 Inst #1Inst #2Inst #3Inst #4Inst #5 Inst #2Inst #3Inst #4Inst #5 Inst #3Inst #4Inst #5Inst #4Inst #5Inst #5
+
+=== PAGE 21 ===
+www.infotech.monash.edu
+21
+Pipeline Latency•While each instruction still takes 5 time phases to complete, since consecutive instructions overlap, results are produced once per time phase.•The time delay of five time phases in this example is termed the “pipeline latency” or “latency” of the CPU.•If the CPU has stalled for whatever reason (e.g. cache miss), one latency period must elapse before the CPU can start producing results again.
+
+=== PAGE 22 ===
+www.infotech.monash.edu
+22
+Pipeline Throughput
+•The “throughput” of the non-pipelined CPU was one instruction per 5 time phases.•The “throughput” of the pipelined CPU is one instruction per time phase, i.e. 5 X faster.•In practical terms, this means the pipelined variant of this CPU can execute programs around 5 X faster than the non-pipelined variant.•This gain in performance is a result of all portions of the CPU being busy all of the time.
+
+=== PAGE 23 ===
+www.infotech.monash.edu
+23
+Pipeline Stalls
+•A “pipeline stall” can arise whenever some portion of the CPU must wait for another portion of the CPU to complete its work.•An example is a cache miss in a CPU with a big difference in speed between the CPU and main memory. •While the CPU is waiting for an opcode fetch to complete (i.e. the main memory to respond and return the fetched opcode), the preceding instructions in the pipeline are completed.
+
+=== PAGE 24 ===
+www.infotech.monash.edu
+24
+Pipeline StallsOnce the stall has finished, it will take at least one latency period before the CPU starts completing instructions, phase after phase.Stalls are to be avoided at any cost!Stalls may arise for various reasons:A.Poor CPU design (e.g. Panasonic MN10501 CPU)B.Data Hazards.C.Unresolved Conditional Branches.D.Cache and TLB misses.
+
+=== PAGE 25 ===
+www.infotech.monash.edu
+25
+Pipeline Stages
+•When designing a pipelined CPU, it is common practice to divide the CPU internally into “pipeline stages”, each of which contains all the components required to perform the tasks required in a particular time phase of instruction execution.•Each stage of the pipeline must be capable of completing its work in the same amount of time as every other stage.
+
+=== PAGE 26 ===
+www.infotech.monash.edu
+26
+Pipeline StagesNB: if any stage takes longer than its peers to complete its work, then the whole pipeline must be slowed down to the speed of the slowest component in the pipeline.Therefore design choices in one area of the CPU will affect other areas.
+
+=== PAGE 27 ===
+www.infotech.monash.edu
+27
+Data Hazards•Consider the effects of trying to execute an instruction using the results from an immediately preceding instruction.•In many CPU designs, the result from instruction “N” may not be ready when instruction “N + 1” needs to use it.•How should this be handled ?A.Make sure the compiler or programmer never tries to do this (e.g. MIPS R2000/3000, XSPIM hides it).B.Stall the pipeline until the result is ready for use.C.Forward the result.
+
+=== PAGE 28 ===
+www.infotech.monash.edu
+28
+ALUOperationStore ResultTIMEInstructionFetchInstructionDecodeOperandFetchInstruction "N+1" == ADD R5, R4, R0 (add R4 and R0, result into R5)Final result should be R5 == R0 + R2 + R3fetch "N"fetch "N+1"decode "N"decode "N+1"get R3, R2get R4, R0ADDADDstore to R5store to R4Instruction "N" == ADD R4, R3, R2  (add R3 and R2, result into R3)R4 is not ready for instruction "N+1"
+
+=== PAGE 29 ===
+www.infotech.monash.edu
+29
+get R4, R0ADDstore to R5TIMEfetch "N"fetch "N+1"decode "N"decode "N+1"get R3, R2ADDstore to R4Instruction "N" == ADD R4, R3, R2  (add R3 and R2, result into R3)Instruction "N+1" == ADD R5, R4, R0 (add R4 and R0, result into R5)Final result should be R5 == R0 + R2 + R3STALLSTALLSTALLSTALLSTALLSTALLPipeline is stalled to allow "N" to complete before R4 is used in "N+1"
+InstructionFetchInstructionDecodeOperandFetchALUOperationStore Result
+
+=== PAGE 30 ===
+www.infotech.monash.edu
+30
+Data Forwarding•Stalling the pipeline incurs a loss in performance, since all following instructions are delayed.•An alternative technique which may be used is "data forwarding".•Rather than stall the pipeline, we route the result of the preceding instruction directly from the ALU, bypassing the store into the intended destination register.
+
+=== PAGE 31 ===
+www.infotech.monash.edu
+31
+ALUOperationStore ResultTIMEInstructionFetchInstructionDecodeOperandFetchInstruction "N+1" == ADD R5, R4, R0 (add R4 and R0, result into R5)Final result should be R5 == R0 + R2 + R3fetch "N"fetch "N+1"decode "N"decode "N+1"get R3, R2get R4, R0ADDADDstore to R5store to R4Instruction "N" == ADD R4, R3, R2  (add R3 and R2, result into R3)R4 is not ready for instruction "N+1"
+
+=== PAGE 32 ===
+www.infotech.monash.edu
+32
+ALUOperationStore ResultTIMEInstructionFetchInstructionDecodeOperandFetchInstruction "N+1" == ADD R5, R4, R0 (add R4 and R0, result into R5)Final result should be R5 == R0 + R2 + R3fetch "N"fetch "N+1"decode "N"decode "N+1"get R3, R2get R4, R0ADDADDstore to R5store to R4Instruction "N" == ADD R4, R3, R2  (add R3 and R2, result into R3)R4 is not ready for instruction "N+1"
+
+=== PAGE 33 ===
+www.infotech.monash.edu
+33
+Data ForwardingData forwarding requires additional hardware and a more complex control unit.Data forwarding may not be practical for some combinations of instructions.
+
+=== PAGE 34 ===
+www.infotech.monash.edu
+34
+Conditional Branches•Another situation which can cause difficulties in a pipelined CPU is a conditional branch instruction.•A conditional branch must always wait until an earlier instruction, which determines the direction of the branch, has completed.•If we wait for the completion of a conditional branch instruction, before we start the opcode fetch of the next instruction, the pipeline will be stalled.
+
+=== PAGE 35 ===
+www.infotech.monash.edu
+35
+Conditional BranchesUntil the CPU knows the outcome of the branch, it does not know where in the program it should be fetching the instructions following the branch from.How should we best handle such instructions without suffering a big loss in performance?
+
+=== PAGE 36 ===
+www.infotech.monash.edu
+36
+Conditional Branches• Solutions exist for this problem: 1.Stall the pipeline until the branch is resolved.2.As above, but store the “branch target” in a special cache, and next time use the cached value to determine where to fetch the instructions following the conditional branch from. NB: A cache is a fast but small memory for storing frequently used data or instructions, in this instance the address of the “branch target” NB: if the branch does not take the “cached” direction, the pipeline must be restarted again.
+
+=== PAGE 37 ===
+www.infotech.monash.edu
+37
+Parallelism•A pipelined CPU exploits a form of parallelism, in that consecutive instructions are processed in parallel, but mutually overlapped.•Processing instructions in parallel is only possible when there are no mutual dependencies between operands in these instructions.•The dependency between the operands in two consecutive instructions, in the earlier example, required a pipeline stall or data forwarding to resolve.
+
+=== PAGE 38 ===
+www.infotech.monash.edu
+38
+ParallelismCan parallelism be further exploited in a CPU to improve performance ?The answer is yes, providing that we can resolve dependencies between operands!Superscalar and Very Large Instruction Word (VLIW) CPUs exploit “Instruction Level Parallelism (ILP)”.
+
+=== PAGE 39 ===
+www.infotech.monash.edu
+39
+Applications of Pipelining•Pipelining has been used since the 1960s to improve the performance of general purpose CPUs – initially in supercomputers•The first microprocessors to use extensive pipelining were the Intel i860 and i960, both introduced during the 1980s•Since then pipelining has been adopted by all major CPU manufacturers for general purpose CPUs, GPUs and now NPUs•GPUs are Graphics Processing Units for displays•NPUs are Neural Processing Units for machine learning applications 
+
+=== PAGE 40 ===
+www.infotech.monash.edu
+40
+Introduction to Superscalar Processing
+
+=== PAGE 41 ===
+www.infotech.monash.edu
+41
+Why Study Superscalar Processing?•CPU organisation and design strongly impacts performance and functionality of all modern computers.•Foundation knowledge: Superscalar design critical to system performance and a major area in contemporary machine design – most current CPUs are superscalar designs.•Practical skills: Ability to optimise application code design to best take advantage of superscalar architecture and thus maximise application performance.•Practical skills: Ability to recognise and differentiate machine performance by understanding superscalar design limitations.•Practical skills: Ability to anticipate likely application performance problems by relating application design to superscalar organisation in target platforms for the application.
+
+=== PAGE 42 ===
+www.infotech.monash.edu
+42
+What is Instruction Level Parallelism?•Where multiple instructions do not depend upon the results of each other, these instructions can be executed in parallel, i.e. concurrently.•The property of not being mutually dependent upon each other’s results is termed Instruction Level Parallelism or ILP.•The level of ILP in any piece of code depends on the algorithm being executed, and how the compiler organises the instructions.•How can we exploit ILP?
+
+=== PAGE 43 ===
+www.infotech.monash.edu
+43
+Superscalar Processing•One technique for improving CPU performance by exploiting ILP is “superscalar processing”.•Superscalar techniques first appeared in mainframes and supercomputers during the 1960s, now they are used in most modern CPUs.•A superscalar CPU employs more than one pipeline/ALU, so it can execute more than one instruction concurrently, should the opportunity arise to do so.•Caveat? ILP must be present for superscalar processing to occur – no ILP ⇒ no parallel speedup!
+
+=== PAGE 44 ===
+www.infotech.monash.edu
+44
+Data Cache
+Control Unit
+Instruction Register
+Program Counter
+ALUALU
+Register File
+Multiple Ports
+Dual ALUs
+2−Way Superscalar Variant of "Basic CPU"
+2 instructions can be processed concurrently
+TLB
+Main Memory
+Instruction Cache
+Data Cache
+
+=== PAGE 45 ===
+www.infotech.monash.edu
+45
+Inst #1Inst #1Inst #1Inst #1Inst #1Inst #2Inst #2Inst #2Inst #2Inst #2Store ResultConventionalInstructionSuperscalar (2-Way)FetchInstructionDecodeOperandFetchALUOperationInst #1,2Inst #1,2Inst #1,2Inst #1,2Inst #1,2TIME
+
+=== PAGE 46 ===
+www.infotech.monash.edu
+46
+Superscalar ProcessingAn “N-Way Superscalar” CPU has N pipelines/ALUs and can execute N instructions in parallel, should ILP permit so.Therefore an “N-Way Superscalar” CPU is potentially N-times faster than its equivalent with a single ALU.The full performance potential of a superscalar CPU is only realised when the code it is executing has a high level of ILP in it. If the code has poor ILP, performance may not differ from a conventional CPU.
+
+=== PAGE 47 ===
+www.infotech.monash.edu
+47
+Control Unit
+Instruction Register
+Program Counter
+Register File
+Multiple Ports
+ADD ADD MUL MUL
+Additional pipeline hardware not drawn
+2 x ADD and 2 x MUL can be processed concurrently
+Asymmetric 4−Way Superscalar Variant of "Basic CPU"
+TLB
+Main Memory
+Instruction Cache
+Data Cache
+
+=== PAGE 48 ===
+www.infotech.monash.edu
+48
+Inst #1Inst #1Inst #1Inst #1Inst #1Inst #2Inst #2Inst #2Inst #2Inst #2Store ResultConventional
+Superscalar (4-Way)Inst #1,2,3,4Inst #1,2,3,4Inst #1,2,3,4Inst #1,2,3,4
+InstructionInst #1,2,3,4FetchInstructionDecodeOperandFetchALUOperationTIME
+
+=== PAGE 49 ===
+www.infotech.monash.edu
+49
+90Inst #3Inst #4Inst #1Inst #2Inst #3StoreALUOperandDecodeFetchInst #4Pipelined (1 EU)
+Superscalar (2-Way)Inst #1Inst #212345678TIME
+
+=== PAGE 50 ===
+www.infotech.monash.edu
+50
+TIMEInst #1Inst #2Inst #3Inst #4Inst #1Inst #2Inst #3Inst #4Pipelined (1 EU)
+Superscalar (3-Way)
+FetchDecodeOperandALUStore0123456789
+
+=== PAGE 51 ===
+www.infotech.monash.edu
+51
+56789TIMEInst #1Inst #2Inst #3Inst #4Inst #1Inst #2Inst #3Inst #4Pipelined (1 EU)
+Superscalar (4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 52 ===
+www.infotech.monash.edu
+52
+Time Slot 1
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 53 ===
+www.infotech.monash.edu
+53
+Time Slot 2
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 54 ===
+www.infotech.monash.edu
+54
+Time Slot 3
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 55 ===
+www.infotech.monash.edu
+5555
+Time Slot 4
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 56 ===
+www.infotech.monash.edu
+5656
+Time Slot 5
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 57 ===
+www.infotech.monash.edu
+5757
+Time Slot 6
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 58 ===
+www.infotech.monash.edu
+5858
+Time Slot 7
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 59 ===
+www.infotech.monash.edu
+5959
+Time Slot 8
+56789TIME
+Inst #1Inst #2Inst #3Inst #4
+Inst #1Inst #2Inst #3Inst #4
+Pipelined(1EU
+Superscalar(4-Way)
+01234FetchDecodeOperandALUStore
+
+=== PAGE 60 ===
+www.infotech.monash.edu
+60
+Early Superscalar Examples•CDC 6600 supercomputer - 10 (4)-way superscalar (1963)•IBM 360/91 mainframe - 3-way superscalar (1967).•Cray-1 supercomputer - 13-way superscalar (1975)•NB: due to the high cost of adding additional pipeline and ALU hardware, superscalar techniques were only used in the largest and most expensive machines of the period.
+
+=== PAGE 61 ===
+www.infotech.monash.edu
+61
+Cray 1 & 2 Supercomputers
+Cray 1 by McCranie, https://creativecommons.org/licenses/by-sa/3.0/Cray 2 by Rama, CC BY-SA 3.0 fr, https://commons.wikimedia.org/w/index.php?curid=58597 
+A.Circular backplane layout used to minimize bus latency inside CPUB.Twisted pair cables used to minimizecrosstalk between signals
+
+=== PAGE 62 ===
+www.infotech.monash.edu
+62
+More Recent ExamplesIntel Pentium-I - 2-way superscalar (1993)Sun SuperSPARC/Viking - 3-way superscalar (1993)Intel Pentium-Pro/Pentium-II/III - 5 way superscalar (1996-1999).AMD Athlon/K7 - 9-way superscalar (1999).–NB: the increasing number of transistors on microprocessor dies allowed by the early nineties the incorporation of superscalar techniques. –1960s supercomputer ~ 1990s desktop.Intel Core i7 Extreme Edition 32 nm12-way superscalar (2010 – 2011)Intel Core i9 Alder Lake microarchitecture12-way superscalar (2022)Intel Core i9 Raptor Lake microarchitecture (undisclosed)
+
+=== PAGE 63 ===
+www.infotech.monash.edu
+63
+Intel Core i9 CPU (Raptor Lake 8 + 16 = 24 Cores)
+
+
+=== PAGE 64 ===
+www.infotech.monash.edu
+64
+Superscalar Processing
+•In a superscalar CPU it is customary to call the ALU hardware an Execution Unit (EU).•There is no requirement for the EUs to be identical, in most superscalar CPUs there are several types of EU, e.g. Integer/Logical, Address Arithmetic and Floating Point.•The performance gain over a CPU with a single EU can as little as 50%, in practice a 200% to 500% improvement is common.
+
+=== PAGE 65 ===
+www.infotech.monash.edu
+65
+Control Unit
+Instruction Register
+Program Counter
+Register File
+Multiple Ports
+ADD ADD MUL MUL
+Additional pipeline hardware not drawn
+2 x ADD and 2 x MUL can be processed concurrently
+Asymmetric 4−Way Superscalar Variant of "Basic CPU"
+TLB
+Main Memory
+Instruction Cache
+Data Cache
+
+=== PAGE 66 ===
+www.infotech.monash.edu
+66
+Superscalar ProcessingTo achieve maximum performance gain it is necessary to efficiently detect ILP in the executable code.Detecting ILP requires that the CPU analyse the instruction stream to find opportunities to execute instructions in parallel.Up to 25-30% of the hardware in a contemporary superscalar CPU may be used for this purpose.
+
+=== PAGE 67 ===
+www.infotech.monash.edu
+67
+Performance Limitations in SSP•Several factors can impair the performance of a superscalar CPU:A.Data (Output) Dependency.B.Procedural Dependency.C.Resource Conflicts.D.Anti-dependency.
+
+=== PAGE 68 ===
+www.infotech.monash.edu
+68
+Data DependencyEssentially the same type of problem as a “data hazard” seen in a pipeline.The result from instruction "N" may not be ready when instruction "N + 1" needs to use it.Handled by stalling the pipeline until the result is available, or by result forwarding where possible.Many data dependencies are inherent in the program being executed and cannot be avoided.
+
+=== PAGE 69 ===
+www.infotech.monash.edu
+69
+Resource Conflicts
+•Resource conflicts arise when more than one instruction needs to use an EU, register or bus. •This is essentially a “deadlock” situation since one or more instructions must wait for the resource to complete its work.•Resource conflicts can be removed by adding more registers, busses and EUs into the CPU. •This incurs much additional cost in hardware.
+
+=== PAGE 70 ===
+www.infotech.monash.edu
+70
+0123456789TIMEResourceConflictfor #1#2 waitsDataDependencyInst #1Inst #2Inst #1Inst #2EU BusyInst #1Inst #2No Dependency
+FetchDecodeOperandALUStore
+
+=== PAGE 71 ===
+www.infotech.monash.edu
+71
+Procedural Dependency
+•The procedural dependency problem is essentially the same  problem seen in a pipeline due to a conditional branch.•Until the result of the branch is known, the pipelines are stalled. •In a superscalar CPU, many more instructions are delayed, in comparison with a single pipeline, therefore the performance loss is much greater.
+
+=== PAGE 72 ===
+www.infotech.monash.edu
+72
+TIMEBranchCondDependencyInst #1Inst #2Inst #1Inst #2No DependencyInst #3Inst #4Inst #5Inst #6ProceduralFetchDecodeOperandALUStore0123456789
+
+=== PAGE 73 ===
+www.infotech.monash.edu
+73
+Speculative ExecutionProcedural dependency can be handled by “speculative execution”, where the CPU calculates both possible instruction streams following the branch and then throws one away, once the outcome of the branch is known.Speculative execution is very expensive in hardware, since two threads of execution must be followed to get one thread of results.Early Example: Intel Pentium Pro/II/III CPU.
+
+=== PAGE 74 ===
+www.infotech.monash.edu
+74
+Anti-Dependency
+•Anti-dependency arises when an instruction overwrites the source operand for a preceding instruction.•This is not a problem in a pipelined CPU since the instructions are executed in their proper order.•In a superscalar CPU, which may use “out of order” execution, anti-dependency prevents the execution of the later instruction until the source operand has been used.
+
+=== PAGE 75 ===
+www.infotech.monash.edu
+75
+Out of Order Execution (OOE)
+•If no dependency exists between instructions, there is no requirement for these instructions to be executed in the CPU in the same order as they appear in memory.•OOE is frequently used since it allows instructions with no dependencies to be executed when “convenient” opportunities arise between instructions with dependencies.•OOE allows optimal use of a superscalar CPU.•Instruction results are usually written in order.
+
+=== PAGE 76 ===
+www.infotech.monash.edu
+76
+Summary
+
+=== PAGE 77 ===
+www.infotech.monash.edu
+77
+Summary•Pipeline concepts and operating principles•Pipeline stalls•Data hazards•Data forwarding•Conditional branches and BTC•Pipeline latency•Instruction level parallelism•Superscalar architectures
+
+=== PAGE 78 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Week 3: 
+Workshop
+Dr Terrence Mak
+Faculty of Information Technology
+© 2026 Monash University
+
+=== PAGE 79 ===
+2
+▪ Workshop 3
+– Pipelining: Throughput & Latency
+– Pipelining: Data Hazard
+– Superscalar architectures
+– SIMD revision
+Agenda
+
+=== PAGE 80 ===
+Workshop
+
+=== PAGE 81 ===
+www.infotech.monash.edu
+4
+Data Cache
+A Basic Computer System
+
+=== PAGE 82 ===
+www.infotech.monash.edu
+5
+Executing Instructions
+• Phase 1: Increment PC, fetch Opcode for next 
+instruction.
+• Phase 2: Decode the Opcode to determine 
+operands.
+• Phase 3: Route the operands to ALU.
+• Phase 4: ALU operation.
+• Phase 5: Store ALU output in register as result.
+
+=== PAGE 83 ===
+www.infotech.monash.edu
+6
+
+
+=== PAGE 84 ===
+www.infotech.monash.edu
+7
+Observations:
+• Whichever instruction we are executing, it must go 
+through these five phases. Such a time phase is 
+usually a single clock cycle.
+• Typically each phase uses only some portions of 
+the CPU.
+• If we wait for the completion of an instruction, 
+before we start the opcode fetch of the next 
+instruction, much of the CPU is idle.
+• This is not very efficient, since most of the CPU is 
+not being used, most of the time.
+
+=== PAGE 85 ===
+www.infotech.monash.edu
+8
+Pipelining
+• An alternative approach is to “pipeline” the CPU. 
+• In a pipelined CPU design, the internal architecture 
+is organised in such a manner, that we can execute 
+separate phases of consecutive instructions 
+concurrently.
+• Therefore, the result of an instruction appears at the 
+end of every time phase.
+• For this example, this CPU on average completes 
+instructions five times faster than the previous 
+example.
+
+=== PAGE 86 ===
+www.infotech.monash.edu
+9
+Time
+Inst #3
+Inst #4 Inst #3
+Inst #3
+Inst #4 Inst #3
+Inst #4 Inst #3
+Inst #1
+Inst #1
+Inst #1
+Inst #1
+Inst #1
+Inst #2
+Inst #2
+Inst #2
+Inst #2
+Inst #4
+Inst #2
+Inst #4
+Instruction
+Fetch
+Instruction
+Decode
+Operand
+Fetch
+ALU
+Operation Store Result
+Inst #5
+Inst #6 Inst #5
+Inst #5
+Inst #6 Inst #5
+Inst #6 Inst #5
+Inst #6
+Inst #6
+
+=== PAGE 87 ===
+www.infotech.monash.edu
+10
+Pipeline Latency
+• While each instruction still takes 5 time phases to 
+complete, since consecutive instructions overlap, 
+results are produced once per time phase.
+• The time delay of five time phases in this example is 
+termed the “pipeline latency” or “latency” of the 
+CPU.
+• If the CPU has stalled for whatever reason (e.g. 
+cache miss), one latency period must elapse before 
+the CPU can start producing results again.
+
+=== PAGE 88 ===
+www.infotech.monash.edu
+11
+Pipeline Throughput
+• The “throughput” of the non-pipelined CPU was one 
+instruction per 5 time phases.
+• The “throughput” of the pipelined CPU is one 
+instruction per time phase, i.e. 5 X faster.
+• In practical terms, this means the pipelined variant 
+of this CPU can execute programs around 5 X faster 
+than the non-pipelined variant.
+• This gain in performance is a result of all portions 
+of the CPU being busy all of the time.
+
+=== PAGE 89 ===
+www.infotech.monash.edu
+12
+Pipeline Stalls
+• A “pipeline stall” can arise whenever some portion 
+of the CPU must wait for another portion of the CPU 
+to complete its work.
+• An example is a cache miss in a CPU with a big 
+difference in speed between the CPU and main 
+memory. 
+• While the CPU is waiting for an opcode fetch to 
+complete (i.e. the main memory to respond and 
+return the fetched opcode), the preceding 
+instructions in the pipeline are completed.
+
+=== PAGE 90 ===
+www.infotech.monash.edu
+13
+Pipeline Stalls
+ Once the stall has finished, it will generally take at 
+least one latency period before the CPU starts 
+completing instructions, phase after phase.
+ However, there are advanced mechanisms to 
+shorten the delays!
+ Stalls are to be avoided at any cost!
+ Stalls may arise for various reasons:
+A. Poor CPU design (e.g. Panasonic MN10501 CPU)
+B. Data Hazards.
+C. Unresolved Conditional Branches.
+D. Cache and TLB misses.
+
+=== PAGE 91 ===
+www.infotech.monash.edu
+14
+Data Hazards
+• Consider the effects of trying to execute an 
+instruction using the results from an immediately 
+preceding instruction.
+• In many CPU designs, the result from instruction “N” 
+may not be ready when instruction “N + 1” needs to 
+use it.
+• How should this be handled ?
+A.Make sure the compiler or programmer never tries to 
+do this (e.g. MIPS R2000/3000, XSPIM hides it).
+B.Stall the pipeline until the result is ready for use.
+C.Forward the result.
+
+=== PAGE 92 ===
+www.infotech.monash.edu
+15
+R4
+
+=== PAGE 93 ===
+www.infotech.monash.edu
+16
+Data Forwarding
+• Stalling the pipeline incurs a loss in performance, 
+since all following instructions are delayed.
+• An alternative technique which may be used is "data 
+forwarding".
+• Rather than stall the pipeline, we route the result of 
+the preceding instruction directly from the ALU, 
+bypassing the store into the intended destination 
+register.
+
+=== PAGE 94 ===
+www.infotech.monash.edu
+17
+
+
+=== PAGE 95 ===
+www.infotech.monash.edu
+18
+Data Forwarding
+ Data forwarding requires additional hardware and 
+a more complex control unit.
+ Data forwarding may not be practical for some 
+combinations of instructions.
+
+=== PAGE 96 ===
+www.infotech.monash.edu
+19
+Parallelism
+• A pipelined CPU exploits a form of parallelism, in 
+that consecutive instructions are processed in 
+parallel, but mutually overlapped.
+• Processing instructions in parallel is only possible 
+when there are no mutual dependencies between 
+operands in these instructions.
+• The dependency between the operands in two 
+consecutive instructions, in the earlier example, 
+required a pipeline stall or data forwarding to 
+resolve.
+
+=== PAGE 97 ===
+www.infotech.monash.edu
+20
+Parallelism
+ Can parallelism be further exploited in a CPU to 
+improve performance ?
+ The answer is yes, providing that we can resolve 
+dependencies between operands!
+ Superscalar and Very Large Instruction Word 
+(VLIW) CPUs exploit “Instruction Level 
+Parallelism (ILP)”.
+
+=== PAGE 98 ===
+Applied Practical Solving Task #1
+Pipelining: Throughput & Latency 
+
+=== PAGE 99 ===
+22
+Which of the following statements are true of a pipelined architecture, 
+versus a non-pipelined architecture? 
+Assume a time phase duration of 3 nanosecond and 5 stages to execute an 
+instruction.
+Note: There may be more than one statement that are true/correct, or none 
+of the statements are true.
+Q1
+
+=== PAGE 100 ===
+23
+1. The latency of a pipelined CPU will be 3 nanoseconds.
+2. The latency of a pipelined CPU will be 5 nanoseconds.
+3. The latency of a pipelined CPU will be 15 nanoseconds.
+4. The throughput of a pipelined CPU will be 1/3 (one third) instructions per nanosecond.
+5. The throughput of a pipelined CPU will be 3 instructions per nanosecond.
+6. The throughput of a non-pipelined CPU will be 1/3 (one third) instructions per nanosecond.
+7. The throughput of a non-pipelined CPU will be 1/5 (one fifth) instructions per nanosecond.
+Q1
+
+=== PAGE 101 ===
+Applied Practical Solving Task #2
+Pipelining: Data hazard 
+
+=== PAGE 102 ===
+25
+Which of the following are true of a data hazard in a pipeline? 
+Assumptions:
+ Assume a time phase duration of 2 nanoseconds and 3 stages to 
+execute an instruction. 
+ Assume the CPU stalls for the minimum possible time during each stall.
+ Assume a data hazard produces a stall after two time phases.
+Q2
+
+=== PAGE 103 ===
+26
+A) During the stall (period), the throughput of the CPU is reduced to 1/6 (one sixth) 
+instructions per nanosecond.
+B) During the stall (period), the throughput of the CPU is reduced to 1/2 (one half) 
+instructions per nanosecond.
+C) If we employ data forwarding to prevent a stall, the throughput of the CPU equals 
+to 1/8 (one eighth) instructions per nanosecond.
+D) If we employ data forwarding to prevent a stall, the throughput of the CPU equals 
+to 1/6 (one sixth) instructions per nanosecond.
+E) If we employ data forwarding to prevent a stall, the throughput of the CPU equals 
+to 1/2 (one half) instructions per nanosecond.
+Q2
+
+=== PAGE 104 ===
+www.infotech.monash.edu
+27
+Introduction to Superscalar Processing
+
+=== PAGE 105 ===
+www.infotech.monash.edu
+28
+What is Instruction Level Parallelism?
+• Where multiple instructions do not depend upon the 
+results of each other, these instructions can be 
+executed in parallel, i.e. concurrently.
+• The property of not being mutually dependent upon 
+each other’s results is termed Instruction Level 
+Parallelism or ILP.
+• The level of ILP in any piece of code depends on the 
+algorithm being executed, and how the compiler 
+organises the instructions.
+• How can we exploit ILP?
+
+=== PAGE 106 ===
+www.infotech.monash.edu
+29
+Superscalar Processing
+•
+ 
+
+=== PAGE 107 ===
+www.infotech.monash.edu
+30
+Data 
+Cache
+
+
+=== PAGE 108 ===
+www.infotech.monash.edu
+31
+
+
+=== PAGE 109 ===
+www.infotech.monash.edu
+32
+Superscalar Processing
+ An “N-Way Superscalar” CPU has N pipelines/ALUs 
+and can execute N instructions in parallel, should 
+ILP permit so.
+ Therefore an “N-Way Superscalar” CPU is 
+potentially N-times faster than its equivalent with a 
+single ALU.
+ The full performance potential of a superscalar CPU 
+is only realised when the code it is executing has a 
+high level of ILP in it. If the code has poor ILP, 
+performance may not differ from a conventional 
+CPU.
+
+=== PAGE 110 ===
+www.infotech.monash.edu
+33
+
+
+=== PAGE 111 ===
+www.infotech.monash.edu
+34
+
+
+=== PAGE 112 ===
+www.infotech.monash.edu
+35
+Superscalar Processing
+• In a superscalar CPU it is customary to call the ALU 
+hardware an Execution Unit (EU).
+• There is no requirement for the EUs to be identical, 
+in most superscalar CPUs there are several types of 
+EU, e.g. Integer/Logical, Address Arithmetic and 
+Floating Point.
+• The performance gain over a CPU with a single EU 
+can as little as 50%, in practice a 200% to 500% 
+improvement is common.
+
+=== PAGE 113 ===
+www.infotech.monash.edu
+36
+Performance Limitations in SSP
+• Several factors can impair the performance 
+of a superscalar CPU:
+A. Data (Output) Dependency.
+B. Procedural Dependency.
+C. Resource Conflicts.
+D. Anti-dependency.
+
+=== PAGE 114 ===
+www.infotech.monash.edu
+37
+Data Dependency
+ Essentially the same type of problem as a “data 
+hazard” seen in a pipeline.
+ The result from instruction "N" may not be ready 
+when instruction "N + 1" needs to use it.
+ Handled by stalling the pipeline until the result is 
+available, or by result forwarding where possible.
+ Many data dependencies are inherent in the 
+program being executed and cannot be avoided.
+
+=== PAGE 115 ===
+www.infotech.monash.edu
+38
+Resource Conflicts
+• Resource conflicts arise when more than one 
+instruction needs to use an EU, register or bus. 
+• This is essentially a “deadlock” situation since 
+one or more instructions must wait for the 
+resource to complete its work.
+• Resource conflicts can be removed by adding 
+more registers, busses and EUs into the CPU. 
+• This incurs much additional cost in hardware.
+
+=== PAGE 116 ===
+www.infotech.monash.edu
+39
+Procedural Dependency
+• The procedural dependency problem is 
+essentially the same  problem seen in a pipeline 
+due to a conditional branch.
+• Until the result of the branch is known, the 
+pipelines are stalled. 
+• In a superscalar CPU, many more instructions 
+are delayed, in comparison with a single 
+pipeline, therefore the performance loss is much 
+greater.
+
+=== PAGE 117 ===
+www.infotech.monash.edu
+40
+Anti-Dependency
+• Anti-dependency arises when an instruction 
+overwrites the source operand for a preceding 
+instruction.
+• This is not a problem in a pipelined CPU since the 
+instructions are executed in their proper order.
+• In a superscalar CPU, which may use “out of 
+order” execution, anti-dependency prevents the 
+execution of the later instruction until the source 
+operand has been used.
+
+=== PAGE 118 ===
+www.infotech.monash.edu
+41
+Out of Order Execution (OOE)
+• If no dependency exists between instructions, 
+there is no requirement for these instructions to 
+be executed in the CPU in the same order as they 
+appear in memory.
+• OOE is frequently used since it allows 
+instructions with no dependencies to be 
+executed when “convenient” opportunities arise 
+between instructions with dependencies.
+• OOE allows optimal use of a superscalar CPU.
+• Instruction results are usually written in order.
+
+=== PAGE 119 ===
+Applied Practical Solving Task #3
+Superscalar
+
+=== PAGE 120 ===
+43
+Which of the following statements are true of superscalar architectures? 
+Assume a 12-way superscalar CPU core has 4 integer Execution Units (EU), 2 floating point (FP) 
+EUs, and 6 Address Arithmetic EUs.
+1. 12 consecutive instructions with no dependencies comprise 3 integer instructions, 8 FP 
+instructions, and one address arithmetic instruction. The CPU core can execute at least 5 
+instructions concurrently.
+2. 12 consecutive instructions with no dependencies comprise 3 integer instructions, 8 FP 
+instructions, and one address arithmetic instruction. The CPU core can execute all 12 
+instructions concurrently.
+3. 12 consecutive instructions with no dependencies comprise 3 integer instructions, 8 FP 
+instructions, and one address arithmetic instruction. Only the integer instructions can be 
+executed concurrently.
+4. 12 consecutive integer instructions have no dependencies. The CPU core will not be able 
+to execute any of the instructions concurrently.
+5. 12 consecutive integer instructions have no dependencies. The CPU core can execute at 
+least 3 instructions concurrently.
+Q3
+
+=== PAGE 121 ===
+Summary
+
+=== PAGE 122 ===
+45
+Topics covered
+▪ Workshop 3
+– Pipelining: Throughput & Latency
+– Pipelining: Data Hazard
+– Superscalar architectures 
+
+=== PAGE 123 ===
+Information Technology
+ FIT3143 Parallel Computing 
+ Semester 2 2026
+Lab #1 (Week 3)
+POSIX Threads & OpenMP 
+
+=== PAGE 124 ===
+2
+1. POSIX Threads - Part II [45 min]
+– Semaphores
+– Thread signaling using condition variables
+2. OpenMP [1 hr]
+– Basic architecture
+– Parallelism with #pragma construct
+– Critical section and atomicity
+– Additional constructs (reduction, sections, etc.)
+Overview - Parallel computing on shared memory
+
+=== PAGE 125 ===
+POSIX* Thread  or  Pthread
+
+=== PAGE 126 ===
+4
+▪ Semaphore, includes:
+▪ Counter, 
+▪ Waiting list of process, and
+▪ Supports two different operations i.e., wait and signal. 
+▪ Often known as: a counter with a mutex and a waiting queue.
+▪ Types: 
+– Counting semaphores and binary semaphores. 
+▪ Uses: 
+– Synchronization tool to deal with critical-section problem. 
+– Provides simple abstraction for controlling access to a common resource 
+in programming environment.
+Semaphores
+
+=== PAGE 127 ===
+5
+How semaphore works:
+• A counter that tracks available resources: 
+If the counter > 0:
+A process can use the resource, and the counter decreases.
+When the process finishes, it increases the counter.
+If the counter = 0:
+ Other processes have to wait.
+Semaphores
+
+=== PAGE 128 ===
+6
+Semaphores
+  1 #include <stdio.h>
+  2 #include <pthread.h>
+  3 #include <semaphore.h>
+  4 #include <unistd.h>
+  5 
+  6 sem_t mutex;
+  7 
+  8 void* thread(void* arg)
+  9 {
+ 10     //wait
+ 11     sem_wait(&mutex);
+ 12     printf("\nEntered..\n");
+ 13 
+ 14     //critical section
+ 15     sleep(8);
+ 16 
+ 17     //signal
+ 18     printf("\nJust Exiting...\n");
+ 19     sem_post(&mutex);
+ 20 }
+ 23 int main()
+ 24 {
+ 25     sem_init(&mutex, 0, 2);
+ 26     pthread_t t1,t2,t3;
+ 27     pthread_create(&t1,NULL,thread,NULL);
+ 28     sleep(2);
+ 29     pthread_create(&t2,NULL,thread,NULL);
+ 30     sleep(2);
+ 31     pthread_create(&t3,NULL,thread,NULL);
+ 32     pthread_join(t1,NULL);
+ 33     pthread_join(t2,NULL);
+ 34     pthread_join(t3,NULL);
+ 35 
+ 36     sem_destroy(&mutex);
+ 37     return 0;
+ 38 }
+[tmak@m3-login1 test-FIT3143]$ 
+./Semaphore 
+Entered..
+Entered..
+Just Exiting...
+Entered..
+Just Exiting...
+Just Exiting...
+https://www.geeksforgeeks.org/c/use-posix-semaphores-c/
+
+=== PAGE 129 ===
+7
+▪ Condition variables
+– Synchronization primitives allowing threads to wait for a specific condition 
+before continuing execution. 
+– Commonly used in multithreaded programs to coordinate communication 
+between threads and avoid unnecessary busy waiting.
+▪ Used together with mutexes to safely synchronize access to shared resources.
+▪ Idea: Allows one thread to wait while another thread signals that a task or 
+resource is ready.
+▪ Application: Producer-consumer, sender-receiver, and task scheduling 
+scenarios.
+Condition Variables 
+
+=== PAGE 130 ===
+8
+▪ Semaphores and Condition Variables share the same core operations (wait() 
+and signal())to provide mutual exclusion. However, they differ in how they 
+manage waiting threads:
+– Semaphores are strictly conditioned on an internal semaphore count 
+(blocking when zero, proceeding when non-zero).
+– Condition Variables are associated with an arbitrary logical condition 
+defined by the programmer.
+▪ Threads sleep on a condition variable until signaled. Once awakened, the 
+thread checks the custom condition: if met, it proceeds; otherwise, it is directed 
+back to waiting.
+Semaphores vs. Condition Variables 
+
+=== PAGE 131 ===
+9
+Problem 1: Lost Signals 
+▪ Condition variables have no memory. If a signal is sent when no thread is 
+waiting, the signal is permanently "lost."
+▪ A thread that blindly waits without checking the condition first may deadlock, 
+waiting forever for a signal that already happened.
+▪ Always test the condition before deciding to wait.
+Common Problems with Condition Variables 
+
+=== PAGE 132 ===
+10
+Problem 2: Spurious Wakeups
+▪ To maximize performance on multiprocessor systems, threads can occasionally 
+wake up without actually receiving a signal.
+▪ Always re-test the condition immediately after waking up. If it was a spurious 
+wakeup, the thread should go right back to sleeping.
+Common Problems with Condition Variables 
+
+=== PAGE 133 ===
+11
+▪ Mutex is associated with condition variable
+▪ Protects evaluation of the conditional expression
+▪ Prevents race condition between signaling thread and threads waiting on 
+condition variable
+Condition Variable and Mutex 
+Avoid problems with lost 
+and spurious signals
+
+=== PAGE 134 ===
+12
+pthread_cond_init, pthread_cond_destroy 
+initialize/destroy condition variable 
+pthread_cond_wait 
+thread goes to sleep until signal of condition variable
+pthread_cond_signal 
+signal release of condition variable 
+pthread_cond_broadcast 
+broadcast release of condition variable 
+Condition Variables 
+
+=== PAGE 135 ===
+13
+Data types used
+pthread_cond_t
+the condition variable
+pthread_condattr_t
+condition variable attributes
+Before use, condition variable (and mutex) must be initialized
+Condition Variable Types
+● Pthreads introduces pthread_cond_t to 
+allow threads to pause execution until a 
+specific condition is met. 
+● A condition variable must be initialized 
+before it can be used.
+● Condition variables stored in shared 
+memory can also be shared across 
+different processes.
+
+=== PAGE 136 ===
+14
+pthread_cond_init
+int pthread_cond_init( cond, attr );
+pthread_cond_t *cond
+  condition variable to be initialized
+const pthread_condattr_t *attr
+  attributes to be given to condition variable
+ENOMEM - insufficient memory for condition variable
+EAGAIN - insufficient resources (other than memory)
+EBUSY  - condition variable already intialized
+EINV AL - attr is invalid
+Can also use the static, default initializer: PTHREAD_COND_INITIALIZER
+pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
+which uses default attributes
+
+=== PAGE 137 ===
+15
+pthread_cond_wait
+int pthread_cond_wait( cond, mutex );
+pthread_cond_t *cond
+condition variable to wait on
+pthread_mutex_t *mutex
+mutex to be unlocked
+EINV AL  - cond or mutex is invalid
+EINV AL  - different mutex for concurrent waits
+EINV AL  - calling thread does not own mutex
+● Thread put to “sleep” waiting for signal on 
+cond
+● Mutex is unlocked
+○ Allows other threads to acquire lock
+○ When signal arrives, mutex will be 
+reacquired before 
+pthread_cond_wait returns
+
+=== PAGE 138 ===
+16
+pthread_cond_signal
+int pthread_cond_signal( cond );
+pthread_cond_t *cond
+condition variable to be signaled
+EINV AL  - cond is invalid
+● Signal condition variable, wake one 
+waiting thread
+● If no threads waiting, no action taken
+○ Signal is not saved for future 
+threads
+● Signaling thread need not have 
+mutex
+○ May be more efficient
+○ Problem may occur if thread 
+priorities used
+
+=== PAGE 139 ===
+17
+pthread_cond_broadcast
+int pthread_cond_broadcast( cond );
+pthread_cond_t *cond
+condition variable to signal
+EINV AL  - cond is invalid
+● Wake all threads waiting on 
+condition variable
+● If no threads waiting, no action 
+taken
+○ Broadcast is not saved for 
+future threads
+● Signaling thread need not have 
+mutex
+
+=== PAGE 140 ===
+18
+Condition Variable and Mutex 
+  1 #include <stdio.h>
+  2 #include <unistd.h>
+  3 #include <pthread.h>
+  4 #define NUM_THREADS 2
+  5 
+  6 // Global variables
+  7 pthread_mutex_t g_Mutex = PTHREAD_MUTEX_INITIALIZER;
+  8 pthread_cond_t g_Cond = PTHREAD_COND_INITIALIZER;
+  9 int g_Val = 0;
+ 10 
+ 11 // Thread 1 Callback Function
+ 12 void *Thread1Func(void *pArg)
+ 13 {
+ 14     int* p = (int*)pArg;
+ 15     int myNum = *p; // myNum = 0
+ 16     pthread_mutex_lock(&g_Mutex);
+ 17     printf("Thread Id: %d. Global value before updated by Thread2Func: %d\n", myNum, g_Val);
+ 18     pthread_cond_wait(&g_Cond, &g_Mutex);
+ 19     printf("Thread Id: %d. Global value after updated by Thread2Func: %d\n", myNum, g_Val);
+ 20     g_Val += 1;
+ 21     pthread_mutex_unlock(&g_Mutex);
+ 22     return NULL;
+ 23 }
+
+=== PAGE 141 ===
+19
+Condition Variable and Mutex 
+ 25 // Thread 2 Callback Function
+ 26 void *Thread2Func(void *pArg)
+ 27 {
+ 28     int* p = (int*)pArg;
+ 29     int myNum = *p; // myNum = 1
+ 30     pthread_mutex_lock(&g_Mutex);
+ 31     g_Val += 2;
+ 32     printf( "Thread Id: %d. Global value 
+increased by 2!\n", myNum);
+ 33     pthread_mutex_unlock(&g_Mutex);
+ 34     pthread_cond_signal(&g_Cond);
+ 35     return NULL;
+ 36 }
+ 38 // Main program
+ 39 int main()
+ 40 {
+ 41     pthread_t hThread[NUM_THREADS]; // Stores the POSIX thread IDs
+ 42     int threadNum[NUM_THREADS]; // Pass a unique thread ID
+ 43     int i = 0;
+ 44     // Initialize the mutex & condition variable
+ 45     pthread_mutex_init(&g_Mutex, NULL);
+ 46     pthread_cond_init(&g_Cond, NULL);
+ 47     // Create both threads
+ 48     threadNum[0] = 0;
+ 49     pthread_create(&hThread[0], NULL, Thread1Func, &threadNum[0]);
+ 50 
+ 51     sleep(2);
+ 52 
+ 53     threadNum[1] = 1;
+ 54     pthread_create(&hThread[1], NULL, Thread2Func, &threadNum[1]);
+ 55 
+ 56     // Wait for all threads to finish
+ 57     for(i = 0; i < NUM_THREADS; i++)
+ 58             pthread_join(hThread[i], NULL);
+ 59 
+ 60     printf( "Global Value: %d\n", g_Val);
+ 61 
+ 62     // Clean up
+ 63     pthread_cond_destroy(&g_Cond);
+ 64     pthread_mutex_destroy(&g_Mutex);
+ 65     return 0;
+ 66 }
+[tmak@m3-login1 test-FIT3143]$ ./Cond 
+Thread Id: 0. Global value before updated by Thread2Func: 0
+Thread Id: 1. Global value increased by 2!
+Thread Id: 0. Global value after updated by Thread2Func: 2
+Global Value: 3
+What would happen if Thread 
+2 runs before Thread 1?
+
+=== PAGE 142 ===
+20
+Revisiting the Code from Week 2
+▪ PThreadBasic.c
+▪ PThread_Cond.c 
+Make sure you also studied
+▪ Cond.c
+Recap
+
+=== PAGE 143 ===
+OpenMP
+
+=== PAGE 144 ===
+22
+What Is OpenMP (or Open Multi-Processing)? 
+▪ Compiler directives for multithreaded programming 
+▪ Easy to create threaded Fortran and C/C++ codes
+▪ Supports data parallelism model 
+▪ Incremental parallelism 
+▪ Combines serial and parallel code in single source 
+OpenMP
+● Incremental parallelism is when you can modify only a portion of the code to test for 
+better performance in parallel, then move on to another position in the code to test. 
+Explicit threading models require a change to all parts of the code affected by the 
+threading. 
+● Serial code can be “retrieved” by not compiling with the OpenMP options turned on. 
+Assuming that there were no drastic changes required to get the code into a state that 
+could be parallelized. 
+
+=== PAGE 145 ===
+23
+▪ Fork-join model      // execution model of thread in OpenMP parallel 
+regions
+▪ Work-sharing constructs // for the pragmas and directives 
+▪ Data environment constructs // for the pragmas and directives
+▪ Synchronization constructs // for the pragmas and directives 
+▪ Extensive Application Program Interface (API) for finer control 
+// for the pragmas and directives 
+OpenMP* Architecture
+
+=== PAGE 146 ===
+24
+Fork-join parallelism: 
+▪ Master thread spawns a team of threads as needed 
+▪ Parallelism is added incrementally: the sequential program evolves into a 
+parallel program 
+Programming Model 
+
+
+=== PAGE 147 ===
+25
+Most constructs in OpenMP* are compiler directives or pragmas.
+For C and C++, the pragmas take the form:
+#pragam omp construct [clause [clause] … ]
+OpenMP* Pragma Syntax 
+#pragma omp parallel
+Thread
+1
+Thread
+2
+Thread
+3
+Parallel Regions 
+▪ Defines parallel region over structured block of code 
+▪ Threads are spawned as execution enters the parallel 
+region.
+▪ Threads implicitly synchronize (block) at the end of the 
+region before the main thread continues.
+▪ Variables are shared by default across all threads, unless 
+explicitly marked as private.
+
+=== PAGE 148 ===
+26
+Set environment variable for number of threads:
+set OMP_NUM_THREADS=4
+There is no standard default for this variable
+▪ Many systems: 
+– # of threads = # of processors 
+– Intel compilers use this default 
+How Many Threads? 
+The order in which the system will try to determine the number threads is:  
+1. Default 
+2. Environment variable 
+3. API call 
+Each successive method (if present) will override the previous. 
+
+=== PAGE 149 ===
+27
+Serial Code 
+#include <stdio.h>
+int main() { 
+int i; 
+printf("Hello World\n"); 
+for(i=0;i<6;i++) 
+printf("Iter:%d\n",i); 
+printf("GoodBye World\n"); 
+} 
+Parallel Code
+#include <stdio.h>
+#include <omp.h>
+int main() { 
+#pragma omp parallel 
+{ 
+int i; 
+printf("Hello World\n"); 
+#pragma omp for 
+for(i=0;i<6;i++) 
+printf("Iter:%d\n",i); 
+} 
+printf("GoodBye World\n"); 
+} 
+Example I
+
+=== PAGE 150 ===
+28
+Work-sharing Construct - “for” work-sharing pragma 
+#pragma omp parallel
+#pragma omp for 
+for (i=0; i<N; i++){
+Do_Work(i);
+} 
+#pragma omp parallel
+#pragma omp for 
+for(i = 0; i < 12; i++) 
+c[i] = a[i] + b[i] 
+● Threads are assigned an independent 
+set of iterations and must wait at the end 
+of work-sharing construct.
+#pragma omp parallel
+i = 0
+i = 1
+i = 2
+i = 3
+i = 0
+i = 1
+i = 2
+i = 3
+i = 0
+i = 1
+i = 2
+i = 3
+#pragma omp for
+Implicit barrier
+● Splits loop iterations 
+across multiple threads.
+○ Must be placed 
+inside an existing 
+parallel region.
+○ Must precede the 
+loop
+
+=== PAGE 151 ===
+29
+Work-sharing Construct - “for” work-sharing pragma 
+#pragma omp parallel
+#pragma omp for 
+for(i = 0; i < 12; i++) 
+c[i] = a[i] + b[i] 
+#pragma omp parallel
+i = 0
+i = 1
+i = 2
+i = 3
+i = 0
+i = 1
+i = 2
+i = 3
+i = 0
+i = 1
+i = 2
+i = 3
+#pragma omp for
+Implicit barrier
+Diagram shows a static division of iterations based on 
+the number of threads. Note the implicit barrier at end of 
+construct. 
+Why is there a barrier at the end of the work-sharing 
+construct?
+
+=== PAGE 152 ===
+30
+Combining pragmas 
+
+
+=== PAGE 153 ===
+31
+OpenMP uses a shared-memory 
+programming model 
+▪ Most variables are shared by 
+default. 
+▪ Global variables are shared 
+among threads 
+▪ C/C++: File scope variables, 
+static 
+But not everything is shared, 
+▪ Stack variables in functions 
+called from parallel regions are 
+PRIVATE 
+▪ Automatic variables within a 
+statement block are PRIVATE 
+▪ Loop index variables are private 
+(with exceptions)
+▪ C/C+: The first loop index 
+variable in nested loops following 
+a #pragma omp for 
+Data Environment
+
+=== PAGE 154 ===
+32
+The default status can be modified with
+Scoping attribute clauses
+Data Scope Attributes
+shared(varname, …)
+private(varname, …)
+default(shared | none)
+All data clauses apply to parallel 
+regions and work-sharing 
+constructs except “shared”, which 
+only applies to parallel regions.
+
+=== PAGE 155 ===
+33
+Reproduces the variable for each thread 
+▪ Variables are un-initialized; C++ object is default constructed 
+▪ Any value external to the parallel region is undefined 
+The Private Clause 
+void* work(float* c, int N) { 
+float x, y; 
+int i; 
+#pragma omp parallel for private(x,y) 
+for(i=0; i<N; i++){
+x = a[i];
+y = b[i];
+c[i] = x + y;
+}
+} 
+● For-loop iteration variable is 
+SHARED by default. 
+● The private variables are 
+uninitialized upon entering the 
+parallel block, you must assign 
+a value before reading them.
+● The private variables exist only 
+within their scope and are 
+destroyed at the end of the 
+region.
+
+=== PAGE 156 ===
+34
+float dot_prod(float* a, float* b, int N) 
+{ 
+float sum = 0.0; 
+#pragma omp parallel for shared(sum) 
+for(int i=0; i<N; i++){
+sum += a[i]*b[i];
+}
+return sum;
+} 
+Dot Product
+What’s wrong with 
+the code?
+
+=== PAGE 157 ===
+35
+Must protect access to shared, modifiable data
+float dot_prod(float* a, float* b, int N) 
+{ 
+float sum = 0.0; 
+#pragma omp parallel for shared(sum) 
+for(int i=0; i<N; i++){
+#pragma omp critical
+sum += a[i]*b[i];
+}
+return sum;
+} 
+ 
+Dot Product 
+The “critical” pragma 
+allows only one thread 
+at a time to execute the 
+update of sum. 
+
+=== PAGE 158 ===
+36
+Defines a critical region on a structured block
+OpenMP* Critical Construct
+float R1, R2;
+#pragma omp parallel
+{ float A, B;
+#pragma omp for
+   for(int i=0; i<niters; i++){
+B = big_job(i);
+#pragma omp critical
+ consum (B, &R1);  //R1_lock
+A = bigger_job(i);
+#pragma omp critical
+ consum (A, &R2);  //R2_lock
+  }
+ }
+Threads wait their turn –at a time, 
+only one calls consum() thereby 
+protecting R1 and R2 from race 
+conditions.
+Naming the critical constructs  is 
+optional but may increase 
+performance.
+#pragma omp critical [(lock_name)]
+
+=== PAGE 159 ===
+37
+The variables in “list” must be shared in the enclosing parallel region 
+Inside parallel or work-sharing construct: 
+▪ A PRIVATE copy of each list variable is created and initialized depending on the “op” 
+▪ These copies are updated locally by threads 
+▪ At end of construct, local copies are combined through “op” into a single value and 
+combined with the value in the original SHARED variable 
+OpenMP* Reduction Clause
+reduction(op : list)
+#pragma omp parallel for reduction(+:sum)
+for(i = 0; i < N; i++) {
+sum += a[i] * b[i]; 
+}
+
+=== PAGE 160 ===
+38
+The schedule clause affects how loop iterations are mapped onto threads
+▪ Blocks of iterations of size “chunk” to threads
+▪ Round robin distribution
+▪ Threads grab “chunk” iterations
+▪ When done with iterations, thread request next set
+▪ Dynamic schedule starting with large block
+▪ Size of the blocks shrink; no smaller than “chunk”
+Schedule Clause 
+schedule(static [,chunk])
+schedule(dynamic [,chunk])
+schedule(guided [,chunk])
+Default chunk size is 1
+
+=== PAGE 161 ===
+39
+Schedule Clause Example
+#pragma omp parallel for schedule (static, 8)
+for( int i = start; i <= end; i += 2 )
+{
+   if ( TestForPrime(i) )  
+gPrimesFound++;
+}
+Iterations are divided into chunks of 8
+▪ If start = 3, then first chunk is i={3,5,7,9,11,13,15,17}
+Set of iterations is divided 
+up into chunks of size 8 
+and distributed to threads 
+in round robin fashion.
+Sample Code: omp_0.c
+
+=== PAGE 162 ===
+40
+Independent sections of code can execute concurrently
+Parallel Sections
+#pragma omp parallel sections 
+{
+#pragma omp section 
+phase1(); 
+#pragma omp section 
+phase2(); 
+#pragma omp section 
+phase3(); 
+} 
+● OpenMP sections enable task parallelism by 
+defining independent blocks of code to run 
+concurrently.
+● The outer container is plural (sections), while 
+each task uses singular (section). Code between 
+section pragmas forms a task implicitly without 
+needing extra curly braces.
+● Includes an implicit barrier at the end of the 
+sections region.
+Q: What if there are more/less threads than
+tasks? How are tasks assigned to threads?
+
+=== PAGE 163 ===
+41
+Independent sections of code can execute concurrently
+Parallel Sections
+#pragma omp parallel sections 
+{
+#pragma omp section 
+phase1(); 
+#pragma omp section 
+phase2(); 
+#pragma omp section 
+phase3(); 
+} 
+● If tasks outnumber threads, threads process 
+remaining tasks as they finish prior ones.
+● If threads outnumber tasks, extra threads wait at 
+the implicit end barrier. 
+Section execution sequence is unpredictable, tasks 
+must remain completely independent of one another. 
+
+
+=== PAGE 164 ===
+42
+Denotes block of code to be executed by only one thread
+▪ Thread chosen is implementation dependent
+Implicit barrier at end 
+Single Construct
+#pragma omp parallel 
+{
+DoManyThings();
+#pragma omp single
+{ 
+ExchangeBoundaries(); 
+} // threads wait here for 
+single
+DoManyMoreThings();
+} 
+Used when only one thread should 
+execute a portion of code. This could be 
+used when two parallel regions have very 
+little serial code in between. Combine the 
+two regions into a single region (less 
+overhead for fork-join) and add the 
+“single” construct for the serial portion. 
+
+=== PAGE 165 ===
+43
+Denotes block of code to be executed only by the master thread. No implicit barrier 
+at end
+Master Construct
+#pragma omp parallel
+{
+   DoManyThings();
+#pragma omp master 
+   {               // if not master skip to next statement
+ ExchangeBoundaries();
+   }
+   DoManyMoreThings();
+}
+
+=== PAGE 166 ===
+44
+Several OpenMP* constructs have implicit barriers
+▪ parallel 
+▪ for 
+▪ single 
+Unnecessary barriers hurt performance 
+▪ Waiting threads accomplish no work! 
+Suppress implicit barriers, when safe, with the nowait clause 
+Implicit Barriers 
+
+=== PAGE 167 ===
+45
+Use when threads would wait between independent computations
+Nowait Clause 
+#pragma single nowait
+{ [...] }
+#pragma omp for nowait
+for (...)
+{...}; 
+#pragma omp for schedule(dynamic,1) 
+nowait 
+for(int i = 0; i < n; i++) 
+a[i] = bigFunc1(i); 
+#pragma omp for schedule(dynamic,1) 
+for(int j = 0; j < m; j++) 
+b[j] = bigFunc2(j); 
+Two independent loops (dynamic schedule) 
+modify separate arrays (a[], b[]).
+● Without nowait: Implicit barrier after Loop 1, 
+threads wait for everyone to finish before 
+starting Loop 2.
+● With nowait: Skips the barrier, threads jump 
+straight into Loop 2 as soon as they finish 
+Loop 1.
+
+=== PAGE 168 ===
+46
+Explicit barrier synchronization 
+Each thread waits until all threads arrive 
+Barrier Construct
+#pragma omp parallel shared (A, B, C) 
+{ 
+DoSomeWork(A,B); 
+printf(“Processed A into B\n”); 
+#pragma omp barrier 
+DoSomeWork(B,C); 
+printf(“Processed B into C\n”); 
+} 
+Example code likely uses A to 
+update B in first call, and B to 
+update C in second call. 
+Thus, to ensure correct 
+execution, all processing from 
+first call must be completed 
+before starting second call. 
+Sample Codes: 
+● omp_1.c
+● omp_2.c
+
+=== PAGE 169 ===
+47
+Special case of a critical section 
+Applies only to simple update of memory location 
+Atomic Construct
+#pragma omp parallel for shared(x, y, index, n) 
+for (i = 0; i < n; i++) { 
+#pragma omp atomic 
+x[index[i]] += work1(i); 
+y[i] += work2(i); 
+} 
+#pragma omp atomic protects 
+only the specific memory 
+location update (e.g., 
+x[index[i]]), letting surrounding 
+code (like work1()) still run 
+concurrently.
+
+=== PAGE 170 ===
+48
+Atomic vs. Critical:
+● critical: Serializes all threads attempting the update, regardless of the array 
+index.
+● atomic: Serializes updates only when two threads write to the exact same 
+array index—updates to different indices run in parallel.
+The operations allowed within atomic are:
+● x <binop>= <expr>
+● x++, ++x, x--, --x
+where x is “an lvalue expression of scalar type.”
+Atomic Construct
+
+=== PAGE 171 ===
+49
+Get the thread number within a team
+Get the number of threads in a team
+Usually not needed for OpenMP codes  
+▪ Can lead to code not being serially consistent
+▪ Does have specific uses (debugging)
+▪ Must include a header file
+OpenMP* API
+int omp_get_thread_num(void);
+int omp_get_num_thread_num(void);
+#include <omp.h>
+API calls are usually not 
+needed. Assignment of loop 
+iterations and other 
+computations to threads is 
+already built into OpenMP. 
+
+=== PAGE 172 ===
+Preparation for Lab 1
+
+=== PAGE 173 ===
+51
+Download the following files:
+▪ VA.txt
+▪ VB.txt
+Download and run the following codes. Observe and analyse the output:
+▪ Vector_Cell_Product.c
+▪ Vector_Cell_Product_Parallel.c
+▪ Vector_Cell_Product_OMPc
+Task 1

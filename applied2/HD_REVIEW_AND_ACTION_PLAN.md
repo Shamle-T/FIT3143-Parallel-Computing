@@ -259,7 +259,7 @@ A content-repair phase can finish autonomously with available evidence. Rehearsa
 
 Assessment sources: [Applied 2 specification](<assessment/Applied #2 - Assessment Specification.pdf>) and [Applied 2 rubric](<assessment/Applied #2 Rubric.pdf>). These supplied documents control this review. All finding IDs are open at the reviewed baseline; closing them is the subsequent implementation task.
 
-## Revision closure record — 8 October 2026
+## Historical revision closure record — 8 October 2026
 
 The teaching-team guidance overrides the audit's more expansive suggested hardware detail: Task 1(a) and 1(c) are addressed at a clear high level, with optional code supporting 1(b). The primary combined deck and its PDF contain the material needed for content assessment, including supporting detail and a brief AI declaration. No separate report is required.
 
@@ -282,3 +282,13 @@ The teaching-team guidance overrides the audit's more expansive suggested hardwa
 Mathematical/source/package checks and visual checks are retained privately under .build/. CUDA compilation and hardware execution remain unverified and are explicitly qualified in the deck; neither is imposed by the teaching guidance. Content completeness is assessed against the Task 1/2 HD descriptors, without an unsupported guarantee of a grade.
 
 The student's subsequent timing instruction takes precedence over the earlier placement request: present slides 1–11 with a 6:20 planning target and 40-second buffer. Detailed content was moved rather than deleted. The appendix starts at slide 12. Embedded speaker notes and Presentation_Timing_and_Notes.md contain the current timing path; no measured rehearsal or delivery/Q&A grade is asserted.
+
+## Current spoken-coverage revision — 9 October 2026
+
+This section supersedes the preceding slide numbers and timing. The latest student-edited submission PowerPoint was preserved as the source. Core CUDA scheduling/performance explanations, job-impact accounting, research comparisons, governance/fairness controls, access consequences and responsible-use decisions now appear on presented slides 1–11. The corresponding 793-word script and embedded speaker notes explicitly cover these points, rather than relying on unmentioned appendix explanations. The target is 6:40 with a 20-second buffer; actual timing is not measured.
+
+The appendix begins at slide 12. Original CUDA/code and two-chart environmental slides are retained as supporting snapshots on slides 13–14. Other detailed evidence continues through slide 43. Website references are on slides 44–47 and the single brief AI declaration is on slide 48. Full crafted code, calculations and detailed source comparisons remain available and are identified in the spoken path, following the student's supporting-evidence exception. The criterion-by-criterion mapping is in [HD_SPOKEN_COVERAGE.md](HD_SPOKEN_COVERAGE.md).
+
+All 48 slides imported/rendered successfully. Package and layout checks returned zero findings; revised main slides and the four-page script were visually checked. Twenty-two original chart/workbook/master/layout/theme parts and unchanged evidence slide bodies were preserved. All eleven notes match the script, and every combined PDF page matches its source render. Mathematical/content checks pass. CUDA execution, native PowerPoint rendering, actual delivery and any resulting grade remain unverified. The previously removed submission PDFs/README were not restored.
+
+The subsequent PowerPoint compatibility fix assigns the repeated electricity chart an independent native chart/workbook copy on appendix slide 14. PowerPoint now opens the final file with repair disabled and exports all 48 slides, including both appendix charts. This native opening/rendering verification supersedes the preceding unverified-native-rendering limitation. No slide content, notes, source values or existing evidence parts were changed by the fix.

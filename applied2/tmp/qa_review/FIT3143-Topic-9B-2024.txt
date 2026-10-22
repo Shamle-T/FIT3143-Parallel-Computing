@@ -1,0 +1,398 @@
+=== PAGE 1 ===
+Information Technology
+FIT3143 Parallel Computing 
+Semester 2 2024
+Topic 9B: 
+Synchronisation
+: Mutual Exclusion and Deadlocks
+Dr Carlo Kopp, MACM, SMIEEE, AFAIAA
+Faculty of Information T echnology
+© 2024 Monash University
+
+=== PAGE 2 ===
+2
+▪ Synchronisation problems involving mutual exclusion and deadlocks are very 
+common problems which arise when multiple entities are competing for access 
+to shared resources; Both are usually covered in units or textbooks dealing with 
+operating systems, where the shared resources are CPU/core time and shared 
+main memory, and sometimes I/O devices;
+▪ In a distributed / parallel system the problem is complicated by the need to allow 
+for transmission delays i.e. latency in passing messages through the IPC 
+between tasks (processes), which makes some solutions used in operating 
+systems problematic – latency matters!
+▪ Practical skills: Failure to properly address these problems will result in often 
+catastrophic application failures or bugs, often very difficult to isolate and 
+correct.
+Why Study Synchronisation, MUTEX, Deadlock?
+
+=== PAGE 3 ===
+Mutual Exclusion in Parallel / Distributed Systems
+
+=== PAGE 4 ===
+4
+▪ When multiple processes access shared resources, using the concept of 
+critical sections is a relatively easy way to manage access to shared 
+resources:
+a) A critical section is a section in a program that accesses shared 
+resources.
+b) A process enters a critical section before accessing the shared resource 
+to ensure that no other process will use the shared resource at the same 
+time.
+▪ Critical sections are protected using semaphores and monitors in single-
+processor systems. We cannot use either of these mechanisms in 
+distributed systems due to the latency i.e. time delays in propagating 
+messages between machines.
+MUTEX / Mutual Exclusion in Parallel / Distributed Systems
+
+=== PAGE 5 ===
+5
+▪ This algorithm simulates mutual exclusion in single processor systems.
+▪ One process is elected as the “coordinator”.
+▪ When a process wants to enter a critical section of the code, it sends a request 
+to the coordinator stating which critical section it wants to enter.
+▪ If no other process is currently in that critical section, the coordinator returns a 
+reply granting permission.
+▪ If a different process is already in the critical section, the coordinator queues the 
+request.
+▪ When the process exits the critical section, the process sends a message to the 
+coordinator releasing its exclusive access.
+▪ The coordinator takes the first item off the queue of deferred request and sends 
+that process a grant message.
+A Centralized Algorithm – Coordinator Process
+
+=== PAGE 6 ===
+6
+A Centralized Algorithm
+User processes
+Coordinator process
+Request queue
+Requests are queued
+if the critical section 
+is in use
+
+=== PAGE 7 ===
+7
+▪ Advantages
+a) Since the service policy is first-come first-serve, it is fair and no process waits 
+forever.
+b) It is simple and thus easy to implement.
+c) It requires only three messages, request, grant, and release, per use of a critical 
+section.
+▪ Disadvantages
+a) If the coordinator crashes, the entire system may go down.
+b) Processes cannot always distinguish a dead coordinator process from a 
+“permission denied” message;
+c) A single coordinator process may become a performance bottleneck if requests 
+arrive at a high frequency, or the propagation delay of the messages is large.
+A Centralized Algorithm
+
+=== PAGE 8 ===
+8
+▪ The distributed algorithm proposed by Ricart and Agrawala requires ordering of all events 
+in the system. We can use Lamport’s algorithm for the ordering.
+a) When a process wants to enter a critical section, the process sends a request message to 
+all other processes. The request message includes 
+                   Name of the critical section + Process number + Current time
+b) The other processes receive the request message.
+c) If the process is not in the requested critical section and also has not sent  a request 
+message for the same critical section, it returns an OK message to the requesting 
+process.
+d) If the process is in the critical section, it does not return any response and puts the 
+request to the end of a queue.
+e) If the process has sent out a request message for the same critical section, it compares 
+the time stamps of the sent request message and the received message.
+A Distributed Algorithm (1)
+
+=== PAGE 9 ===
+9
+f) If the time stamp of the received message is smaller than the one of the sent message, 
+the process returns an OK message.
+g) If the time stamp of the received message is larger than the one of the sent message, the 
+request message is put into the queue.
+h) The requesting process waits until all processes return OK messages.
+i) When the requesting process receives all OK messages, the process enters the critical 
+section.
+j) When a process exits from a critical section, it returns OK messages to all requests in the 
+queue corresponding to the critical section and removes the requests from the queue.
+▪ Processes enter a critical section in time stamp order using this algorithm.
+▪ This is a “consensus” mechanism as all processes must agree it is “OK to enter critical 
+section”.
+▪ Disadvantage? If a process does not respond the system will be unable to proceed
+A Distributed Algorithm (2)
+
+=== PAGE 10 ===
+10
+A Distributed Algorithm (3)
+
+=== PAGE 11 ===
+11
+The number of messages exchanged (i.e. messages per entry/exit of a 
+single critical section):
+a) Centralized: 3
+b) Distributed: 2*(n − 1)
+c) Ring: 2 
+Reliability problems which can disable the mutual exclusion mechanism:
+a) Centralized: coordinator crashes
+b) Distributed: any process crashes
+c) Ring: lost token, process crashes
+Mutual Exclusion Algorithms: A Comparison
+
+=== PAGE 12 ===
+Deadlocks in Parallel / Distributed Systems
+
+=== PAGE 13 ===
+13
+▪ A deadlock is a condition where a process cannot proceed because it 
+needs to obtain a resource held by another process and it itself is 
+holding a resource that the other process needs.
+▪ We can consider two types of deadlock:
+a) A communication deadlock occurs when process A is trying to send a 
+message to process B, which is trying to send a message to process C 
+which is trying to send a message to A.
+b) A resource deadlock occurs when processes are trying to get exclusive 
+access to devices, files, locks, servers, or other resources.
+▪  We will not differentiate between these types since we can consider 
+communication channels to be resources without loss of generality.
+Deadlocks in Parallel / Distributed Systems
+
+=== PAGE 14 ===
+14
+▪ Permanent blocking of a set of processes that either compete for system 
+resources or communicate with each other
+▪ No efficient solution
+▪ Involve conflicting needs for resources by two or more processes
+What is a Deadlock? (Roy 2008)
+
+=== PAGE 15 ===
+15
+Deadlock Example (Roy 2008)
+
+=== PAGE 16 ===
+16
+▪ Four conditions have to be met for deadlock to be present:
+a) Mutual exclusion. A resource can be held by at most one process
+b) Hold and wait. Processes that already hold resources can wait for another 
+resource.
+c) Non-preemption. A resource, once granted, cannot be taken away from a 
+process.
+d) Circular wait. Two or more processes are waiting for resources held by one of 
+the other processes.
+Necessary Conditions for a Deadlock
+
+=== PAGE 17 ===
+17
+▪ For deadlock modeling, a directed graph, 
+called a resource allocation graph, is used 
+in which both the sets of nodes and edges 
+are partitioned into two types, resulting in 
+following graph elements:
+a) Process nodes: P1, P2, P3
+b) Resource nodes: R1, R2, R3
+c) Assignment edges: (R1, P1), (R1, P3)
+d) Request edges: (P1, R2), (P2, R1)
+Deadlock Modeling – Testing for a Deadlock Condition
+
+=== PAGE 18 ===
+18
+▪ In a resource allocation graph, a cycle is a necessary condition for a 
+deadlock to exist:
+Necessary Conditions for Deadlock
+This is a Deadlock But this is not
+
+=== PAGE 19 ===
+19
+Sufficient Conditions for a Deadlock
+If there is only one copy of all resources:
+➢A Cycle in resource allocation graph
+If there are multiple copies of some resources:
+➢A Knot in resource allocation graph
+Note - A “knot” in a directed graph is a collection of vertices and edges with the 
+property that every vertex in the knot has outgoing edges, and all outgoing edges 
+from vertices in the knot terminate at other vertices in the knot.
+
+
+=== PAGE 20 ===
+20
+▪ Cycles:
+1.  (P1, R2, P2, R1, P1)
+2.  (P3, R2, P2, R1, P3)
+▪ Knot:
+1.  {P1, P2, P3, R1, R2} 
+▪ Thus here is a deadlock!
+Sufficient Conditions for a Deadlock
+
+
+=== PAGE 21 ===
+21
+▪ When all resource types have 
+only a single unit each, a 
+simplified form of resource 
+allocation graph is used – a 
+“wait-for graph”.
+▪ A “wait-for graph” may be 
+constructed from a resource 
+allocation graph by removing 
+the resource nodes and 
+collapsing the appropriate 
+edges.
+Wait for Graph
+
+
+=== PAGE 22 ===
+22
+▪ Strategies:
+A. The “Ostrich algorithm”;
+B. Deadlock detection and recovery;
+C. Deadlock prevention by careful resource allocations;
+D. Deadlock avoidance by designing the system in such a 
+way that deadlocks simply cannot occur;
+Handling Deadlocks in Parallel / Distributed Systems
+
+=== PAGE 23 ===
+23
+▪ Ignore the deadlock problem
+The “Ostrich Algorithm”
+
+
+=== PAGE 24 ===
+24
+▪ Preventing or avoiding deadlocks can be difficult!
+▪ Detecting them is easier.
+▪ When deadlock is detected, then:
+▪ kill off one or more processes, or:
+✓ annoyed users
+▪ if the system is based on atomic transactions, abort one or more transactions
+✓ transactions have been designed to withstand being aborted
+✓ system restored to state before transaction began
+✓ transaction can start a second time
+✓ resource allocation in system may be different so the transaction may 
+succeed
+Deadlock Detection in Distributed Systems
+
+=== PAGE 25 ===
+25
+▪ Imitate the non-distributed algorithm through a coordinator
+▪ Each machine maintains a resource graph for its processes 
+and resources
+▪ A central coordinator maintains a graph for the entire 
+system
+a) message can be sent to coordinator each time an arc is 
+added or deleted
+b) list of arc adds/deletes can be sent periodically
+A Centralized Deadlock Detection Algorithm
+
+=== PAGE 26 ===
+26
+Centralized Deadlock Detection Algorithm
+
+
+=== PAGE 27 ===
+27
+▪ Two events occur:
+1. Process P1  releases resource R
+2. Process P1  asks machine B  for resource T
+▪ Two messages are sent to the coordinator:
+1. (from A): releasing R
+2. (from B): waiting for T
+▪ If message 2 arrives first, the coordinator constructs a 
+graph that has a cycle and hence detects a deadlock. 
+This is false deadlock.
+▪ Global time ordering must be imposed on all 
+machines or:
+▪ The coordinator can reliably ask each machine 
+whether it has any release 
+False Deadlocks when using the Centralized Algorithm
+A B
+
+=== PAGE 28 ===
+28
+▪ Proposed by Chandy, Misra and Haas.
+▪ Processes can request multiple resources at once
+▪ Some processes wait for local resources
+▪ Some processes wait for resources on other machines
+▪ Algorithm invoked when a process has to wait for a resource
+▪ A probe message is generated. This message contains 3 fields-
+i. process that just blocked
+ii. process sending the message
+iii. process to whom it is being sent
+A Distributed Approach
+
+=== PAGE 29 ===
+29
+▪ Suppose: 
+– P1 gets blocked by P3
+– P3 gets blocked by P2 and P5
+– P2 gets blocked by P1 and P4
+CMH Algorithm
+
+
+=== PAGE 30 ===
+30
+▪ One of the following methods may be used
+a) Asking for operator intervention
+b) Terminating of process(es)
+c) Rollback of process(es)
+▪ Issues in recovery from deadlock
+a) Minimization of recovery cost
+b) Prevention of starvation
+Recovery after Detection
+
+=== PAGE 31 ===
+31
+▪ When a process requests a resource, even if the resource is 
+available, it is not immediately allocated to the process. Rather, the 
+system simply assumes that a request is granted
+▪ With the assumption made is previous step and advance 
+knowledge of resource usage of processes, the system performs 
+some analysis to decide whether granting the request is safe or 
+unsafe.
+▪ The resource is allocated to the process only when the analysis of 
+previous step shows that it I safe to do so, otherwise the request is 
+deferred.
+▪ Although theoretically attractive, these algorithms are rarely used.
+Deadlock Avoidance
+
+=== PAGE 32 ===
+32
+▪ Collective requests
+▪ Denies the hold-and-wait condition. Two ways-
+✓ A process must request all of its resources before it begins the 
+execution. If all resources are granted, execution starts; otherwise the 
+process would just wait.
+✓ Instead of requesting all its resources before, a process may request a 
+resource during its execution if it obeys that it holds no other resources 
+while requesting. If it is holding some resources, it may release all the 
+resources first and then request for all.
+Deadlock Prevention
+
+=== PAGE 33 ===
+Summary
+
+=== PAGE 34 ===
+34
+▪ Mutual Exclusion Approaches
+a) Centralised
+b) Distributed
+▪ Main Deadlock Modeling Areas
+a) Necessary conditions for occurrence
+b) Deadlock Detection
+c) Deadlock Handling
+Summary
+
+=== PAGE 35 ===
+Reading Materials
+
+=== PAGE 36 ===
+36
+▪ Coulouris et al, Distributed Systems, 5E:
+a) Ch.14 Time and Global States
+b) Ch.15 Coordination and Agreement
+c) Ch.16 Transactions and Concurrency Control
+d) Ch.17 Distributed Transactions
+▪ Campbell, R.H. (2011). Deadlocks. In: Padua, D. (eds) Encyclopedia of Parallel 
+Computing. Springer, Boston, MA. https://doi.org/10.1007/978-0-387-09766-
+4_282 
+▪ K. Mani Chandy, Jayadev Misra, and Laura M. Haas. 1983. Distributed deadlock 
+detection. ACM Trans. Comput. Syst. 1, 2 (May 1983), 144–156. 
+https://doi.org/10.1145/357360.357365 
+Reading and References
