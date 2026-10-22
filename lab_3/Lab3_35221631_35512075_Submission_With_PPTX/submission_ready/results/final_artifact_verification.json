@@ -3,11 +3,11 @@
   "source_sha256": "28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd",
   "caas_as_run_file_hashes_verified": 5,
   "pdf_pages": {
-    "Lab3_Presentation_Documentation.pdf": 35,
+    "Lab3_Presentation_Documentation.pdf": 34,
     "Lab3_Technical_Report.pdf": 8,
     "AI_Prompt_Records.pdf": 8
   },
-  "pptx_slides": 35,
+  "pptx_slides": 34,
   "pptx_charts": 54,
   "pptx_workbooks": 54,
   "pptx_authentic_images": 3,
@@ -25,5 +25,5 @@
   ],
   "native_powerpoint_open_render_and_pdf_export": true,
   "structural_and_layout_findings": 0,
-  "visual_qa": "All 35 slide thumbnails and all 16 report/prompt pages reviewed; changed slides 1, 13 and 23 inspected at native render size after the declaration revision. Other slide/chart/workbook/image XML parts remain unchanged. No clipping or unreadable replacement figures observed."
+  "visual_qa": "All 34 slide thumbnails and all 16 report/prompt pages reviewed; Source index removed; remaining slide content preserved with renumbered footers. AI declaration remains slide 13; CAAS evidence now slides 32-33. Original chart/workbook/image bytes remain unchanged. No clipping or unreadable replacement figures observed."
 }

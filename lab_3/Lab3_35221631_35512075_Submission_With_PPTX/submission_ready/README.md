@@ -11,7 +11,7 @@ is the retained input, and contains older source/documents. Use this folder.
 - `docs/Lab3_Presentation_Documentation.pdf`: final presentation, exported from
   the updated editable PowerPoint. Main slides 1-13 target a rehearsed 6-7
   minutes; subsequent slides are labelled appendices.
-- `docs/Lab3_Presentation_Editable.pptx`: the same 35-slide final deck, with all 36
+- `docs/Lab3_Presentation_Editable.pptx`: the same 34-slide final deck, with all 36
   original native charts/workbooks preserved and 18 new native CAAS charts.
   This editable format is optional if the PDF is submitted.
 - `docs/Lab3_Technical_Report.pdf`: design, measured answers to Task 3,
