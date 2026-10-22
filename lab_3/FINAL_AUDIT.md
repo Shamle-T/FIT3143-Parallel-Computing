@@ -1,3 +1,18 @@
+# Current presentation revision - 23 October 2026
+
+This revision supersedes the document counts and prompt-record inventory in the
+historical audit below. The final submission now has a 49-slide presentation:
+13 timed main slides and 36 reference appendix slides. Added slides 35-49 retain
+the separate report's essential technical content and complete result tables.
+The reviewed technical report is removed from the final folder and archive.
+The user removed the prompt PDF and index and explicitly requested that they
+remain absent. Only the AI declaration appears in the presentation, on slide 13.
+No prompt content or prompt-PDF references appear in the final slides/notes.
+The prepared script splits at slide 6 and targets 6:50; live timing is unverified.
+The revised PPTX/PDF opened and rendered in PowerPoint. All 54 native charts and
+workbooks are preserved, along with all 3 evidence images. Original raw study
+records and sources remain unchanged. Exact inventory and hashes are refreshed.
+
 # FIT3143 Lab 3 final audit — 22 October 2026
 
 The definitive folder is `Lab3_35221631_35512075_Submission_With_PPTX/submission_ready`. The original package outside it is preserved. The prepared upload is `FIT3143_Lab3_35221631_35512075_Moodle.zip`.

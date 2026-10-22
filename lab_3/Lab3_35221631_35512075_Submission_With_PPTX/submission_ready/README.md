@@ -11,25 +11,26 @@ is the retained input, and contains older source/documents. Use this folder.
 - `docs/Lab3_Presentation_Documentation.pdf`: final presentation, exported from
   the updated editable PowerPoint. Main slides 1-13 target a rehearsed 6-7
   minutes; subsequent slides are labelled appendices.
-- `docs/Lab3_Presentation_Editable.pptx`: the same 34-slide final deck, with all 36
+- `docs/Lab3_Presentation_Editable.pptx`: the same 49-slide final deck, with all 36
   original native charts/workbooks preserved and 18 new native CAAS charts.
   This editable format is optional if the PDF is submitted.
-- `docs/Lab3_Technical_Report.pdf`: design, measured answers to Task 3,
-  limitations, source provenance and Q&A preparation. The single current AI
-  declaration appears on presentation slide 13, replacing the Questions page.
-- `docs/AI_Prompt_Records.pdf`: supplied historical records plus the visible
-  audit requests. Unprovided prompt histories are not reconstructed.
+- The presentation now includes the technical documentation. Slides 35-49
+  consolidate protocol details, complexity, timing definitions, experimental
+  controls, complete result tables, correctness, provenance, shutdown and limits.
+  Slides 14-49 are reference appendices outside the timed presentation.
+- The single AI-use declaration is on slide 13. No prompt records or separate
+  declaration document are included. The separate technical report is removed.
 - `SUBMISSION_CHECKLIST.csv`: EVERY actual filename in this folder, with its
   required/supporting classification and specification-based reason.
 - `SHA256SUMS.txt`: integrity hashes for all files except that manifest itself.
 
 The specification (page 8) requires all C/C++ sources, sample base logs,
 available CAAS scripts, all timing logs and available graphs, and presentation
-slides/documentation. Page 2 requires PDF prompt records when AI was used.
+slides/documentation.
 Raw timing CSVs ARE measurement logs and must be retained. Derived analysis
 CSVs/JSON, manifests and placement data support reproducibility. Standalone
 screenshots are supporting; their relevant views are embedded in the deck.
-No separate AI declaration PDF is needed: presentation slide 13 declares the use.
+The AI declaration appears only in the presentation, on slide 13.
 No mandatory filename or ZIP pattern appears in the supplied specification.
 Moodle's actual accepted file types/size limits were not inspected.
 
@@ -132,5 +133,13 @@ Inferred availability is not guaranteed capacity. The source uses native
 struct bytes on homogeneous MPI hosts. The phased gather/barrier and single
 base can limit scaling. Q&A performance and a 6-7 minute live presentation
 cannot be certified by file checks. Both students must rehearse, understand
-the code, confirm any unprovided AI prompt history, upload the same files
+the code, upload the same files
 before the actual Moodle/class deadline, and attend/present without AI.
+
+## Presentation rehearsal
+
+Only slides 1-13 form the timed presentation. The prepared script targets 6:50,
+including pauses and handover. Savin presents slides 1-6 (3:30), then Shamily
+presents slides 7-13 (3:20). The script is in the editable deck's speaker notes.
+The separate practice copy, Presentation_Script.md, is outside the submission
+folder. Actual delivery time depends on rehearsal and speaking pace.

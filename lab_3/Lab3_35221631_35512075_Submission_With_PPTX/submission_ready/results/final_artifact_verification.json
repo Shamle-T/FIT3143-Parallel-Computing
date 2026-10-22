@@ -3,19 +3,15 @@
   "source_sha256": "28cd1d3951e9b4fa523765811bff2f3da3c747916e08a66d0d4e665b562fdcdd",
   "caas_as_run_file_hashes_verified": 5,
   "pdf_pages": {
-    "Lab3_Presentation_Documentation.pdf": 34,
-    "Lab3_Technical_Report.pdf": 8,
-    "AI_Prompt_Records.pdf": 8
+    "Lab3_Presentation_Documentation.pdf": 49
   },
-  "pptx_slides": 34,
+  "pptx_slides": 49,
   "pptx_charts": 54,
   "pptx_workbooks": 54,
   "pptx_authentic_images": 3,
   "original_chart_xml_preserved": 36,
   "original_workbooks_byte_identical": 36,
   "new_caas_charts_matched_to_all_table_values": 18,
-  "historical_prompt_pages_preserved": 4,
-  "attached_request_lines_verified": true,
   "original_raw_files_unchanged": [
     "results/cluster/all_timing_measurements.csv",
     "results/cluster/all_base_station_logs.log",
@@ -25,5 +21,14 @@
   ],
   "native_powerpoint_open_render_and_pdf_export": true,
   "structural_and_layout_findings": 0,
-  "visual_qa": "All 34 slide thumbnails and all 16 report/prompt pages reviewed; Source index removed; remaining slide content preserved with renumbered footers. AI declaration remains slide 13; CAAS evidence now slides 32-33. Original chart/workbook/image bytes remain unchanged. No clipping or unreadable replacement figures observed."
+  "visual_qa": "Reviewed all changed/new slides at full size and scanned original slide montage. The 30 unchanged original slides render pixel-identically. All 54 charts/workbooks and 3 source images are byte-preserved. Conservative table-height warnings on slides 40, 41 and 43 were checked in native PowerPoint renders; no overlap was observed.",
+  "main_slides": 13,
+  "reference_appendices": 36,
+  "added_technical_appendices": 15,
+  "technical_report_consolidated_and_removed": true,
+  "prompt_pdf_and_index_removed_by_user": true,
+  "ai_declaration_slide": 13,
+  "prompt_references_removed": true,
+  "script_target_seconds": 410,
+  "script_in_main_slide_speaker_notes": true
 }

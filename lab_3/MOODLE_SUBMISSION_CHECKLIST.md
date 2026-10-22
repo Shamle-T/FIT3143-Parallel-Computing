@@ -1,14 +1,12 @@
 # Exact Moodle submission checklist
 
-Savin Vindiv De Alwis 35221631 / Shamle Thilaksiri 35512075
+Use FIT3143_Lab3_35221631_35512075_Moodle.zip or the definitive submission_ready folder. The outer package retains older inputs.
 
-The supplied specification sets no mandatory filenames or ZIP pattern. If Moodle permits ZIP, upload `FIT3143_Lab3_35221631_35512075_Moodle.zip`; it contains this full prepared folder. Otherwise upload the required files below and retain their directory structure where the upload interface permits. Actual Moodle file-type/size restrictions were not inspected.
+The presentation includes all current technical documentation: main slides 1-13 and reference appendices 14-49. The single AI declaration is slide 13. The separate technical report and prompt-record documents are absent.
 
 ## Required
 
-- `docs/AI_Prompt_Records.pdf`
 - `docs/Lab3_Presentation_Documentation.pdf`
-- `docs/Lab3_Technical_Report.pdf`
 - `results/analysis/ack.png`
 - `results/analysis/alert_roundtrip.png`
 - `results/analysis/control.png`
@@ -52,7 +50,6 @@ The supplied specification sets no mandatory filenames or ZIP pattern. If Moodle
 
 ## Supporting/conditional
 
-- `docs/AI_RECORD.md`
 - `docs/Lab3_Presentation_Editable.pptx`
 - `Makefile`
 - `README.md`
@@ -125,12 +122,7 @@ The supplied specification sets no mandatory filenames or ZIP pattern. If Moodle
 - `SHA256SUMS.txt`
 - `SUBMISSION_CHECKLIST.csv`
 
-## Not necessary to upload
+## Outside the submission
 
-- The original package outside `submission_ready`, old presentation/report versions or the old `AI_Declaration_and_Prompt_Records.pdf` (its available prompt content is retained in the final prompt PDF).
-- A separate AI declaration PDF: presentation slide 13 contains the current AI-use declaration.
-- Executables, caches, per-run duplicates already consolidated without losing values, intermediate renderings, SSH helper/dependencies, downloaded raw TAR or build/debug scripts in `audit_work/`.
-- The official specification/rubric, teaching materials, CAAS instructions or demo ZIP: reference inputs, not team deliverables.
-- A recording unless a special-consideration alternative assessment actually applies.
-
-Raw timing CSVs, C sources, available CAAS scripts and generated graph PNGs are required. Derived CSV/JSON tables, manifests, screenshots and validation records are supporting; they are retained in the ZIP to make the evidence reviewable. A PPTX is an optional editable alternative when the final presentation PDF is uploaded.
+- The practice script is Presentation_Script.md at the lab_3 root. It is also in the main slides' speaker notes.
+- Older package files, superseded reports, private validation/render files, reference inputs and runtime dependencies are excluded.
