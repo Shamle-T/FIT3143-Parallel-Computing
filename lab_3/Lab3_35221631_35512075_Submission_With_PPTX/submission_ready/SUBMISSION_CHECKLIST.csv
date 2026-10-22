@@ -1,9 +1,9 @@
 filename,classification,reason
 docs/AI_Prompt_Records.pdf,Required,Specification p2: upload available AI prompt records in PDF; missing histories are not fabricated.
 docs/AI_RECORD.md,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
-docs/Lab3_Presentation_Documentation.pdf,Required,"Chosen Task 3/4 documentation and incorporated AI declaration; specification pp2,7-8."
+docs/Lab3_Presentation_Documentation.pdf,Required,"Chosen Task 3/4 documentation; presentation slide 13 incorporates the current AI declaration; specification pp2,7-8."
 docs/Lab3_Presentation_Editable.pptx,Supporting/conditional,Editable alternative to the required presentation PDF; either format satisfies Task 4; both may be included.
-docs/Lab3_Technical_Report.pdf,Required,"Chosen Task 3/4 documentation and incorporated AI declaration; specification pp2,7-8."
+docs/Lab3_Technical_Report.pdf,Required,"Chosen Task 3/4 documentation; presentation slide 13 incorporates the current AI declaration; specification pp2,7-8."
 Makefile,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
 README.md,Supporting/conditional,"Build/reproduction or navigation support; include in the prepared package, though not a separately named assessment deliverable."
 results/analysis/ack.png,Required,Specification p8: associated Task 3 graphs if available; this graph is available and supports the analysis.

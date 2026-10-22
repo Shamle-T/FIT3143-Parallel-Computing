@@ -15,7 +15,8 @@ is the retained input, and contains older source/documents. Use this folder.
   original native charts/workbooks preserved and 18 new native CAAS charts.
   This editable format is optional if the PDF is submitted.
 - `docs/Lab3_Technical_Report.pdf`: design, measured answers to Task 3,
-  limitations, source provenance, Q&A preparation and the AI declaration.
+  limitations, source provenance and Q&A preparation. The single current AI
+  declaration appears on presentation slide 13, replacing the Questions page.
 - `docs/AI_Prompt_Records.pdf`: supplied historical records plus the visible
   audit requests. Unprovided prompt histories are not reconstructed.
 - `SUBMISSION_CHECKLIST.csv`: EVERY actual filename in this folder, with its
@@ -28,7 +29,7 @@ slides/documentation. Page 2 requires PDF prompt records when AI was used.
 Raw timing CSVs ARE measurement logs and must be retained. Derived analysis
 CSVs/JSON, manifests and placement data support reproducibility. Standalone
 screenshots are supporting; their relevant views are embedded in the deck.
-No separate AI declaration PDF is needed because this report declares the use.
+No separate AI declaration PDF is needed: presentation slide 13 declares the use.
 No mandatory filename or ZIP pattern appears in the supplied specification.
 Moodle's actual accepted file types/size limits were not inspected.
 

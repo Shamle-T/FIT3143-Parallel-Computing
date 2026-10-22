@@ -25,5 +25,5 @@
   ],
   "native_powerpoint_open_render_and_pdf_export": true,
   "structural_and_layout_findings": 0,
-  "visual_qa": "All 35 slide thumbnails and all 16 report/prompt pages reviewed; changed and evidence slides inspected at native render size. Report split table corrected. No clipping or unreadable replacement figures observed."
+  "visual_qa": "All 35 slide thumbnails and all 16 report/prompt pages reviewed; changed slides 1, 13 and 23 inspected at native render size after the declaration revision. Other slide/chart/workbook/image XML parts remain unchanged. No clipping or unreadable replacement figures observed."
 }

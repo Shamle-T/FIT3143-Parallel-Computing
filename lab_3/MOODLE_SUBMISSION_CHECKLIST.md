@@ -128,7 +128,7 @@ The supplied specification sets no mandatory filenames or ZIP pattern. If Moodle
 ## Not necessary to upload
 
 - The original package outside `submission_ready`, old presentation/report versions or the old `AI_Declaration_and_Prompt_Records.pdf` (its available prompt content is retained in the final prompt PDF).
-- A separate AI declaration PDF: the final technical report and presentation already declare AI use.
+- A separate AI declaration PDF: presentation slide 13 contains the current AI-use declaration.
 - Executables, caches, per-run duplicates already consolidated without losing values, intermediate renderings, SSH helper/dependencies, downloaded raw TAR or build/debug scripts in `audit_work/`.
 - The official specification/rubric, teaching materials, CAAS instructions or demo ZIP: reference inputs, not team deliverables.
 - A recording unless a special-consideration alternative assessment actually applies.
